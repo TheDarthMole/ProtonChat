@@ -16,6 +16,7 @@ except ImportError:
     print("[!] requests module not installed, however it is not necessary")
 
 # Declare public variables and initialize
+
 HOST = "127.0.0.1"
 ClientMax = 10
 PORT = 65528
@@ -136,7 +137,6 @@ DataBase.dump() # Purely for testing (Stops duplicates)
 DataBase.AppendDatabase("1.3.3.7",666,"Nick1","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Standard")
 DataBase.AppendDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Admin")
 DataBase.PrintCustomerContents()
-
 
 class UserCredentials:
     def __init__(self, username, password, createaccount):
@@ -292,7 +292,7 @@ class Members:
                 bytesToSend = binascii.hexlify(bytesToSend).decode("utf-8")
                 self.send(bytesToSend,self.initialAES)
                 while bytesToSend != "":
-                    
+
                     bytesToSend = f.read(1024)
                     bytesToSend = (binascii.hexlify(bytesToSend).decode("utf-8"))
                     print("Sending:",bytesToSend)
