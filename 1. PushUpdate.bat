@@ -1,0 +1,1 @@
+scp -i "O:\Client Server Chat\NickLogin.pem" "O:\Client Server Chat\Classes Server.py" ec2-3-8-21-20.eu-west-2.compute.amazonaws.com:.
