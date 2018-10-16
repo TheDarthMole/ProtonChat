@@ -57,5 +57,11 @@ def decryptor():
     with open("ProtonNew.ico","rb") as f:
         with open("ProtonRestored.ico","wb") as w:
             todecrypt = f.read(1024)
-            hexed = binascii.unhexlify(todecrypt).decode("utf-8")
-            print(hexed)
+            hexed = binascii.unhexlify(todecrypt)
+            totalbytes = len(hexed)
+            w.write(hexed)
+            while totalbytes < os.path.getsize("ProtonDark.ico"):
+                todecrypt = f.read(1024)
+                hexed = binascii.unhexlify(todecrypt)
+                totalbytes = len(hexed)
+                w.write(hexed)
