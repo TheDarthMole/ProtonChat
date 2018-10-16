@@ -58,3 +58,4 @@ def decryptor():
         with open("ProtonRestored.ico","wb") as w:
             todecrypt = f.read(1024)
             hexed = binascii.unhexlify(todecrypt).decode("utf-8")
+            print(hexed)
