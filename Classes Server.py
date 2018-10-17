@@ -59,7 +59,7 @@ sock.bind((HOST, PORT))
 try:
     print(str(str("[=] Internal IP: {}".format(getLocalIP()))))
     print(str("[=] External IP: {}".format(get('https://ipapi.co/ip/').text))) # Non-standard library therefore try, except
-except ModuleNotFoundError:
+except:
     pass
 print(str("[=] Port: {}".format(PORT)))
 sock.settimeout(1.0)
