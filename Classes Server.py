@@ -195,8 +195,11 @@ class Members:
         self.sendingFiles = False
 
     def send(self, toSendToClient, cipher):
+        print("Function started")
         toSendToClient = cipher.encrypt(toSendToClient)
+        print("Encrypted stuffs")
         self.socket.send(toSendToClient)
+        print("Sent!")
 
     def recv(self, cipher):
         try:
@@ -287,38 +290,16 @@ class Members:
             self.send("FileDownload|"+str(filename)+"|"+str(os.path.getsize(pathfile)),self.initialAES)
             with open(pathfile,"rb") as f:
                 toencrypt = binascii.hexlify(f.read(os.path.getsize(pathfile))).decode("utf-8")
-                print(toencrypt)
-                encrypted = self.initialAES.encrypt(toencrypt)
-                time.sleep(1)
-                self.send(str(len(encrypted)),self.initialAES)
-        print("Done uploading!")
-
-
-
-
-    def upload1(self, *args):
-        self.sendingFiles = True
-        print(args)
-        filename=args[0][0]
-        pathfile = "UserFiles/"+str(filename)
-        print(os.path.isfile(pathfile))
-        if os.path.isfile(pathfile):
-            print(pathfile)
-            print("[^] Sending '{}' to {} [{}:{}]".format(pathfile,self.credentials.username,self.ip, self.port))
-            self.send("FileDownload|"+str(filename)+"|"+str(os.path.getsize(pathfile)),self.initialAES)
-            with open(filename,"rb") as f:
-                bytesToSend = f.read(1024)
-                print("Hexed:",binascii.hexlify(bytesToSend).decode("utf-8"))
-                bytesToSend = binascii.hexlify(bytesToSend).decode("utf-8")
-                self.send(bytesToSend,self.initialAES)
-                while bytesToSend != "":
-                    bytesToSend = f.read(1024)
-                    bytesToSend = (binascii.hexlify(bytesToSend).decode("utf-8"))
-                    print("Sending:",bytesToSend)
-                    self.send(bytesToSend, self.initialAES)
-                print("Done!")
+            print(toencrypt)
+            encrypted = self.initialAES.encrypt(toencrypt)
+            time.sleep(1)
+            self.send(str(len(encrypted)),self.initialAES)
+            print("Sent length")
+            self.socket.send(encrypted)
+            print("Done uploading!")
         else:
             self.send("FNF", self.initialAES)
+
         self.sendingFiles = False
 
     def MessengerInterface(self):
@@ -353,6 +334,7 @@ class Members:
                     try:
                         self.switcher[edited[0].title()](edited[1:])
                     except KeyError:
+                        print("Key error occured")
                         self.send("") # Make an error message here to be displayed on the users screen.
             except TypeError:
                 self.connectionlost = True

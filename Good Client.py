@@ -347,27 +347,6 @@ class MessagePage(tk.Frame):
         print("Binascii unhexlifying")
         f.write(decoded)
         print("Done downloading!")
-
-    def download1(self, data):
-        print("Downloading data!")
-        self.sendingFiles = True
-        split = data.split("|")
-        print("Started download of {}".format(split[1]))
-        filename = split[1]
-        filesize = int(split[2])
-        f = open("new_"+filename,"wb")
-        data = recvMessage(initialAES)
-        data = binascii.unhexlify(data)
-        f.write(data)
-        totalRecv = len(data)
-        while totalRecv < filesize:
-            print("Downloading! "+str(totalRecv)+"|"+str(filesize))
-            data = recvMessage(initialAES)
-            data = binascii.unhexlify(data)
-            totalRecv += len(data)
-            print(totalRecv)
-            f.write(data)
-        print("Downloaded")
         self.sendingFiles = False
 
     def eventReturn(self, event):
