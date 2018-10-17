@@ -47,6 +47,16 @@ def recvMessage(cipher):
 def Sendfile(data, *files):
     file = data
     print(file)
+    sendMessage(Cipher, os.path.getsize(file))
+    with open(file,"rb") as f:
+        bytesToSend = f.read(1024)
+        bytesToSend = binascii.hexlify(bytesToSend).decode("utf-8")
+        sendMessage(Cipher, bytesToSend)
+        while bytesToSend != "":
+            bytesToSend = f.read(1024)
+            bytesToSend = (binascii.hexlify(bytesToSend).decode("utf-8"))
+            sendMessage(Cipher, bytesToSend)
+    print("Done!")
 
 Cipher = AESCipher("This is a key")
 HOST="127.0.0.1"

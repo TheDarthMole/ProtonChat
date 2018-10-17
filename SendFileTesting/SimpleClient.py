@@ -46,6 +46,20 @@ def recvMessage(cipher):
 
 def Recvfile(file, *files):
     sendMessage(Cipher, "Sample.txt")
+    size = recvMessage(Cipher)
+    f = open("new_"+"Sample.txt","wb")
+    data = recvMessage(initialAES)
+    data = binascii.unhexlify(data)
+    f.write(data)
+    totalRecv = len(data)
+    while totalRecv < size:
+        print("Downloading! "+str(totalRecv)+"|"+str(filesize))
+        data = recvMessage(initialAES)
+        data = binascii.unhexlify(data)
+        totalRecv += len(data)
+        print(totalRecv)
+        f.write(data)
+    print("Done Downloading!")
 
 
 Cipher = AESCipher("This is a key")
@@ -54,6 +68,7 @@ HOST="127.0.0.1"
 PORT=65528
 sock.connect((HOST, int(PORT)))
 sendMessage(Cipher,"Sample.txt")
+Recvfile("Sample.txt")
 print("Sent message")
 while 1:
     gg=recvMessage(Cipher)

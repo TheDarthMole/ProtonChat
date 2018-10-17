@@ -292,7 +292,6 @@ class Members:
                 bytesToSend = binascii.hexlify(bytesToSend).decode("utf-8")
                 self.send(bytesToSend,self.initialAES)
                 while bytesToSend != "":
-
                     bytesToSend = f.read(1024)
                     bytesToSend = (binascii.hexlify(bytesToSend).decode("utf-8"))
                     print("Sending:",bytesToSend)
