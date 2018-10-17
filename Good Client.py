@@ -315,9 +315,11 @@ class MessagePage(tk.Frame):
         "Fnf": self.SwitcherFileNotFound}
         print("OnScreen and sendingFiles",self.onScreen, self.sendingFiles)
         while 1:
+            print(self.onScreen, not self.sendingFiles)
             if self.onScreen and not self.sendingFiles:
                 data = recvMessage(initialAES)
                 data1 = data.split("|")
+                print("This is the data:",data1[0])
                 self.switcher[data1[0].title()](data)
 
     def download(self, data):
