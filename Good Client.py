@@ -89,8 +89,17 @@ def sendMessage(cipher, message):
     except ConnectionResetError:
         messagebox.showerror("Message could not be sent","The connection to the server has been reset")
 
-def recvMessage(cipher):
-    receaved = sock.recv(10000)
+def recvMessage(cipher, *args):
+    print(args)
+    if not args:
+        print("No args!")
+        receaved = sock.recv(30000)
+        print("Done Receaving")
+    else:
+        print("Args!")
+        receaved = sock.recv(args[0])
+        print("Done Receaving")
+    print("Unencrypted:",receaved)
     receaved = receaved.decode("utf-8")
     decrypted = cipher.decrypt(receaved)
     print("Receaved encrypted:",decrypted) # For Debugging
@@ -323,6 +332,23 @@ class MessagePage(tk.Frame):
                 self.switcher[data1[0].title()](data)
 
     def download(self, data):
+        print("Downloading data!")
+        self.sendingFiles = True
+        split = data.split("|")
+        print("Started download of {}".format(split[1]))
+        filename = split[1]
+        filesize = int(split[2])
+        f = open("new_"+filename,"wb")
+        data = recvMessage(initialAES)
+        print("Length:",data)
+        encrypted = recvMessage(initialAES,int(data))
+        print("FUCKING RECEAVED:",encrypted)
+        decoded = binascii.unhexlify(encrypted)
+        print("Binascii unhexlifying")
+        f.write(decoded)
+        print("Done downloading!")
+
+    def download1(self, data):
         print("Downloading data!")
         self.sendingFiles = True
         split = data.split("|")

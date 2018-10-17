@@ -283,6 +283,26 @@ class Members:
         pathfile = "UserFiles/"+str(filename)
         print(os.path.isfile(pathfile))
         if os.path.isfile(pathfile):
+            print("[^] Sending '{}' to {} [{}:{}]".format(pathfile,self.credentials.username,self.ip, self.port))
+            self.send("FileDownload|"+str(filename)+"|"+str(os.path.getsize(pathfile)),self.initialAES)
+            with open(pathfile,"rb") as f:
+                toencrypt = binascii.hexlify(f.read(os.path.getsize(pathfile))).decode("utf-8")
+                print(toencrypt)
+                encrypted = self.initialAES.encrypt(toencrypt)
+                time.sleep(1)
+                self.send(str(len(encrypted)),self.initialAES)
+        print("Done uploading!")
+
+
+
+
+    def upload1(self, *args):
+        self.sendingFiles = True
+        print(args)
+        filename=args[0][0]
+        pathfile = "UserFiles/"+str(filename)
+        print(os.path.isfile(pathfile))
+        if os.path.isfile(pathfile):
             print(pathfile)
             print("[^] Sending '{}' to {} [{}:{}]".format(pathfile,self.credentials.username,self.ip, self.port))
             self.send("FileDownload|"+str(filename)+"|"+str(os.path.getsize(pathfile)),self.initialAES)
