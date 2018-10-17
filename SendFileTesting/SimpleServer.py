@@ -69,4 +69,5 @@ while 1:
     connection, ip = sock.accept()
     print("Accepted connection from {}:{}".format(ip[0],ip[1]))
     data = recvMessage(Cipher)
+    print("Receaved:",data)
     Sendfile(data)

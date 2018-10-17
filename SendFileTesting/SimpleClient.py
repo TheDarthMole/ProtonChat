@@ -45,7 +45,6 @@ def recvMessage(cipher):
     return (decrypted)
 
 def Recvfile(file, *files):
-    sendMessage(Cipher, "Sample.txt")
     size = recvMessage(Cipher)
     f = open("new_"+"Sample.txt","wb")
     data = recvMessage(initialAES)
@@ -60,7 +59,6 @@ def Recvfile(file, *files):
         print(totalRecv)
         f.write(data)
     print("Done Downloading!")
-
 
 Cipher = AESCipher("This is a key")
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
