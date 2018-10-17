@@ -58,10 +58,7 @@ class AESCipher(object):
         iv = enc[:AES.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         Decrypted = cipher.decrypt(enc[AES.block_size:])
-        print("Len Decrypted:",len(Decrypted))
-        print(Decrypted)
         unpadded = self.unpad(Decrypted).decode("utf-8")
-        print("Len Unpadded:",len(unpadded))
         Decoded = base64.b64decode(unpadded).decode("utf-8")
         return Decoded
         #return base64.b64decode(self.unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')).decode("utf-8")
@@ -90,16 +87,10 @@ def sendMessage(cipher, message):
         messagebox.showerror("Message could not be sent","The connection to the server has been reset")
 
 def recvMessage(cipher, *args):
-    print(args)
     if not args:
-        print("No args!")
         receaved = sock.recv(30000)
-        print("Done Receaving")
     else:
-        print("Args!")
         receaved = sock.recv(args[0])
-        print("Done Receaving")
-    print("Unencrypted:",receaved)
     receaved = receaved.decode("utf-8")
     decrypted = cipher.decrypt(receaved)
     print("Receaved encrypted:",decrypted) # For Debugging
