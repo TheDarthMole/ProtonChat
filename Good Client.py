@@ -56,12 +56,12 @@ class AESCipher(object):
     def decrypt(self, enc):
         enc = base64.b64decode(enc)
         iv = enc[:AES.block_size]
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        try:
+            cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        except ValueError:
+            print("[!] ValueError Occured")
         Decrypted = cipher.decrypt(enc[AES.block_size:])
-        print("Len Decrypted:",len(Decrypted))
-        print(Decrypted)
         unpadded = self.unpad(Decrypted).decode("utf-8")
-        print("Len Unpadded:",len(unpadded))
         Decoded = base64.b64decode(unpadded).decode("utf-8")
         return Decoded
         #return base64.b64decode(self.unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')).decode("utf-8")
@@ -310,13 +310,11 @@ class MessagePage(tk.Frame):
         self.addAdminMessage("The file was not found","Server")
 
     def FetchMessages(self):
-        print("Starting FetchMessages")
         self.unbind("<Enter>")
         self.switcher = {
         "Msg": self.SwitcherMSG,
         "Filedownload": self.download,
         "Fnf": self.SwitcherFileNotFound}
-        print("OnScreen and sendingFiles",self.onScreen, self.sendingFiles)
         while 1:
             if self.onScreen and not self.sendingFiles:
                 data = recvMessage(initialAES)
