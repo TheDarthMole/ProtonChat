@@ -90,7 +90,6 @@ def sendMessage(cipher, message):
         messagebox.showerror("Message could not be sent","The connection to the server has been reset")
 
 def recvMessage(cipher, *args):
-    print(args)
     if not args:
         receaved = sock.recv(30000)
     else:
