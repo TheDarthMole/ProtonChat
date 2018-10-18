@@ -329,10 +329,9 @@ class Members:
                         self.switcher[edited[0].title()](edited[1:])
                     except KeyError:
                         print("Key error occured")
-                        self.send("") # Make an error message here to be displayed on the users screen.
+                        self.send("Keyerror|{}".format(edited[0]),self.initialAES) # Make an error message here to be displayed on the users screen.
             except TypeError:
                 self.connectionlost = True
-                pass
     def ChangeStandardPassword(self,*args):
         pass
     def ChangeUsername(self,*args):

@@ -96,7 +96,10 @@ def recvMessage(cipher, *args):
         receaved = sock.recv(args[0])
     receaved = receaved.decode("utf-8")
     decrypted = cipher.decrypt(receaved)
-    print("Receaved encrypted:",decrypted) # For Debugging
+    if len(decrypted) > 64:
+        print("Receaved encrypted:",decrypted[:64]) # For Debugging
+    else:
+        print("Receaved encrypted:",decrypted) # For Debugging
     return (decrypted)
 
 def DH():
@@ -309,24 +312,37 @@ class MessagePage(tk.Frame):
     def SwitcherFileNotFound(self, *args):
         self.addAdminMessage("The file was not found","Server")
 
+    def KeyError(self, *args):
+        data = args[0].split("|")
+
+        self.addAdminMessage("{} is not a valid command".format(" ".join(data[1:])), "Server")
+
     def FetchMessages(self):
         self.unbind("<Enter>")
         self.switcher = {
         "Msg": self.SwitcherMSG,
         "Filedownload": self.download,
-        "Fnf": self.SwitcherFileNotFound}
+        "Fnf": self.SwitcherFileNotFound,
+        "Keyerror": self.KeyError}
         while 1:
             if self.onScreen and not self.sendingFiles:
                 data = recvMessage(initialAES)
                 data1 = data.split("|")
-                self.switcher[data1[0].title()](data)
+                command = data1[0].title()
+                print("Starting if statement")
+                if command in self.switcher:
+                    self.switcher[command](data)
+                else:
+                    self.addAdminMessage("'{}' is not a valid command".format(command), "Server")
 
     def download(self, data):
         print("Downloading data!")
-        self.sendingFiles = True
         split = data.split("|")
-        print("Started download of {}".format(split[1]))
         filename = split[1]
+        self.sendingFiles = True
+
+        print("Started download of {}".format(filename))
+        self.addAdminMessage("Downloading '{}''".format(filename),"Server")
         filesize = int(split[2])
         f = open("new_"+filename,"wb")
         data = recvMessage(initialAES)
@@ -334,6 +350,7 @@ class MessagePage(tk.Frame):
         decoded = binascii.unhexlify(encrypted)
         f.write(decoded)
         print("Done downloading!")
+        self.addAdminMessage("Downloaded '{}' as 'new_{}'".format(filename, filename),"Server")
         self.sendingFiles = False
 
     def eventReturn(self, event):
