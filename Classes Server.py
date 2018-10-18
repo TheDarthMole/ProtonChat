@@ -195,11 +195,8 @@ class Members:
         self.sendingFiles = False
 
     def send(self, toSendToClient, cipher):
-        print("Function started")
         toSendToClient = cipher.encrypt(toSendToClient)
-        print("Encrypted stuffs")
         self.socket.send(toSendToClient)
-        print("Sent!")
 
     def recv(self, cipher):
         try:
@@ -266,7 +263,7 @@ class Members:
             return False
 
     def DistributeMessage(self, message, sentfrom, accountType):
-        print("["+sentfrom+"-"+accountType+"] "+message)
+        print("[+] ["+sentfrom+"-"+accountType+"] "+message)
         for connecitons in InstanceList:
             if connecitons.loggedIn == True and not connecitons.sendingFiles:
                 try:
@@ -281,25 +278,22 @@ class Members:
         pass
     def upload(self, *args):
         self.sendingFiles = True
-        print(args)
         filename=args[0][0]
         pathfile = "UserFiles/"+str(filename)
-        print(os.path.isfile(pathfile))
         if os.path.isfile(pathfile):
             print("[^] Sending '{}' to {} [{}:{}]".format(pathfile,self.credentials.username,self.ip, self.port))
             self.send("FileDownload|"+str(filename)+"|"+str(os.path.getsize(pathfile)),self.initialAES)
             with open(pathfile,"rb") as f:
                 toencrypt = binascii.hexlify(f.read(os.path.getsize(pathfile))).decode("utf-8")
-            print(toencrypt)
             encrypted = self.initialAES.encrypt(toencrypt)
             time.sleep(1)
             self.send(str(len(encrypted)),self.initialAES)
-            print("Sent length")
+            print("Sent length:",os.path.getsize(pathfile))
             self.socket.send(encrypted)
-            print("Done uploading!")
+            print("Done uploading '{}' to {} [{}:{}]".format(pathfile, self.credentials.username, self.ip, self.port))
         else:
             self.send("FNF", self.initialAES)
-
+            print("[!] File '{}' not found [{} {}:{}]".format(pathfile, self.credentials.username, self.ip, self.port))
         self.sendingFiles = False
 
     def MessengerInterface(self):

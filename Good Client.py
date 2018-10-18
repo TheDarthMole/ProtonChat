@@ -56,7 +56,10 @@ class AESCipher(object):
     def decrypt(self, enc):
         enc = base64.b64decode(enc)
         iv = enc[:AES.block_size]
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        try:
+            cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        except ValueError:
+            print("[!] ValueError Occured")
         Decrypted = cipher.decrypt(enc[AES.block_size:])
         unpadded = self.unpad(Decrypted).decode("utf-8")
         Decoded = base64.b64decode(unpadded).decode("utf-8")
@@ -307,19 +310,15 @@ class MessagePage(tk.Frame):
         self.addAdminMessage("The file was not found","Server")
 
     def FetchMessages(self):
-        print("Starting FetchMessages")
         self.unbind("<Enter>")
         self.switcher = {
         "Msg": self.SwitcherMSG,
         "Filedownload": self.download,
         "Fnf": self.SwitcherFileNotFound}
-        print("OnScreen and sendingFiles",self.onScreen, self.sendingFiles)
         while 1:
-            print(self.onScreen, not self.sendingFiles)
             if self.onScreen and not self.sendingFiles:
                 data = recvMessage(initialAES)
                 data1 = data.split("|")
-                print("This is the data:",data1[0])
                 self.switcher[data1[0].title()](data)
 
     def download(self, data):
@@ -331,11 +330,8 @@ class MessagePage(tk.Frame):
         filesize = int(split[2])
         f = open("new_"+filename,"wb")
         data = recvMessage(initialAES)
-        print("Length:",data)
         encrypted = recvMessage(initialAES,int(data))
-        print("FUCKING RECEAVED:",encrypted)
         decoded = binascii.unhexlify(encrypted)
-        print("Binascii unhexlifying")
         f.write(decoded)
         print("Done downloading!")
         self.sendingFiles = False
