@@ -264,6 +264,7 @@ class Members:
 
     def DistributeMessage(self, message, sentfrom, accountType):
         print("[+] ["+sentfrom+"-"+accountType+"] "+message)
+        itteration = 0
         for connecitons in InstanceList:
             if connecitons.loggedIn == True and not connecitons.sendingFiles:
                 try:
@@ -271,6 +272,10 @@ class Members:
                 except:
                     traceback.print_exc()
                     print("[!] couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
+                    print(InstanceList)
+                    InstanceList.pop(itteration) # Removes the instance from the list, therefore removing the connection
+                    print(InstanceList)
+            itteration+=1
 
     def download(self):
         self.sendingFiles = True
