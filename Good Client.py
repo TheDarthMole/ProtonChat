@@ -96,8 +96,8 @@ def recvMessage(cipher, *args):
         receaved = sock.recv(args[0])
     receaved = receaved.decode("utf-8")
     decrypted = cipher.decrypt(receaved)
-    if len(decrypted) > 64:
-        print("Receaved encrypted:",decrypted[:64]) # For Debugging
+    if len(decrypted) > 128:
+        print("Receaved encrypted:",decrypted[:128],"of {}".format(len(decrypted))) # For Debugging
     else:
         print("Receaved encrypted:",decrypted) # For Debugging
     return (decrypted)
