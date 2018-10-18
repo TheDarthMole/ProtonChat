@@ -270,8 +270,7 @@ class Members:
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
                 except:
-                    traceback.print_exc()
-                    print("[!] couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
+                    print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
                     print("[-] Removing {} from connected clients".format(connecitons.credentials.username))
                     InstanceList.pop(itteration) # Removes the instance from the list, therefore removing the connection
                     print(InstanceList)
