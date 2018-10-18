@@ -272,7 +272,7 @@ class Members:
                 except:
                     traceback.print_exc()
                     print("[!] couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
-                    print(InstanceList)
+                    print("[-] Removing {} from connected clients".format(connecitons.credentials.username))
                     InstanceList.pop(itteration) # Removes the instance from the list, therefore removing the connection
                     print(InstanceList)
             itteration+=1
