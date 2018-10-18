@@ -92,14 +92,9 @@ def sendMessage(cipher, message):
 def recvMessage(cipher, *args):
     print(args)
     if not args:
-        print("No args!")
         receaved = sock.recv(30000)
-        print("Done Receaving")
     else:
-        print("Args!")
         receaved = sock.recv(args[0])
-        print("Done Receaving")
-    print("Unencrypted:",receaved)
     receaved = receaved.decode("utf-8")
     decrypted = cipher.decrypt(receaved)
     print("Receaved encrypted:",decrypted) # For Debugging
@@ -324,11 +319,9 @@ class MessagePage(tk.Frame):
         "Fnf": self.SwitcherFileNotFound}
         print("OnScreen and sendingFiles",self.onScreen, self.sendingFiles)
         while 1:
-            print(self.onScreen, not self.sendingFiles)
             if self.onScreen and not self.sendingFiles:
                 data = recvMessage(initialAES)
                 data1 = data.split("|")
-                print("This is the data:",data1[0])
                 self.switcher[data1[0].title()](data)
 
     def download(self, data):
@@ -340,11 +333,8 @@ class MessagePage(tk.Frame):
         filesize = int(split[2])
         f = open("new_"+filename,"wb")
         data = recvMessage(initialAES)
-        print("Length:",data)
         encrypted = recvMessage(initialAES,int(data))
-        print("FUCKING RECEAVED:",encrypted)
         decoded = binascii.unhexlify(encrypted)
-        print("Binascii unhexlifying")
         f.write(decoded)
         print("Done downloading!")
         self.sendingFiles = False
