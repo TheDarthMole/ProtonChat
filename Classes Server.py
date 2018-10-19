@@ -279,6 +279,13 @@ class Members:
     def download(self, *args):
         self.sendingFiles = True
         print("Downloading")
+        ifcontinue = self.recv(self.initialAES)
+        if ifcontinue.split("|")[0] == "Uploading":
+            size = ifcontinue.split("|")[2]
+            filename = ifcontinue.split("|")[1]
+            with open("UserFiles\\"+ifcontinue.split("|")[1],"wb") as f:
+                f.write(self.sock.recv(size))
+            print("[+] Done downloading '{}' from {} [{}:{}]".format(filename, self.credentials.username,self.ip, self.port))
         self.sendingFiles = False
         pass
     def upload(self, *args):
