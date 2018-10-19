@@ -329,7 +329,6 @@ class MessagePage(tk.Frame):
                 data = recvMessage(initialAES)
                 data1 = data.split("|")
                 command = data1[0].title()
-                print("Starting if statement")
                 if command in self.switcher:
                     self.switcher[command](data)
                 else:

@@ -294,7 +294,7 @@ class Members:
             self.send(str(len(encrypted)),self.initialAES)
             print("Sent length:",os.path.getsize(pathfile))
             self.socket.send(encrypted)
-            print("Done uploading '{}' to {} [{}:{}]".format(pathfile, self.credentials.username, self.ip, self.port))
+            print("[=] Done uploading '{}' to {} [{}:{}]".format(pathfile, self.credentials.username, self.ip, self.port))
         else:
             self.send("FNF", self.initialAES)
             print("[!] File '{}' not found [{} {}:{}]".format(pathfile, self.credentials.username, self.ip, self.port))
@@ -332,7 +332,7 @@ class Members:
                     try:
                         self.switcher[edited[0].title()](edited[1:])
                     except KeyError:
-                        print("Key error occured")
+                        print("[!] Key error occured with data: '{}' from {} [{}:{}]".format(edited[0], self.credentials.username, self.ip, self.port))
                         self.send("Keyerror|{}".format(edited[0]),self.initialAES) # Make an error message here to be displayed on the users screen.
             except TypeError:
                 self.connectionlost = True
