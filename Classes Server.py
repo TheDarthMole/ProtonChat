@@ -278,6 +278,7 @@ class Members:
 
     def download(self):
         self.sendingFiles = True
+
         self.sendingFiles = False
         pass
     def upload(self, *args):
@@ -307,8 +308,8 @@ class Members:
             "/ChangeUsername": self.ChangeUsername,
             "/Help": self.ShowHelp,
             "MSG": self.DistributeMessage,
-            "/Upload": self.download,
-            "/Download": self.upload}
+            "/Upload": self.download, # The users upload is the servers download
+            "/Download": self.upload} # The users download is the servers upload
         if self.__class__ == Admins: # This allows admins to manipulate their extended privs inherited from Admins class
             self.switcher = {
                 "/Changepassword": self.ChangeStandardPassword,

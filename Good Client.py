@@ -12,6 +12,7 @@ try:
     import tkinter as tk
     from tkinter import ttk
     from tkinter import messagebox
+    from tkinter import filedialog
     import tkinter.scrolledtext as tkst
 except:
     print("[!] tkinter module is not installed, install using cmd 'py -m pip install tkinter'")
@@ -284,7 +285,7 @@ class MessagePage(tk.Frame):
         self.uiMessages = tkst.ScrolledText(self, width=30, height=15, state="disabled")
         self.enterText = tk.Text(self, width=32, height=2)
         self.backButton = ttk.Button(self, text="Back", command=self.returnButton)
-        self.uploadButton = ttk.Button(self, text="Upload", command = lambda: print("This is the uploadButton"))
+        self.uploadButton = ttk.Button(self, text="Upload", command = lambda: self.upload())
         self.uiMessages.grid(row=0, column=0)
         self.enterText.grid(row=1, column=0)
         self.backButton.grid(row=2, column=0, sticky="W")
@@ -314,7 +315,6 @@ class MessagePage(tk.Frame):
 
     def KeyError(self, *args):
         data = args[0].split("|")
-
         self.addAdminMessage("{} is not a valid command".format(" ".join(data[1:])), "Server")
 
     def FetchMessages(self):
@@ -334,12 +334,19 @@ class MessagePage(tk.Frame):
                 else:
                     self.addAdminMessage("'{}' is not a valid command".format(command), "Server")
 
+    def upload(self, *args):
+        print("Uploading data!")
+        filepath = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpeg files","*.jpg"),("All Files","*.*")))
+        if os.path.isfile(filepath):
+            print("Its there!")
+        else:
+            print("File is not there!")
+
     def download(self, data):
         print("Downloading data!")
         split = data.split("|")
         filename = split[1]
         self.sendingFiles = True
-
         print("Started download of {}".format(filename))
         self.addAdminMessage("Downloading '{}''".format(filename),"Server")
         filesize = int(split[2])
@@ -393,7 +400,8 @@ class MessagePage(tk.Frame):
         self.uiMessages.tag_config("blue", foreground = "blue")
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")
-
+    def addOwnMessage(self, text, recipient):
+        pass
 if __name__ == "__main__":
     try:
         app = ProtonClient()
