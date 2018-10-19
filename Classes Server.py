@@ -276,9 +276,9 @@ class Members:
                     print(InstanceList)
             itteration+=1
 
-    def download(self):
+    def download(self, *args):
         self.sendingFiles = True
-
+        print("Downloading")
         self.sendingFiles = False
         pass
     def upload(self, *args):
@@ -347,9 +347,9 @@ class Members:
         pass
 
     def handler(self): # This is run in a thread, one for each client
-        self.sendDiffieHellman()
-        self.initialAES = AESCipher(hex(int(self.DiffieHellman)))
-        self.send("Encryption cipher working", self.initialAES)
+        self.sendDiffieHellman() # sets AES Key variable
+        self.initialAES = AESCipher(hex(int(self.DiffieHellman))) # Creates the AES Cipher object using the key
+        self.send("Encryption cipher working", self.initialAES) # Sends a test message to the client so the client can do a checkPassword
         self.loggedIn=False
         self.contunue = self.login()
         while not self.contunue and self.connectionlost == False:

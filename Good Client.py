@@ -338,15 +338,16 @@ class MessagePage(tk.Frame):
         print("Uploading data!")
         filepath = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpeg files","*.jpg"),("All Files","*.*")))
         if os.path.isfile(filepath):
-            print("Its there!")
+            print("Sending '{}' to Server".format(filepath.split("\\")[-1]))
+
         else:
             print("File is not there!")
 
     def download(self, data):
+        self.sendingFiles = True
         print("Downloading data!")
         split = data.split("|")
         filename = split[1]
-        self.sendingFiles = True
         print("Started download of {}".format(filename))
         self.addAdminMessage("Downloading '{}''".format(filename),"Server")
         filesize = int(split[2])
