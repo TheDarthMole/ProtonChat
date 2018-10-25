@@ -57,7 +57,7 @@ sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print("[*] Binding address")
 sock.bind((HOST, PORT))
 try:
-    print(str(str("[=] Internal IP: {}".format(getLocalIP()))))
+    print(str("[=] Internal IP: {}".format(getLocalIP())))
     print(str("[=] External IP: {}".format(get('https://ipapi.co/ip/').text))) # Non-standard library therefore try, except
 except:
     pass

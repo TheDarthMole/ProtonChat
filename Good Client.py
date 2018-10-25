@@ -336,8 +336,12 @@ class MessagePage(tk.Frame):
 
     def upload(self, *args):
         print("Uploading data!")
-        filepath = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpeg files","*.jpg"),("All Files","*.*")))
+        filepath = filedialog.askopenfilename(title = "Select a file to upload",filetypes = (("All Files","*.*"),))
+        if not filepath:
+            self.addAdminMessage("No file was selected","Server")
+            return
         filename = filepath.split("/")
+        print("FilePath:",filepath)
         print(filename)
         filename = filename[-1]
         if os.path.isfile(filepath):
@@ -349,7 +353,6 @@ class MessagePage(tk.Frame):
             print(filename)
             sendMessage("Uploading|{}|{}".format(filename,str(len(encDataToSend))),initialAES)
             sock.send(encDataToSend)
-
         else:
             print("File is not there!")
             sendMessage("FNF",initialAES)
