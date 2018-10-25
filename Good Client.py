@@ -337,12 +337,17 @@ class MessagePage(tk.Frame):
     def upload(self, *args):
         print("Uploading data!")
         filepath = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpeg files","*.jpg"),("All Files","*.*")))
+        filename = filepath.split("/")
+        print(filename)
+        filename = filename[-1]
         if os.path.isfile(filepath):
             print("Sending '{}' to Server".format(filepath.split("/")[-1]))
             with open(filepath,"rb") as f:
                 encDataToSend = binascii.hexlify(f.read(os.path.getsize(filepath))).decode("utf-8")
                 encDataToSend = initialAES.encrypt(encDataToSend)
-            sendMessage("Uploading|{}|{}".format(filepath.split("/")[-1]),os.path.getsize(filepath))
+            print(type(filename))
+            print(filename)
+            sendMessage("Uploading|{}|{}".format(filename,str(len(encDataToSend))),initialAES)
             sock.send(encDataToSend)
 
         else:
