@@ -288,6 +288,7 @@ class Members:
             print("[+] Done downloading '{}' from {} [{}:{}]".format(filename, self.credentials.username,self.ip, self.port))
         self.sendingFiles = False
         pass
+
     def upload(self, *args):
         self.sendingFiles = True
         filename=args[0][0]
