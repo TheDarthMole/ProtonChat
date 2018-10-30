@@ -98,7 +98,7 @@ def recvMessage(cipher, *args):
     receaved = receaved.decode("utf-8")
     decrypted = cipher.decrypt(receaved)
     if len(decrypted) > 128:
-        print("Receaved encrypted:",decrypted[:128],"of {}".format(len(decrypted))) # For Debugging
+        print("Receaved encrypted:",decrypted[:128],"of length {}".format(len(decrypted))) # For Debugging
     else:
         print("Receaved encrypted:",decrypted) # For Debugging
     return (decrypted)
@@ -286,7 +286,7 @@ class MessagePage(tk.Frame):
         self.enterText = tk.Text(self, width=32, height=2)
         self.backButton = ttk.Button(self, text="Back", command=self.returnButton)
         self.uploadButton = ttk.Button(self, text="Upload", command = lambda: self.upload())
-        self.uiMessages.grid(row=0, column=0)
+        self.uiMessages.grid(row=0, column=0, columnspan="1")
         self.enterText.grid(row=1, column=0)
         self.backButton.grid(row=2, column=0, sticky="W")
         self.uploadButton.grid(row=2, column=0, sticky="E")
@@ -342,8 +342,8 @@ class MessagePage(tk.Frame):
             return
         filename = filepath.split("/")
         print("FilePath:",filepath)
-        print(filename)
         filename = filename[-1]
+        print("File Name:",filename)
         if os.path.isfile(filepath):
             print("Sending '{}' to Server".format(filepath.split("/")[-1]))
             with open(filepath,"rb") as f:
@@ -351,11 +351,12 @@ class MessagePage(tk.Frame):
                 encDataToSend = initialAES.encrypt(encDataToSend)
             print(type(filename))
             print(filename)
-            sendMessage("Uploading|{}|{}".format(filename,str(len(encDataToSend))),initialAES)
+            sendMessage(initialAES,"Uploading|{}|{}".format(filename,str(len(encDataToSend))))
+            print("Sent Uploading message")
             sock.send(encDataToSend)
         else:
             print("File is not there!")
-            sendMessage("FNF",initialAES)
+            sendMessage(initialAES,"FNF")
 
     def download(self, data):
         self.sendingFiles = True
