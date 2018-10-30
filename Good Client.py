@@ -141,7 +141,7 @@ class StartConnect(tk.Frame):
         #self.config(bg="#36393E")
         self.connected = False
         self.loggedIn=False
-        tk.Frame.config(self,width=75, height=300) # Can edit background colour here
+        tk.Frame.config(self,width=200, height=300) # Can edit background colour here
         self.label_title = ttk.Label(self, text = "Enter the Address and Port")
         self.label_title.grid(row=0, columnspan=2, pady=10)
         self.label_title.config(font="Helvetica 10")
@@ -282,11 +282,12 @@ class MessagePage(tk.Frame):
         parent.focus_set()
         self.parent = parent
         self.controller=controller
-        self.uiMessages = tkst.ScrolledText(self, width=30, height=15, state="disabled")
+        tk.Frame.config(self,width=100, height=300)
+        self.uiMessages = tkst.ScrolledText(self, state="disabled")
         self.enterText = tk.Text(self, width=32, height=2)
         self.backButton = ttk.Button(self, text="Back", command=self.returnButton)
         self.uploadButton = ttk.Button(self, text="Upload", command = lambda: self.upload())
-        self.uiMessages.grid(row=0, column=0, columnspan="1")
+        self.uiMessages.grid(row=0, sticky="EW")
         self.enterText.grid(row=1, column=0)
         self.backButton.grid(row=2, column=0, sticky="W")
         self.uploadButton.grid(row=2, column=0, sticky="E")
