@@ -282,15 +282,17 @@ class MessagePage(tk.Frame):
         parent.focus_set()
         self.parent = parent
         self.controller=controller
-        tk.Frame.config(self,width=100, height=300)
+        self.grid_columnconfigure(0,weight=1) # the text and entry frames column
+        self.grid_rowconfigure(0,weight=1) # all frames row
+        self.grid_rowconfigure(1,weight=1)
         self.uiMessages = tkst.ScrolledText(self, state="disabled")
         self.enterText = tk.Text(self, width=32, height=2)
         self.backButton = ttk.Button(self, text="Back", command=self.returnButton)
         self.uploadButton = ttk.Button(self, text="Upload", command = lambda: self.upload())
-        self.uiMessages.grid(row=0, sticky="EW")
-        self.enterText.grid(row=1, column=0)
-        self.backButton.grid(row=2, column=0, sticky="W")
-        self.uploadButton.grid(row=2, column=0, sticky="E")
+        self.uiMessages.grid(row=0, sticky="nesw")
+        self.enterText.grid(row=1, column=0,sticky="s")
+        self.backButton.grid(row=2, column=0, sticky="WS")
+        self.uploadButton.grid(row=2, column=0, sticky="ES")
         self.sendingFiles = False
         #help(tkst.ScrolledText)
         self.addText("Text added")
@@ -299,6 +301,7 @@ class MessagePage(tk.Frame):
         self.addAdminMessage("AdminText","Admin")
         controller.bind("<Return>",self.eventReturn)
         self.bind("<Enter>",self.StartThreaddedMessages)
+        self.controller.geometry("400x500")
 
     def StartThreaddedMessages(self, char):
         self.onScreen=True
