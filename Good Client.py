@@ -116,15 +116,15 @@ def DH():
 class ProtonClient(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        container = tk.Frame(self)
+        self.container = tk.Frame(self)
         tk.Tk.iconbitmap(self, default="ProtonDark.ico")
-        container.pack(side="top", fill="both", expand= False)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        self.container.pack(side="top", fill="both", expand= False)
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
         self.frames = {}
 
         for f in (StartConnect, MessagePage): # Add more pages in here to make them switchable
-            frame = f(container, self)
+            frame = f(self.container, self)
             self.frames[f] = frame
             frame.grid(row=0, column=0, sticky="nesw")
 
@@ -133,6 +133,10 @@ class ProtonClient(tk.Tk):
     def showFrame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
+        if cont == StartConnect:
+            self.geometry("235x300")
+        else:
+            self.geometry("500x500")
 
 class StartConnect(tk.Frame):
     def __init__(self, parent, controller):
@@ -185,7 +189,6 @@ class StartConnect(tk.Frame):
         self.button_login.grid(columnspan=2, padx=5, pady=5)
         self.button_nextpage = ttk.Button(self, text="Next Page", command=lambda: controller.showFrame(MessagePage))
         self.button_nextpage.grid(columnspan=2, padx=5, pady=5)
-
         self.place(relx=0.5, rely=0.5, anchor="center")
 
     def DisconnectButtonPress(self):
@@ -282,26 +285,22 @@ class MessagePage(tk.Frame):
         parent.focus_set()
         self.parent = parent
         self.controller=controller
-        self.grid_columnconfigure(0,weight=1) # the text and entry frames column
-        self.grid_rowconfigure(0,weight=1) # all frames row
-        self.grid_rowconfigure(1,weight=1)
-        self.uiMessages = tkst.ScrolledText(self, state="disabled")
+        self.grid_columnconfigure(0,weight=1)
+        self.grid_rowconfigure(0,weight=1)
+        self.uiMessages = tkst.ScrolledText(self, state="disabled", height=128)
         self.enterText = tk.Text(self, width=32, height=2)
         self.backButton = ttk.Button(self, text="Back", command=self.returnButton)
         self.uploadButton = ttk.Button(self, text="Upload", command = lambda: self.upload())
-        self.uiMessages.grid(row=0, sticky="nesw")
-        self.enterText.grid(row=1, column=0,sticky="s")
+        self.uiMessages.grid(row=0, sticky="NESW")
+        self.enterText.grid(row=1, column=0,sticky="NESW")
         self.backButton.grid(row=2, column=0, sticky="WS")
         self.uploadButton.grid(row=2, column=0, sticky="ES")
         self.sendingFiles = False
-        #help(tkst.ScrolledText)
-        self.addText("Text added")
-        self.addText("Other text")
         self.addMessage("Text","Nick") # Testing stuff
         self.addAdminMessage("AdminText","Admin")
         controller.bind("<Return>",self.eventReturn)
         self.bind("<Enter>",self.StartThreaddedMessages)
-        self.controller.geometry("400x500")
+        #self.controller.geometry("400x500")
 
     def StartThreaddedMessages(self, char):
         self.onScreen=True
