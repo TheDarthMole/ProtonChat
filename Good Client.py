@@ -407,7 +407,7 @@ class MessagePage(tk.Frame):
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str("["+recipient+"] ")+str(text)+"\n")
         lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
-        self.uiMessages.tag_add("red", str(lastLine)+".0",str(lastLine)+"."+str(len(recipient)+2))
+        self.uiMessages.tag_add("red", str(lastLine - len(text.splitlines())+1)+".0",str(lastLine - len(text.splitlines())+1)+"."+str(len(recipient)+2))
         self.uiMessages.tag_config("red", foreground = "red")
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")
@@ -415,7 +415,7 @@ class MessagePage(tk.Frame):
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str("["+recipient+"] ")+str(text)+"\n")
         lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
-        self.uiMessages.tag_add("blue", str(lastLine)+".0",str(lastLine)+"."+str(len(recipient)+2))
+        self.uiMessages.tag_add("blue", str(lastLine - len(text.splitlines())+1)+".0",str(lastLine - len(text.splitlines())+1)+"."+str(len(recipient)+2))
         self.uiMessages.tag_config("blue", foreground = "blue")
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")

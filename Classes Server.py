@@ -198,6 +198,7 @@ class Members:
         toSendToClient = cipher.encrypt(toSendToClient)
         self.socket.send(toSendToClient)
 
+
     def recv(self, cipher):
         try:
             receaved = self.socket.recv(2048)
@@ -310,27 +311,27 @@ class Members:
         self.sendingFiles = False
 
     def MessengerInterface(self):
-        self.switcher = {
-            "/ChangePassword": self.ChangeStandardPassword,
-            "/Logout": self.Logout,
-            "/ChangeUsername": self.ChangeUsername,
-            "/Help": self.ShowHelp,
-            "MSG": self.DistributeMessage,
-            "/Upload": self.download, # The users upload is the servers download
-            "/Download": self.upload} # The users download is the servers upload
+        self.switcher = { # Key - [FunctionReference, Description, Example]
+            "/ChangePassword": [self.ChangeStandardPassword,"Changed the password of any user account","/ChangePassword [New Password]"],
+            "/Logout": [self.Logout,"Logs the user out of their account","/Logout"],
+            "/ChangeUsername": [self.ChangeUsername,"Change the username of current account","/Changeusername [NewUsername]"],
+            "/Help": [self.ShowHelp,"Shows this help menu","/Help"], # A simple help message for the commands
+            "Msg": [self.DistributeMessage,"Redistribute a message to other clients","No implimentation"],
+            "/Upload": [self.download,"Upload a file to the server, use button or this command + filename","/Upload [FilePath]"], # The users upload is the servers download
+            "/Download": [self.upload,"Download a file from the server","/Download [FileName]"]} # The users download is the servers upload
         if self.__class__ == Admins: # This allows admins to manipulate their extended privs inherited from Admins class
-            self.switcher = {
-                "/Changepassword": self.ChangeStandardPassword,
-                "/Logout": self.Logout,
-                "/Changeusername": self.ChangeUsername,
-                "/Help": self.ShowHelpAdmin,
-                "Msg": self.DistributeMessage,
-                "/Upload": self.download,
-                "/Download":self.upload,
-                "/Createadmin": self.CreateAdminAccount,
-                "/Ban":self.BanUser,
-                "/Removeaccount":self.RemoveAccount,
-                "/Editaccount":self.EditMember}
+            self.switcher = { # Key - [FunctionReference, Description, Example]
+                "/Logout": [self.Logout,"Logs the user out of their account","/Logout"],
+                "/Changepassword": [self.ChangeStandardPassword,"Changed the password of any user account","/ChangePassword [New Password]"],
+                "/Changeusername": [self.ChangeUsername,"Change the username of current account","/Changeusername [NewUsername]"],
+                "/Help": [self.ShowHelp,"Shows this admin help menu","/Help"],
+                "Msg": [self.DistributeMessage,"Redistribute a message to other clients","No implimentation"],
+                "/Upload": [self.download,"Upload a file to the server, use button or this command + filename","/Upload [FilePath]"],
+                "/Download": [self.upload,"Download a file from the server","/Download [FileName]"],
+                "/Createadmin": [self.CreateAdminAccount,"Creates an admin account","/CreateAdmin [Username] [Password]"],
+                "/Ban": [self.BanUser,"Bans a user from the server","/Ban [Username]"],
+                "/Removeaccount": [self.RemoveAccount,"Deletes a users account","/RemoveAccount [Username]"],
+                "/Editaccount": [self.EditMember,"Edit an account","/EditAccount [Username] [AccountType]/[Password]=[Value]"]}
         while not self.connectionlost and MainThreadClose == False: # While the client is connected run
             try:
                 data = self.recv(self.initialAES)
@@ -339,7 +340,7 @@ class Members:
                 else:
                     edited = data.split("|")
                     try:
-                        self.switcher[edited[0].title()](edited[1:])
+                        self.switcher[edited[0].title()][0](edited[1:])
                     except KeyError:
                         print("[!] Key error occured with data: '{}' from {} [{}:{}]".format(edited[0], self.credentials.username, self.ip, self.port))
                         self.send("Keyerror|{}".format(edited[0]),self.initialAES) # Make an error message here to be displayed on the users screen.
@@ -350,7 +351,15 @@ class Members:
     def ChangeUsername(self,*args):
         pass
     def ShowHelp(self,*args):
-        pass
+        string=""
+        self.send("MSG|Server|Admin|Commands for {}".format(self.__class__.__name__), self.initialAES)
+        for x in self.switcher:
+            if not x == "Msg": # Because the "MSG" is not a command, and shows backend structure too easily
+                #self.send("MSG|Server|Admin|{} {} [{}]".format(x,self.switcher[x][1], self.switcher[x][2]), self.initialAES)
+                time.sleep(0.01)
+                string+="{} {} {}\n".format(x, self.switcher[x][1],self.switcher[x][2])
+        self.send("MSG|Server|Admin|{}".format(string),self.initialAES)
+        print(string)
     def Logout(self,*args):
         pass
 
@@ -372,8 +381,6 @@ class Members:
 class Admins(Members):
     def __init__(self, ip, port, nickname, password):
         super().__init__(ip, port, nickname, password)
-    def ShowHelpAdmin(self):
-        pass
     def adminHandler(self):
         pass
     def BanUser(self): # Possibly ban users from an ip address / Range
