@@ -136,7 +136,7 @@ class ProtonClient(tk.Tk):
         if cont == StartConnect:
             self.geometry("235x300")
         else:
-            self.geometry("500x500")
+            self.geometry("900x550")
 
 class StartConnect(tk.Frame):
     def __init__(self, parent, controller):
@@ -414,7 +414,11 @@ class MessagePage(tk.Frame):
     def addAdminMessage(self, text, recipient):
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str("["+recipient+"] ")+str(text)+"\n")
-        lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
+        if len(text.splitlines())>1:
+            lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 2
+        else:
+            lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
+        print(lastLine)
         self.uiMessages.tag_add("blue", str(lastLine - len(text.splitlines())+1)+".0",str(lastLine - len(text.splitlines())+1)+"."+str(len(recipient)+2))
         self.uiMessages.tag_config("blue", foreground = "blue")
         self.uiMessages.see("end")

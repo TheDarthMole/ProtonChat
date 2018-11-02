@@ -317,7 +317,8 @@ class Members:
             "/ChangeUsername": [self.ChangeUsername,"Change the username of current account","/Changeusername [NewUsername]"],
             "/Help": [self.ShowHelp,"Shows this help menu","/Help"], # A simple help message for the commands
             "Msg": [self.DistributeMessage,"Redistribute a message to other clients","No implimentation"],
-            "/Upload": [self.download,"Upload a file to the server, use button or this command + filename","/Upload [FilePath]"], # The users upload is the servers download
+            "Uploading": [self.download,"Actually downloads the file form the client, once the file is specified","You don't use this command as a client"],
+            "/Upload": [self.sendUpload,"Upload a file to the server, use button or this command + filename","/Upload [FilePath]"], # The users upload is the servers download
             "/Download": [self.upload,"Download a file from the server","/Download [FileName]"]} # The users download is the servers upload
         if self.__class__ == Admins: # This allows admins to manipulate their extended privs inherited from Admins class
             self.switcher = { # Key - [FunctionReference, Description, Example]
@@ -350,16 +351,15 @@ class Members:
         pass
     def ChangeUsername(self,*args):
         pass
+    def sendUpload(self, *args):
+        pass
     def ShowHelp(self,*args):
         string=""
         self.send("MSG|Server|Admin|Commands for {}".format(self.__class__.__name__), self.initialAES)
         for x in self.switcher:
-            if not x == "Msg": # Because the "MSG" is not a command, and shows backend structure too easily
-                #self.send("MSG|Server|Admin|{} {} [{}]".format(x,self.switcher[x][1], self.switcher[x][2]), self.initialAES)
-                time.sleep(0.01)
+            if not x in ["Msg","Uploading"]: # Because the "MSG" is not a command, and shows backend structure too easily
                 string+="{} {} {}\n".format(x, self.switcher[x][1],self.switcher[x][2])
         self.send("MSG|Server|Admin|{}".format(string),self.initialAES)
-        print(string)
     def Logout(self,*args):
         pass
 
