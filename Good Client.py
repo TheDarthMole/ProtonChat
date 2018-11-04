@@ -88,6 +88,7 @@ def sendMessage(cipher, message):
     try:
         sock.send(encMessage)
     except ConnectionResetError:
+        print("Message could not be sent")
         messagebox.showerror("Message could not be sent","The connection to the server has been reset")
 
 def recvMessage(cipher, *args):
@@ -101,6 +102,7 @@ def recvMessage(cipher, *args):
         print("Receaved encrypted:",decrypted[:128],"of length {}".format(len(decrypted))) # For Debugging
     else:
         print("Receaved encrypted:",decrypted) # For Debugging
+        print(type(decrypted))
     return (decrypted)
 
 def DH():
@@ -338,10 +340,12 @@ class MessagePage(tk.Frame):
                     self.addAdminMessage("'{}' is not a valid command".format(command), "Server")
 
     def upload(self, *args):
+        self.sendingFiles = True
         print("Uploading data!")
         filepath = filedialog.askopenfilename(title = "Select a file to upload",filetypes = (("All Files","*.*"),))
         if not filepath:
             self.addAdminMessage("No file was selected","Server")
+            self.sendingFiles = False
             return
         filename = filepath.split("/")
         print("FilePath:",filepath)
@@ -355,10 +359,16 @@ class MessagePage(tk.Frame):
             print(type(filename))
             print(filename)
             sendMessage(initialAES,"Uploading|{}|{}".format(filename,str(len(encDataToSend))))
-            ifcontinue = recvMessage(initialAES)
-            if ifcontinue == "FAE":
-                return
             print("Sent Uploading message")
+            ifcontinue = (recvMessage(initialAES))
+            #print("ifcontinue:",ifcontinue)
+            if ifcontinue == "FAE":
+                self.addAdminMessage("A file by that name already exists on the server","Server")
+                self.sendingFiles = False
+                return
+            else:
+                print("Well hey there")
+
             import time
             time.sleep(1)
 
@@ -367,6 +377,7 @@ class MessagePage(tk.Frame):
         else:
             print("File is not there!")
             sendMessage(initialAES,"FNF")
+        self.sendingFiles = False
 
     def download(self, data):
         self.sendingFiles = True
@@ -425,13 +436,13 @@ class MessagePage(tk.Frame):
             lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 2
         else:
             lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
-        print(lastLine)
         self.uiMessages.tag_add("blue", str(lastLine - len(text.splitlines())+1)+".0",str(lastLine - len(text.splitlines())+1)+"."+str(len(recipient)+2))
         self.uiMessages.tag_config("blue", foreground = "blue")
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")
     def addOwnMessage(self, text, recipient):
         pass
+
 if __name__ == "__main__":
     try:
         app = ProtonClient()

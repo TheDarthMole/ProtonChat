@@ -284,10 +284,12 @@ class Members:
         size = int(args[0][1])
         print(size, type(size))
         filename = args[0][0]
-        if os.isfile("UserFiles\\"+filename):
-            self.send("FAE") # Fike Already Exists
+        if os.path.isfile("UserFiles\\"+filename):
+            print("File already exists")
+            self.send("FAE",self.initialAES) # Fike Already Exists
         else:
-            self.send("STS") # Safe to Send
+            print("Safe to Send")
+            self.send("STSdddddddddddddddddddwadawd",self.initialAES) # Safe to Send
 
         with open("UserFiles\\new_"+filename,"wb") as f:
             encFile=self.socket.recv(size)
