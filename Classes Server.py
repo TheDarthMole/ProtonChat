@@ -280,13 +280,21 @@ class Members:
     def download(self, *args):
         self.sendingFiles = True
         print("Downloading")
-        ifcontinue = self.recv(self.initialAES)
-        if ifcontinue.split("|")[0] == "Uploading":
-            size = ifcontinue.split("|")[2]
-            filename = ifcontinue.split("|")[1]
-            with open("UserFiles\\"+ifcontinue.split("|")[1],"wb") as f:
-                f.write(self.sock.recv(size))
-            print("[+] Done downloading '{}' from {} [{}:{}]".format(filename, self.credentials.username,self.ip, self.port))
+        print("Args:",args)
+        size = int(args[0][1])
+        print(size, type(size))
+        filename = args[0][0]
+        if os.isfile("UserFiles\\"+filename):
+            self.send("FAE") # Fike Already Exists
+        else:
+            self.send("STS") # Safe to Send
+
+        with open("UserFiles\\new_"+filename,"wb") as f:
+            encFile=self.socket.recv(size)
+            encFile = self.initialAES.decrypt(encFile)
+            encFile = binascii.unhexlify(encFile)
+            f.write(encFile)
+        print("[+] Done downloading '{}' size {} from {} [{}:{}]".format(filename, self.credentials.username,size,self.ip, self.port))
         self.sendingFiles = False
         pass
 
@@ -328,6 +336,7 @@ class Members:
                 "/Help": [self.ShowHelp,"Shows this admin help menu","/Help"],
                 "Msg": [self.DistributeMessage,"Redistribute a message to other clients","No implimentation"],
                 "/Upload": [self.download,"Upload a file to the server, use button or this command + filename","/Upload [FilePath]"],
+                "Uploading": [self.download,"Actually downloads the file form the client, once the file is specified","You don't use this command as a client"],
                 "/Download": [self.upload,"Download a file from the server","/Download [FileName]"],
                 "/Createadmin": [self.CreateAdminAccount,"Creates an admin account","/CreateAdmin [Username] [Password]"],
                 "/Ban": [self.BanUser,"Bans a user from the server","/Ban [Username]"],

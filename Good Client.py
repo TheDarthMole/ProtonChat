@@ -348,15 +348,22 @@ class MessagePage(tk.Frame):
         filename = filename[-1]
         print("File Name:",filename)
         if os.path.isfile(filepath):
-            print("Sending '{}' to Server".format(filepath.split("/")[-1]))
+            print("Sending '{}' to Server".format(filename))
             with open(filepath,"rb") as f:
                 encDataToSend = binascii.hexlify(f.read(os.path.getsize(filepath))).decode("utf-8")
                 encDataToSend = initialAES.encrypt(encDataToSend)
             print(type(filename))
             print(filename)
             sendMessage(initialAES,"Uploading|{}|{}".format(filename,str(len(encDataToSend))))
+            ifcontinue = recvMessage(initialAES)
+            if ifcontinue == "FAE":
+                return
             print("Sent Uploading message")
+            import time
+            time.sleep(1)
+
             sock.send(encDataToSend)
+            print("Sent file!")
         else:
             print("File is not there!")
             sendMessage(initialAES,"FNF")
