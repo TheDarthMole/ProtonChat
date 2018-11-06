@@ -302,7 +302,7 @@ class Members:
         print(size, type(size))
         filename = args[0][0]
         print("UserFiles\\"+filename)
-        if os.path.isfile("UserFiles\\new_"+filename):
+        if os.path.isfile("UserFiles\\"+filename):
             print("File already exists")
             self.send("FAE",self.initialAES) # Fike Already Exists
             self.sendingFiles=False
@@ -311,7 +311,7 @@ class Members:
             print("Safe to Send")
             self.send("STS",self.initialAES) # Safe to Send
 
-        with open("UserFiles\\new_"+filename,"wb") as f:
+        with open("UserFiles\\"+filename,"wb") as f:
             encFile=self.socket.recv(size)
             encFile = self.initialAES.decrypt(encFile)
             encFile = binascii.unhexlify(encFile)
