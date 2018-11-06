@@ -301,9 +301,12 @@ class Members:
         size = int(args[0][1])
         print(size, type(size))
         filename = args[0][0]
-        if os.path.isfile("UserFiles\\"+filename):
+        print("UserFiles\\"+filename)
+        if os.path.isfile("UserFiles\\new_"+filename):
             print("File already exists")
             self.send("FAE",self.initialAES) # Fike Already Exists
+            self.sendingFiles=False
+            return
         else:
             print("Safe to Send")
             self.send("STS",self.initialAES) # Safe to Send

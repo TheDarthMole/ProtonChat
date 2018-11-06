@@ -184,8 +184,10 @@ class StartConnect(tk.Frame):
         self.checkbox_createAccount.grid(row=5, columnspan=2)
         self.label_username = ttk.Label(self, text="Username")
         self.label_password = ttk.Label(self, text="Password")
-        self.entry_username = ttk.Entry(self, state="disabled") # Disabled because you can't login before connecting
-        self.entry_password = ttk.Entry(self, state="disabled", show="*")
+        self.default_username = tk.StringVar(self, "Nick") # Testing
+        self.entry_username = ttk.Entry(self, state="disabled",textvariable=self.default_username) # Disabled because you can't login before connecting
+        self.default_password = tk.StringVar(self, "Nick") # Testing
+        self.entry_password = ttk.Entry(self, state="disabled", show="*",textvariable=self.default_password)
         self.label_username.grid(row=6)
         self.label_password.grid(row=7)
         self.entry_username.grid(row=6, column=1, pady=3)
@@ -327,21 +329,26 @@ class MessagePage(tk.Frame):
         self.addAdminMessage("{} is not a valid command".format(" ".join(data[1:])), "Server")
 
     def FetchMessages(self):
+        import select
         self.unbind("<Enter>")
         self.switcher = {
         "Msg": self.SwitcherMSG,
         "Filedownload": self.download,
         "Fnf": self.SwitcherFileNotFound,
         "Keyerror": self.KeyError}
+        #sock.setblocking(0)
+        ready = select.select([sock], [], [], 5)
+
         while 1:
-            if self.onScreen and not self.sendingFiles:
-                data = recvMessage(initialAES)
-                data1 = data.split("|")
-                command = data1[0].title()
-                if command in self.switcher:
-                    self.switcher[command](data)
-                else:
-                    self.addAdminMessage("'{}' is not a valid command".format(command), "Server")
+            if not self.sendingFiles:
+                if ready[0]:
+                    data = recvMessage(initialAES)
+                    data1 = data.split("|")
+                    command = data1[0].title()
+                    if command in self.switcher:
+                        self.switcher[command](data)
+                    else:
+                        self.addAdminMessage("'{}' is not a valid command".format(command), "Server")
 
     def upload(self, *args):
         self.sendingFiles = True
@@ -364,23 +371,21 @@ class MessagePage(tk.Frame):
             print(filename)
             sendMessage(initialAES,"Uploading|{}|{}".format(filename,str(len(encDataToSend))))
             print("Sent Uploading message")
-
-            ifcontinue = recvMessage(initialAES)
-            print("ifcontinue:")
-            if ifcontinue == "FAE":
-                self.addAdminMessage("A file by that name already exists on the server","Server")
-                self.sendingFiles = False
+            fileOnServer = recvMessage(initialAES)
+            if fileOnServer == "FAE":
+                print("File is already on the server")
+                self.addAdminMessage("A file by that name already exists on the server!","Server")
+                self.sendingFiles=False
                 return
-            else:
-                print("Well hey there")
 
             import time
             time.sleep(1)
-
             sock.send(encDataToSend)
             print("Sent file!")
+            self.addAdminMessage("File uploaded to server","Server")
         else:
             print("File is not there!")
+            self.addAdminMessage("You did not select a valid file!","Server")
             sendMessage(initialAES,"FNF")
         self.sendingFiles = False
 
