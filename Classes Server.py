@@ -263,19 +263,36 @@ class Members:
             self.send("ERR-You have entered an incorrect username or password!", self.initialAES)
             return False
 
+    def RemoveInstance(self, instance):
+        global InstanceList
+        print(instance.ip,instance.port)
+        print(InstanceList)
+        print(InstanceList[0].port)
+        counter=0
+        for i in InstanceList:
+            print(i)
+            if instance == i:
+                print("Removing")
+                instance.socket.close()
+                InstanceList.pop(counter)
+                print("BINGO!")
+                return
+            counter+=1
+
     def DistributeMessage(self, message, sentfrom, accountType):
         print("[+] ["+sentfrom+"-"+accountType+"] "+message)
-        itteration = 0
-        for connecitons in InstanceList:
+        itteration = len(InstanceList)
+        delInstanceList = []
+        for connecitons in reversed(InstanceList):
             if connecitons.loggedIn == True and not connecitons.sendingFiles:
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
                 except:
                     print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
-                    print("[-] Removing {} from connected clients".format(connecitons.credentials.username))
-                    InstanceList.pop(itteration) # Removes the instance from the list, therefore removing the connection
+                    print("[-]      - Removing {} from connected clients".format(connecitons.credentials.username))
+                    self.RemoveInstance(connecitons) # Removes the instance from the list, therefore removing the connection
                     print(InstanceList)
-            itteration+=1
+            itteration-=1
 
     def download(self, *args):
         self.sendingFiles = True
@@ -289,7 +306,7 @@ class Members:
             self.send("FAE",self.initialAES) # Fike Already Exists
         else:
             print("Safe to Send")
-            self.send("STSdddddddddddddddddddwadawd",self.initialAES) # Safe to Send
+            self.send("STS",self.initialAES) # Safe to Send
 
         with open("UserFiles\\new_"+filename,"wb") as f:
             encFile=self.socket.recv(size)

@@ -137,7 +137,10 @@ class ProtonClient(tk.Tk):
         frame.tkraise()
         if cont == StartConnect:
             self.geometry("235x300")
-        else:
+        elif cont == MessagePage:
+            frame.StartThreaddedMessages("")
+            frame.enterText.focus_set()
+            frame.eventReturn("Enter")
             self.geometry("900x550")
 
 class StartConnect(tk.Frame):
@@ -298,10 +301,11 @@ class MessagePage(tk.Frame):
         self.backButton.grid(row=2, column=0, sticky="WS")
         self.uploadButton.grid(row=2, column=0, sticky="ES")
         self.sendingFiles = False
+        self.onScreen = False
         self.addMessage("Text","Nick") # Testing stuff
-        self.addAdminMessage("AdminText","Admin")
+        self.addAdminMessage("AdminText","Admin") # Tesging Stuff
         controller.bind("<Return>",self.eventReturn)
-        self.bind("<Enter>",self.StartThreaddedMessages)
+        #self.bind("<Enter>",self.StartThreaddedMessages)
         #self.controller.geometry("400x500")
 
     def StartThreaddedMessages(self, char):
@@ -360,8 +364,9 @@ class MessagePage(tk.Frame):
             print(filename)
             sendMessage(initialAES,"Uploading|{}|{}".format(filename,str(len(encDataToSend))))
             print("Sent Uploading message")
-            ifcontinue = (recvMessage(initialAES))
-            #print("ifcontinue:",ifcontinue)
+
+            ifcontinue = recvMessage(initialAES)
+            print("ifcontinue:")
             if ifcontinue == "FAE":
                 self.addAdminMessage("A file by that name already exists on the server","Server")
                 self.sendingFiles = False
