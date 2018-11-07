@@ -1,4 +1,4 @@
-import socket, threading, base64, hashlib, pickle, os, sys, binascii
+import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time
 from random import randint
 from Crypto import Random
 from Crypto.Cipher import AES
@@ -147,7 +147,6 @@ class StartConnect(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        #self.config(bg="#36393E")
         self.connected = False
         self.loggedIn=False
         tk.Frame.config(self,width=200, height=300) # Can edit background colour here
@@ -262,11 +261,11 @@ class StartConnect(tk.Frame):
         password = self.entry_password.get()
         password = initialAES.hasher(password).hex()
         createaccount = self.CheckVar.get()
-        if createaccount == 1:
-            createaccount = True
-        else:
-            createaccount = False
-        tosend = UserCredentials(username,password,createaccount)
+        # if createaccount == 1:
+        #     createaccount = True
+        # else:
+        #     createaccount = False
+        tosend = UserCredentials(username,password,True if createaccount else False)
         self.UserCredentials = tosend
         tosend = pickle.dumps(tosend).hex() # Turns the class into bytes, therefore sendable over Sockets
         sendMessage(initialAES,tosend) # Sends the UserCredentials class pickled, hexified then encrypted to server
@@ -307,8 +306,6 @@ class MessagePage(tk.Frame):
         self.addMessage("Text","Nick") # Testing stuff
         self.addAdminMessage("AdminText","Admin") # Tesging Stuff
         controller.bind("<Return>",self.eventReturn)
-        #self.bind("<Enter>",self.StartThreaddedMessages)
-        #self.controller.geometry("400x500")
 
     def StartThreaddedMessages(self, char):
         self.onScreen=True
@@ -336,7 +333,6 @@ class MessagePage(tk.Frame):
         "Filedownload": self.download,
         "Fnf": self.SwitcherFileNotFound,
         "Keyerror": self.KeyError}
-        #sock.setblocking(0)
         ready = select.select([sock], [], [], 5)
 
         while 1:
@@ -365,8 +361,6 @@ class MessagePage(tk.Frame):
             with open(filepath,"rb") as f:
                 encDataToSend = binascii.hexlify(f.read(os.path.getsize(filepath))).decode("utf-8")
                 encDataToSend = initialAES.encrypt(encDataToSend)
-            print(type(filename))
-            print(filename)
             sendMessage(initialAES,"Uploading|{}|{}".format(filename,str(len(encDataToSend))))
             fileOnServer = recvMessage(initialAES)
             if fileOnServer == "FAE":
@@ -375,7 +369,6 @@ class MessagePage(tk.Frame):
                 self.sendingFiles=False
                 return
 
-            import time
             time.sleep(1)
             sock.send(encDataToSend)
             print("Sent file!")

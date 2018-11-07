@@ -203,7 +203,11 @@ class Members:
         try:
             receaved = self.socket.recv(2048)
         except ConnectionResetError:
-            print("[*] Connection has been lost with {}:{}".format(self.ip,self.port))
+            try:
+                print("[-] {} {} disconnected from the server - [{}:{}]".format("Admin" if self.database.isAdmin(self.credentials.username) else "Standard", self.credentials.username,self.ip, self.port))
+            except:
+                print("[-] Connection has been lost with {}:{}".format(self.ip,self.port))
+            self.RemoveInstance(self)
             self.connectionlost = True
             return True
         receaved = receaved.decode("utf-8")
@@ -211,7 +215,7 @@ class Members:
             decrypted = cipher.decrypt(receaved)
         except Exception as e:
             print("[!] Failed to decrypt message from {}:{}".format(self.ip,self.port))
-            print(e)
+            print("[!]         - {}".format(e))
             return True
         return (decrypted)
 
@@ -221,7 +225,10 @@ class Members:
             decrypted = cipher.decrypt(receaved)
             return decrypted
         except ConnectionResetError:
-            print("[*] Connection has been lost with {}:{}".format(self.ip,self.port))
+            print("[-] Connection has been lost with {}:{}".format(self.ip,self.port))
+            self.socket.close()
+            counter = 0
+            self.RemoveInstance(self)
             self.connectionlost = True
             return True
 
@@ -239,7 +246,8 @@ class Members:
         self.instance = self.recvBytes(self.initialAES)
         if self.instance == True or self.instance == False or self.instance == None or self.instance == 0:
             self.connectionlost = True
-            print("[*] Connection has been lost with 'Not logged in' [{}:{}]".format(self.ip, self.port))
+            print("[-] Connection has been lost with 'Not logged in' [{}:{}]".format(self.ip, self.port))
+            self.RemoveInstance(self)
             return
         self.instance = bytes.fromhex(self.instance)
         self.credentials = pickle.loads(self.instance)
@@ -247,7 +255,6 @@ class Members:
             if self.database.allowedCreateAccount(self.ip, self.port, self.credentials.username):
                 self.database.AppendDatabase(self.ip, self.port, self.credentials.username, self.credentials.password, "Standard")
                 print("[+] User added to database:",self.ip, self.port, self.credentials.username, "Standard")
-                # self.database.PrintCustomerContents()
                 self.send("ASC", self.initialAES) # Account successfully Created
                 self.loggedIn = True
                 return True
@@ -264,18 +271,11 @@ class Members:
             return False
 
     def RemoveInstance(self, instance):
-        global InstanceList
-        print(instance.ip,instance.port)
-        print(InstanceList)
-        print(InstanceList[0].port)
         counter=0
         for i in InstanceList:
-            print(i)
             if instance == i:
-                print("Removing")
                 instance.socket.close()
                 InstanceList.pop(counter)
-                print("BINGO!")
                 return
             counter+=1
 
@@ -305,7 +305,7 @@ class Members:
             self.sendingFiles=False
             return
         else:
-            print("Downloading file : '{}' from {} [{}:{}]".format(filename, self.credentials.username, self.ip, self.port))
+            print("Downloading file '{}' from {} [{}:{}]".format(filename, self.credentials.username, self.ip, self.port))
             self.send("STS",self.initialAES) # Safe to Send
 
         with open("UserFiles\\"+filename,"wb") as f:
