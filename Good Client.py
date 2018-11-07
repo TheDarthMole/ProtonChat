@@ -359,9 +359,7 @@ class MessagePage(tk.Frame):
             self.sendingFiles = False
             return
         filename = filepath.split("/")
-        print("FilePath:",filepath)
         filename = filename[-1]
-        print("File Name:",filename)
         if os.path.isfile(filepath):
             print("Sending '{}' to Server".format(filename))
             with open(filepath,"rb") as f:
@@ -370,7 +368,6 @@ class MessagePage(tk.Frame):
             print(type(filename))
             print(filename)
             sendMessage(initialAES,"Uploading|{}|{}".format(filename,str(len(encDataToSend))))
-            print("Sent Uploading message")
             fileOnServer = recvMessage(initialAES)
             if fileOnServer == "FAE":
                 print("File is already on the server")

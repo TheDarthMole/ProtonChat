@@ -296,19 +296,16 @@ class Members:
 
     def download(self, *args):
         self.sendingFiles = True
-        print("Downloading")
-        print("Args:",args)
         size = int(args[0][1])
-        print(size, type(size))
         filename = args[0][0]
-        print("UserFiles\\"+filename)
+        print("[+] File upload request from {}, filename: '{}' with size {} - [{}:{}]".format(self.credentials.username, filename, size, self.ip, self.port))
         if os.path.isfile("UserFiles\\"+filename):
-            print("File already exists")
-            self.send("FAE",self.initialAES) # Fike Already Exists
+            print("[!] File '{}' already exists  - {} [{}:{}]".format("UserFiles\\"+filename,self.credentials.username, self.ip, self.port))
+            self.send("FAE",self.initialAES) # File Already Exists
             self.sendingFiles=False
             return
         else:
-            print("Safe to Send")
+            print("Downloading file : '{}' from {} [{}:{}]".format(filename, self.credentials.username, self.ip, self.port))
             self.send("STS",self.initialAES) # Safe to Send
 
         with open("UserFiles\\"+filename,"wb") as f:
@@ -316,9 +313,8 @@ class Members:
             encFile = self.initialAES.decrypt(encFile)
             encFile = binascii.unhexlify(encFile)
             f.write(encFile)
-        print("[+] Done downloading '{}' size {} from {} [{}:{}]".format(filename, self.credentials.username,size,self.ip, self.port))
+        print("[+] Done downloading '{}' from {} [{}:{}]".format(filename,self.credentials.username,self.ip, self.port))
         self.sendingFiles = False
-        pass
 
     def upload(self, *args):
         self.sendingFiles = True
