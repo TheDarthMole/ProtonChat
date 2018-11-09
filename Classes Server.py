@@ -388,6 +388,7 @@ class Members:
                 string+="{} {} {}\n".format(x, self.switcher[x][1],self.switcher[x][2])
         self.send("MSG|Server|Admin|{}".format(string),self.initialAES)
     def Logout(self,*args):
+        self.send("") # Sends the disconnect message to the client so the client knows to change screen
         pass
 
     def handler(self): # This is run in a thread, one for each client

@@ -102,7 +102,6 @@ def recvMessage(cipher, *args):
         print("Receaved encrypted:",decrypted[:128],"of length {}".format(len(decrypted))) # For Debugging
     else:
         print("Receaved encrypted:",decrypted) # For Debugging
-        print(type(decrypted))
     return (decrypted)
 
 def DH():
@@ -132,13 +131,16 @@ class ProtonClient(tk.Tk):
 
         self.showFrame(StartConnect)
 
-    def showFrame(self, cont):
+    def showFrame(self, cont, **kwargs):
+        print(Disconnect)
         frame = self.frames[cont]
         frame.tkraise()
         if cont == StartConnect:
+            if "Disconnect" in kwargs and kwargs["Disconnect"]: # If the first statement is false,
+                cont.DisconnectButtonPress()                    # the 2nd statement wont get run, therefore it wont thorw an error
             self.geometry("235x300")
         elif cont == MessagePage:
-            frame.StartThreaddedMessages("")
+            frame.StartThreaddedMessages() # Starts the threadding messaging manager
             frame.enterText.focus_set()
             frame.eventReturn("Enter")
             self.geometry("900x550")
@@ -261,10 +263,6 @@ class StartConnect(tk.Frame):
         password = self.entry_password.get()
         password = initialAES.hasher(password).hex()
         createaccount = self.CheckVar.get()
-        # if createaccount == 1:
-        #     createaccount = True
-        # else:
-        #     createaccount = False
         tosend = UserCredentials(username,password,True if createaccount else False)
         self.UserCredentials = tosend
         tosend = pickle.dumps(tosend).hex() # Turns the class into bytes, therefore sendable over Sockets
@@ -303,15 +301,18 @@ class MessagePage(tk.Frame):
         self.uploadButton.grid(row=2, column=0, sticky="ES")
         self.sendingFiles = False
         self.onScreen = False
+        self.threadStarted = False
         self.addMessage("Text","Nick") # Testing stuff
         self.addAdminMessage("AdminText","Admin") # Tesging Stuff
         controller.bind("<Return>",self.eventReturn)
 
-    def StartThreaddedMessages(self, char):
-        self.onScreen=True
-        self.MessageThread = threading.Thread(target=self.FetchMessages)
-        self.MessageThread.daemon=True
-        self.MessageThread.start()
+    def StartThreaddedMessages(self, *char):
+        #if not self.threadStarted:
+            self.onScreen=True
+            self.MessageThread = threading.Thread(target=self.FetchMessages)
+            self.MessageThread.daemon=True
+            self.MessageThread.start()
+            print()
     def SwitcherMSG(self,*args):
         todisplay = args[0].split("|")
         if todisplay[2] == "Standard":
@@ -332,7 +333,8 @@ class MessagePage(tk.Frame):
         "Msg": self.SwitcherMSG,
         "Filedownload": self.download,
         "Fnf": self.SwitcherFileNotFound,
-        "Keyerror": self.KeyError}
+        "Keyerror": self.KeyError,
+        "Logout": self.logout}
         ready = select.select([sock], [], [], 5)
 
         while 1:
@@ -414,6 +416,9 @@ class MessagePage(tk.Frame):
                 sendMessage(initialAES, "MSG|"+text)
         else:
             app.frames[StartConnect].LoginButtonPress(self.controller)
+    def logout(self,*args):
+        self.controller.showFrame(StartConnect,Disconnect=True)
+
     def returnButton(self):
         self.onScreen = False
         self.controller.showFrame(StartConnect)
