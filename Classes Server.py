@@ -109,8 +109,10 @@ class SQLDatabase:
             db=conn.cursor()
             db.execute("INSERT INTO clients VALUES (?,?,?,?,?)",(ip, port, nickname, password, accountType))
 
-    def UpdatePortIP(ip, port, username):
-        self.CommandDB("UPDATE clients SET ip = ?, port = ? WHERE nickname = ?", ip, port, username)
+    def updateUser(self,User,**kwargs):
+        for x in ("password","ip","port","accountType","nickname"):
+            if x in kwargs:
+                self.CommandDB("UPDATE clients SET {} = ? WHERE nickname = ?".format(x),kwargs[x],User)
 
     def allowedCreateAccount(self, ip, port, username): # Checks to see if the users ip and port are already in the database
         data = self.CommandDB("SELECT * FROM clients WHERE ip = ? AND port = ?",ip, port)
@@ -263,6 +265,7 @@ class Members:
                 self.send("ERR-You have already made an account!", self.initialAES)
         elif self.database.checkPassword(self.credentials.username, self.credentials.password):
                 self.loggedIn = True
+                self.database.updateUser(self.credentials.username,ip=self.ip, port=self.port)
                 self.send("SLI", self.initialAES)
                 return True
         else:
@@ -291,7 +294,6 @@ class Members:
                     print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
                     print("[-]      - Removing {} from connected clients".format(connecitons.credentials.username))
                     self.RemoveInstance(connecitons) # Removes the instance from the list, therefore removing the connection
-                    print(InstanceList)
             itteration-=1
 
     def download(self, *args):
@@ -388,7 +390,7 @@ class Members:
                 string+="{} {} {}\n".format(x, self.switcher[x][1],self.switcher[x][2])
         self.send("MSG|Server|Admin|{}".format(string),self.initialAES)
     def Logout(self,*args):
-        self.send("") # Sends the disconnect message to the client so the client knows to change screen
+        self.send("Logout",self.initialAES) # Sends the disconnect message to the client so the client knows to change screen
         pass
 
     def handler(self): # This is run in a thread, one for each client

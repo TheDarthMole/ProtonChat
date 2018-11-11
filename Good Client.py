@@ -132,12 +132,12 @@ class ProtonClient(tk.Tk):
         self.showFrame(StartConnect)
 
     def showFrame(self, cont, **kwargs):
-        print(Disconnect)
         frame = self.frames[cont]
         frame.tkraise()
         if cont == StartConnect:
             if "Disconnect" in kwargs and kwargs["Disconnect"]: # If the first statement is false,
-                cont.DisconnectButtonPress()                    # the 2nd statement wont get run, therefore it wont thorw an error
+                frame.DisconnectButtonPress()                    # the 2nd statement wont get run, therefore it wont thorw an error
+                frame.configInterface("disabled")
             self.geometry("235x300")
         elif cont == MessagePage:
             frame.StartThreaddedMessages() # Starts the threadding messaging manager
@@ -257,6 +257,10 @@ class StartConnect(tk.Frame):
             messagebox.showerror("Connected to wrong server!","You have connected to a server that is not running Proton Server.")
             sock.close()
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    def configInterface(self, value1):
+        for x in (self.entry_username, self.entry_password,self.checkbox_createAccount,self.button_login, self.button_disconnect):
+            x.config(state=value1)
 
     def LoginButtonPress(self, controller):
         username = self.entry_username.get()
@@ -410,7 +414,6 @@ class MessagePage(tk.Frame):
                 tosend = text.split(" ")
                 last = text.lstrip(tosend[0])
                 last = last.lstrip(" ")
-                print(tosend[0]+"|"+last)
                 sendMessage(initialAES, tosend[0]+"|"+last)
             else:
                 sendMessage(initialAES, "MSG|"+text)
