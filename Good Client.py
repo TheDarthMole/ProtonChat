@@ -199,7 +199,7 @@ class StartConnect(tk.Frame):
         self.entry_password.grid(row=7, column=1, pady=3)
         self.button_login = ttk.Button(self, text="Login", command= lambda: self.LoginButtonPress(controller), state="disabled")
         self.button_login.grid(columnspan=2, padx=5, pady=5)
-        self.button_nextpage = ttk.Button(self, text="Next Page", command=lambda: controller.showFrame(MessagePage))
+        self.button_nextpage = ttk.Button(self, text="Next Page", state="disabled", command=lambda: controller.showFrame(MessagePage))
         self.button_nextpage.grid(columnspan=2, padx=5, pady=5)
         self.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -213,6 +213,7 @@ class StartConnect(tk.Frame):
         self.checkbox_createAccount.config(state="disabled")
         self.button_disconnect.config(state="disabled")
         self.button_connect.config(state="normal")
+        self.button_nextpage.config(state="disabled")
 
     def ConnectButtonPress(self):
         global sock
@@ -263,7 +264,7 @@ class StartConnect(tk.Frame):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def configInterface(self, value):
-        for x in (self.entry_username, self.entry_password,self.checkbox_createAccount,self.button_login, self.button_disconnect):
+        for x in (self.entry_username, self.entry_password,self.checkbox_createAccount,self.button_login, self.button_disconnect, self.button_nextpage):
             x.config(state=value)
 
     def LoginButtonPress(self, controller):
@@ -282,14 +283,20 @@ class StartConnect(tk.Frame):
             self.loggedIn = True
             messagebox.showinfo("Account Created","You have successfully created an account!")
             self.button_login.config(state="disabled")
+            self.button_nextpage.config(state="active")
             controller.showFrame(MessagePage)
         elif message[:3] == "SLI":
             self.loggedIn = True
             messagebox.showinfo("Login Successful","You have successfully logged in!")
             self.button_login.config(state="disabled")
+            self.button_nextpage.config(state="active")
             controller.showFrame(MessagePage)
         elif message[:3] == "ERR":
             messagebox.showerror("An error occured", message[4:])
+        elif message[:3] == "LAE":
+            self.configInterface("disabled")
+            self.DisconnectButtonPress()
+            messagebox.showerror("Login credentials rejected","You have entered incorrect credentials too many times.")
 
 class MessagePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -317,9 +324,11 @@ class MessagePage(tk.Frame):
     def StartThreaddedMessages(self, *char):
         if not self.threadStarted:
             self.onScreen=True
+            self.threadStarted = True
             self.MessageThread = threading.Thread(target=self.FetchMessages)
             self.MessageThread.daemon=True
             self.MessageThread.start()
+            print("Another thread started!")
 
     def SwitcherMSG(self,*args):
         todisplay = args[0].split("|")
@@ -350,6 +359,7 @@ class MessagePage(tk.Frame):
                     data = recvMessage(initialAES)
                     if type(data) == type(False) and data == False:
                         self.threadStarted = False
+                        print("!!!!!!!! Closing Thread")
                         return # If the data couldn't be collected because the socket is closed
                     data1 = data.split("|")
                     command = data1[0].title()

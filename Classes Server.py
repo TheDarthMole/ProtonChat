@@ -111,6 +111,8 @@ class SQLDatabase:
     def updateUser(self,User,**kwargs):
         for x in ("password","ip","port","accountType","nickname"):
             if x in kwargs:
+                if x == "password":
+                    kwargs["password"] = self.initialAES.hasher(kwargs["password"]) # Turns the plaintext password into a database usable password
                 self.CommandDB("UPDATE clients SET {} = ? WHERE nickname = ?".format(x),kwargs[x],User)
 
     def allowedCreateAccount(self, ip, port, username): # Checks to see if the users ip and port are already in the database
@@ -194,6 +196,7 @@ class Members:
         self.connectionlost = False
         self.loggedIn = False
         self.sendingFiles = False
+        self.loginAttempts = 0
 
     def send(self, toSendToClient, cipher):
         toSendToClient = cipher.encrypt(toSendToClient)
@@ -234,7 +237,6 @@ class Members:
             return True
 
     def sendDiffieHellman(self):
-        #sendKey = pow(int(publicBase), int(privateKey), int(publicPrime))
         self.sendKey = pow(int(self.Base),int(self.Secret),int(self.Prime))
         self.socket.send(bytes(str(  (str(self.Base)+" "+str(self.Prime)+" "+str(self.sendKey))  ), 'utf-8'))     #
         # Send Base, Prime and SendKey to client. Structure using something like "Base Prime Key"
@@ -245,6 +247,12 @@ class Members:
 
     def login(self):
         self.instance = self.recvBytes(self.initialAES)
+        if self.loginAttempts > 3:
+            print("[!] Max login attempts from {}:{}".format(self.ip,self.port))
+            self.send("LAE",self.initialAES) # Login Attempts Exceeded
+            self.RemoveInstance(self)
+            self.connectionlost = True
+            return False
         if self.instance == True or self.instance == False or self.instance == None or self.instance == 0:
             self.connectionlost = True
             print("[-] Connection has been lost with 'Not logged in' [{}:{}]".format(self.ip, self.port))
@@ -270,6 +278,7 @@ class Members:
         else:
             self.loggedIn = False
             self.send("ERR-You have entered an incorrect username or password!", self.initialAES)
+            self.loginAttempts+=1
             return False
 
     def RemoveInstance(self, instance):
@@ -414,11 +423,11 @@ class Admins(Members):
         pass
     def BanUser(self): # Possibly ban users from an ip address / Range
         pass
-    def RemoveAccount(self):
+    def RemoveAccount(self, username):
         pass
     def CreateAdminAccount(self, nickname, password):
         pass
-    def EditMember(self):
+    def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
         pass
 
 distributeThreads = []
@@ -433,8 +442,7 @@ while 1: # Stuff here for accepting connections # Leading to create a seperate t
             distributeThreads.append(threading.Thread(target=InstanceList[len(InstanceList)-1].handler))
             distributeThreads[len(distributeThreads)-1].deamon = True
             distributeThreads[len(distributeThreads)-1].start()
-
-        except socket.timeout:
+        except socket.timeout: # Occurs every second, therefore no code to be run
             pass
     except KeyboardInterrupt:
         banner()
