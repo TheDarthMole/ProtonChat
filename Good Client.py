@@ -1,4 +1,4 @@
-import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time
+import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time, traceback
 from random import randint
 from Crypto import Random
 from Crypto.Cipher import AES
@@ -92,10 +92,14 @@ def sendMessage(cipher, message):
         messagebox.showerror("Message could not be sent","The connection to the server has been reset")
 
 def recvMessage(cipher, *args):
-    if not args:
-        receaved = sock.recv(30000)
-    else:
-        receaved = sock.recv(args[0])
+    try:
+        if not args:
+            receaved = sock.recv(30000)
+        else:
+            receaved = sock.recv(args[0])
+    except OSError:
+        print("[!] {}".format(str(sys.exc_info()[1])))
+        return False
     receaved = receaved.decode("utf-8")
     decrypted = cipher.decrypt(receaved)
     if len(decrypted) > 128:
@@ -258,9 +262,9 @@ class StartConnect(tk.Frame):
             sock.close()
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def configInterface(self, value1):
+    def configInterface(self, value):
         for x in (self.entry_username, self.entry_password,self.checkbox_createAccount,self.button_login, self.button_disconnect):
-            x.config(state=value1)
+            x.config(state=value)
 
     def LoginButtonPress(self, controller):
         username = self.entry_username.get()
@@ -311,12 +315,12 @@ class MessagePage(tk.Frame):
         controller.bind("<Return>",self.eventReturn)
 
     def StartThreaddedMessages(self, *char):
-        #if not self.threadStarted:
+        if not self.threadStarted:
             self.onScreen=True
             self.MessageThread = threading.Thread(target=self.FetchMessages)
             self.MessageThread.daemon=True
             self.MessageThread.start()
-            print()
+
     def SwitcherMSG(self,*args):
         todisplay = args[0].split("|")
         if todisplay[2] == "Standard":
@@ -340,11 +344,13 @@ class MessagePage(tk.Frame):
         "Keyerror": self.KeyError,
         "Logout": self.logout}
         ready = select.select([sock], [], [], 5)
-
         while 1:
             if not self.sendingFiles:
                 if ready[0]:
                     data = recvMessage(initialAES)
+                    if type(data) == type(False) and data == False:
+                        self.threadStarted = False
+                        return # If the data couldn't be collected because the socket is closed
                     data1 = data.split("|")
                     command = data1[0].title()
                     if command in self.switcher:

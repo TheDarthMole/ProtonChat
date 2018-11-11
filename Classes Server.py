@@ -1,8 +1,7 @@
 
 # Importing modules
-import socket, sys, os, time, sqlite3, select, threading, pickle, binascii
+import socket, sys, os, time, sqlite3, select, threading, pickle, binascii, base64, hashlib, traceback
 from random import randint
-import base64, hashlib, traceback
 try:
     from Crypto import Random
     from Crypto.Cipher import AES
