@@ -346,16 +346,24 @@ class Members:
             print("[!] File '{}' not found [{} {}:{}]".format(pathfile, self.credentials.username, self.ip, self.port))
         self.sendingFiles = False
 
+    def BlockUser(self, *args):
+        pass
+    def UnblockUser(self, *args):
+        pass
+
     def MessengerInterface(self):
         self.switcher = { # Key - [FunctionReference, Description, Example]
-            "/ChangePassword": [self.ChangeStandardPassword,"Changed the password of any user account","/ChangePassword [New Password]"],
+            "/Changepassword": [self.ChangeStandardPassword,"Changed the password of any user account","/ChangePassword [New Password]"],
             "/Logout": [self.Logout,"Logs the user out of their account","/Logout"],
-            "/ChangeUsername": [self.ChangeUsername,"Change the username of current account","/Changeusername [NewUsername]"],
+            "/Changeusername": [self.ChangeUsername,"Change the username of current account","/Changeusername [NewUsername]"],
             "/Help": [self.ShowHelp,"Shows this help menu","/Help"], # A simple help message for the commands
             "Msg": [self.DistributeMessage,"Redistribute a message to other clients","No implimentation"],
             "Uploading": [self.download,"Actually downloads the file form the client, once the file is specified","You don't use this command as a client"],
             "/Upload": [self.sendUpload,"Upload a file to the server, use button or this command + filename","/Upload [FilePath]"], # The users upload is the servers download
-            "/Download": [self.upload,"Download a file from the server","/Download [FileName]"]} # The users download is the servers upload
+            "/Download": [self.upload,"Download a file from the server","/Download [FileName]"], # The users download is the servers upload
+            "/Block": [self.BlockUser,"Blocks a user from sending you messages","/Block [Username]"],
+            "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username]"]}
+
         if self.__class__ == Admins: # This allows admins to manipulate their extended privs inherited from Admins class
             self.switcher = { # Key - [FunctionReference, Description, Example]
                 "/Logout": [self.Logout,"Logs the user out of their account","/Logout"],
@@ -399,7 +407,6 @@ class Members:
         self.send("MSG|Server|Admin|{}".format(string),self.initialAES)
     def Logout(self,*args):
         self.send("Logout",self.initialAES) # Sends the disconnect message to the client so the client knows to change screen
-        pass
 
     def handler(self): # This is run in a thread, one for each client
         self.sendDiffieHellman() # sets AES Key variable

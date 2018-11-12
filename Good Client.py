@@ -336,6 +336,7 @@ class MessagePage(tk.Frame):
             self.addMessage("|".join(todisplay[3:]),todisplay[1])
         else:
             self.addAdminMessage("|".join(todisplay[3:]),todisplay[1])
+
     def SwitcherFileNotFound(self, *args):
         self.addAdminMessage("The file was not found","Server")
 
@@ -359,7 +360,6 @@ class MessagePage(tk.Frame):
                     data = recvMessage(initialAES)
                     if type(data) == type(False) and data == False:
                         self.threadStarted = False
-                        print("!!!!!!!! Closing Thread")
                         return # If the data couldn't be collected because the socket is closed
                     data1 = data.split("|")
                     command = data1[0].title()
