@@ -100,13 +100,13 @@ class SQLDatabase:
         data = self.CommandDB("SELECT password FROM clients WHERE nickname = ?", username)
         if len(data) == 1 and data[0][0] == password:
             return True
-        else:
-            return False
+        return False
 
-    def AppendDatabase(self, ip, port, nickname, password, accountType): # Complete
-        with sqlite3.connect(self.dbfile) as conn:
-            db=conn.cursor()
-            db.execute("INSERT INTO clients VALUES (?,?,?,?,?)",(ip, port, nickname, password, accountType))
+    def AppendClientsDatabase(self, ip, port, nickname, password, accountType): # Complete
+        self.CommandDB("INSERT INTO clients VALUES (?,?,?,?,?)",ip, port, nickname, password, accountType)
+        # with sqlite3.connect(self.dbfile) as conn:
+        #     db=conn.cursor()
+        #     db.execute("INSERT INTO clients VALUES (?,?,?,?,?)",(ip, port, nickname, password, accountType))
 
     def updateUser(self,User,**kwargs):
         for x in ("password","ip","port","accountType","nickname"):
@@ -127,19 +127,55 @@ class SQLDatabase:
     def CreateClientsTable(self):
         try:
             self.CommandDB("CREATE TABLE clients (ip text, port integer, nickname text, password text, accountType text, PRIMARY KEY (nickname))")
-            print("[+] Database successfully created")
+            print("[+] Clients Database successfully created")
         except sqlite3.OperationalError:
-            print("[=] Database already created")
+            print("[=] Clients Database already created")
+
+    def CreateBlockedTable(self):
+        try:
+            self.CommandDB("CREATE TABLE blockedUsers (relationID integer PRIMARY KEY AUTOINCREMENT,relatingUser text, relationalUser text, type text)")
+            print("[+] Blocked Users Database successfully created")
+        except  sqlite3.OperationalError:
+            print("[=] Blocked Users Database already created")
+
+    def PrintBlockedContents(self): # Complete
+        data = self.CommandDB("SELECT * FROM blockedUsers")
+        print("\n{:^10} | {:^16} | {:^16} | {:^7}\n".format("RelationID","RelatingUser","RelationalUser","Type")+"-"*59)
+        for row in data:
+            print("{:^10} | {:^16} | {:^16} | {:^7}".format(row[0],row[1],row[2],row[3]))
+        print()
+
+    def AppendBlockedDatabase(self, Relating, Relational, Type):
+        self.CommandDB("INSERT INTO blockedUsers VALUES (?,?,?,?)", None ,Relating,Relational,Type)
+
+    def isBlocked(self, Relating, Relational,Type="Blocked"):
+        data = self.CommandDB("SELECT * FROM blockedUsers WHERE relatingUser = ? AND relationalUser = ? AND type = ?", Relating, Relational, Type)
+        return True if data else False
+
+    def blockedUsers(self, Relating, Type="Blocked"):
+        data = self.CommandDB("SELECT relationalUser FROM blockedUsers WHERE relatingUser = ? AND type = ?",Relating, Type)
+        sterilizedOutput = []
+        for x in data:
+            sterilizedOutput.append(x[0])
+        return sterilizedOutput
 
     def dump(self):
         self.CommandDB("DELETE FROM clients")
+        self.CommandDB("DELETE FROM blockedUsers")
 
 DataBase = SQLDatabase("LoginCredentials.db")
+os.remove("LoginCredentials.db")
 DataBase.CreateClientsTable()
+DataBase.CreateBlockedTable()
 DataBase.dump() # Purely for testing (Stops duplicates)
-DataBase.AppendDatabase("1.3.3.7",666,"Nick1","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Standard")
-DataBase.AppendDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Admin")
+DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick1","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Standard")
+DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Admin")
+DataBase.AppendBlockedDatabase("Nick","Nick1","Blocked")
+DataBase.AppendBlockedDatabase("Nick","N13ick1","Blocked")
+print(DataBase.isBlocked("Nick","Nick1"))
+DataBase.blockedUsers("Nick")
 DataBase.PrintCustomerContents()
+DataBase.PrintBlockedContents()
 
 class UserCredentials:
     def __init__(self, username, password, createaccount):
@@ -262,7 +298,7 @@ class Members:
         self.credentials = pickle.loads(self.instance)
         if self.credentials.createaccount == True:
             if self.database.allowedCreateAccount(self.ip, self.port, self.credentials.username):
-                self.database.AppendDatabase(self.ip, self.port, self.credentials.username, self.credentials.password, "Standard")
+                self.database.AppendClientsDatabase(self.ip, self.port, self.credentials.username, self.credentials.password, "Standard")
                 print("[+] User added to database:",self.ip, self.port, self.credentials.username, "Standard")
                 self.send("ASC", self.initialAES) # Account successfully Created
                 self.loggedIn = True
@@ -347,7 +383,10 @@ class Members:
         self.sendingFiles = False
 
     def BlockUser(self, *args):
-        pass
+        usernames = args[0][0].split(" ")
+        print(usernames)
+
+
     def UnblockUser(self, *args):
         pass
 
@@ -377,7 +416,9 @@ class Members:
                 "/Createadmin": [self.CreateAdminAccount,"Creates an admin account","/CreateAdmin [Username] [Password]"],
                 "/Ban": [self.BanUser,"Bans a user from the server","/Ban [Username]"],
                 "/Removeaccount": [self.RemoveAccount,"Deletes a users account","/RemoveAccount [Username]"],
-                "/Editaccount": [self.EditMember,"Edit an account","/EditAccount [Username] [AccountType]/[Password]=[Value]"]}
+                "/Editaccount": [self.EditMember,"Edit an account","/EditAccount [Username] [AccountType]/[Password]=[Value]"],
+                "/Block": [self.BlockUser,"Blocks a user from sending you messages","/Block [Username]"],
+                "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username]"]}
         while not self.connectionlost and MainThreadClose == False: # While the client is connected run
             try:
                 data = self.recv(self.initialAES)
