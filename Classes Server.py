@@ -133,47 +133,47 @@ class SQLDatabase:
 
     def CreateBlockedTable(self):
         try:
-            self.CommandDB("CREATE TABLE blockedUsers (relationID integer PRIMARY KEY AUTOINCREMENT,relatingUser text, relationalUser text, type text)")
+            self.CommandDB("CREATE TABLE blockedUsers (relatingUser text, relationalUser text, type text, PRIMARY KEY (relatingUser, relationalUser))")
             print("[+] Blocked Users Database successfully created")
         except  sqlite3.OperationalError:
             print("[=] Blocked Users Database already created")
 
-    def PrintBlockedContents(self): # Complete
+    def PrintBlockedContents(self): # Prints all of blockedUsers table with headders
         data = self.CommandDB("SELECT * FROM blockedUsers")
-        print("\n{:^10} | {:^16} | {:^16} | {:^7}\n".format("RelationID","RelatingUser","RelationalUser","Type")+"-"*59)
+        print("\n{:^16} | {:^16} | {:^7}\n".format("RelatingUser","RelationalUser","Type")+"-"*59)
         for row in data:
-            print("{:^10} | {:^16} | {:^16} | {:^7}".format(row[0],row[1],row[2],row[3]))
+            print("{:^16} | {:^16} | {:^7}".format(row[0],row[1],row[2]))
         print()
 
-    def AppendBlockedDatabase(self, Relating, Relational, Type):
-        self.CommandDB("INSERT INTO blockedUsers VALUES (?,?,?,?)", None ,Relating,Relational,Type)
+    def EditBlockedDatabase(self, Relating, Relational, Type):
+        self.CommandDB("INSERT OR REPLACE INTO blockedUsers (relatingUser, relationalUser,type) VALUES (?,?,?)",Relating, Relational,Type)
 
     def isBlocked(self, Relating, Relational,Type="Blocked"):
         data = self.CommandDB("SELECT * FROM blockedUsers WHERE relatingUser = ? AND relationalUser = ? AND type = ?", Relating, Relational, Type)
         return True if data else False
 
-    def blockedUsers(self, Relating, Type="Blocked"):
+    def currentlyBlockedUsers(self, Relating, Type="Blocked"):
         data = self.CommandDB("SELECT relationalUser FROM blockedUsers WHERE relatingUser = ? AND type = ?",Relating, Type)
         sterilizedOutput = []
         for x in data:
             sterilizedOutput.append(x[0])
         return sterilizedOutput
 
-    def dump(self):
-        self.CommandDB("DELETE FROM clients")
-        self.CommandDB("DELETE FROM blockedUsers")
+    def dump(self, *args): # Made for Debugging, however mey be useful elsewhere
+        for x in args:
+            self.CommandDB("DELETE FROM {}".format(x))
 
 DataBase = SQLDatabase("LoginCredentials.db")
 os.remove("LoginCredentials.db")
 DataBase.CreateClientsTable()
 DataBase.CreateBlockedTable()
-DataBase.dump() # Purely for testing (Stops duplicates)
+DataBase.dump("clients","blockedUsers") # Purely for testing (Stops duplicates)
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick1","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Standard")
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Admin")
-DataBase.AppendBlockedDatabase("Nick","Nick1","Blocked")
-DataBase.AppendBlockedDatabase("Nick","N13ick1","Blocked")
-print(DataBase.isBlocked("Nick","Nick1"))
-DataBase.blockedUsers("Nick")
+DataBase.EditBlockedDatabase("Nick","Nick1","Blocked")
+DataBase.PrintBlockedContents()
+DataBase.EditBlockedDatabase("Nick","Nick1","Unblocked")
+print(DataBase.currentlyBlockedUsers("Nick"))
 DataBase.PrintCustomerContents()
 DataBase.PrintBlockedContents()
 
@@ -385,6 +385,8 @@ class Members:
     def BlockUser(self, *args):
         usernames = args[0][0].split(" ")
         print(usernames)
+        for x in usernames:
+            self.database.EditBlockedDatabase(self.credentials.username,x,"Blocked")
 
 
     def UnblockUser(self, *args):
