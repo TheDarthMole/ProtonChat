@@ -161,6 +161,7 @@ class SQLDatabase:
 
         self.CommandDB("INSERT OR REPLACE INTO blockedUsers (relatingUser, relationalUser,type) VALUES (?,?,?)",Relating, Relational,Type)
         self.PrintCustomerContents()
+        return True
 
     def isBlocked(self, Relating, Relational,Type="Blocked"):
         data = self.CommandDB("SELECT * FROM blockedUsers WHERE relatingUser = ? AND relationalUser = ? AND type = ?", Relating, Relational, Type)
@@ -184,10 +185,6 @@ DataBase.CreateBlockedTable()
 DataBase.dump("clients","blockedUsers") # Purely for testing (Stops duplicates)
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick1","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Standard")
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Admin")
-DataBase.EditBlockedDatabase("Nick","Nick1","Blocked")
-DataBase.PrintBlockedContents()
-DataBase.EditBlockedDatabase("Nick","Nick","Unblocked")
-print(DataBase.currentlyBlockedUsers("Nick"))
 DataBase.PrintCustomerContents()
 DataBase.PrintBlockedContents()
 
@@ -402,16 +399,24 @@ class Members:
         print(usernames)
         for x in usernames:
             if not self.database.EditBlockedDatabase(self.credentials.username,x,"Blocked"):
-                self.send("MSG|Server|Admin|There is no such user {}".format(x))
-        self.database.PrintBlockedContents()
-
+                print("CLient {} not in database".format(x))
+                if self.credentials.username == x:
+                    self.send("MSG|Server|Admin|You cannot block youself.",self.initialAES)
+                else:
+                    self.send("MSG|Server|Admin|There is no such user {}".format(x),self.initialAES)
+            else:
+                print("CLient {} in database".format(x))
+                self.send("MSG|Server|Admin|User {} has been blocked".format(x),self.initialAES)
 
     def UnblockUser(self, *args):
         usernames = args[0][0].split(" ")
         self.database.PrintBlockedContents()
         for x in usernames:
-            self.database.EditBlockedDatabase(self.credentials.username,x,"Unblocked")
-        self.database.PrintBlockedContents()
+            if not self.database.EditBlockedDatabase(self.credentials.username,x,"Unblocked"):
+                if self.credentials.username == x:
+                    self.send("MSG|Server|Admin|There is no reason to unblock youself")
+                else:
+                    self.send("MSG|Server|Admin|User {} has been unblocked".format(x),self.initialAES)
 
     def MessengerInterface(self):
         self.switcher = { # Key - [FunctionReference, Description, Example]
