@@ -133,7 +133,12 @@ class SQLDatabase:
 
     def CreateBlockedTable(self):
         try:
-            self.CommandDB("CREATE TABLE blockedUsers (relatingUser text, relationalUser text, type text, PRIMARY KEY (relatingUser, relationalUser))")
+            self.CommandDB("CREATE TABLE blockedUsers (relatingUser text NOT NULL,\
+                            relationalUser text NOT NULL,\
+                            type text NOT NULL,\
+                            PRIMARY KEY (relatingUser, relationalUser),\
+                            FOREIGN KEY (relatingUser) REFERENCES clients(nickname),\
+                            FOREIGN KEY (relationalUser) REFERENCES clients(nickname))")
             print("[+] Blocked Users Database successfully created")
         except  sqlite3.OperationalError:
             print("[=] Blocked Users Database already created")
@@ -146,7 +151,16 @@ class SQLDatabase:
         print()
 
     def EditBlockedDatabase(self, Relating, Relational, Type):
+        if Relating == Relational:
+            print("Two identical values")
+            return False
+        for x in (Relating, Relational):
+            if not self.CommandDB("SELECT nickname FROM clients WHERE nickname = ?",x):
+                print("Value: {} is not in the clients database".format(x))
+                return False # Returns false becasue the client is not in the table
+
         self.CommandDB("INSERT OR REPLACE INTO blockedUsers (relatingUser, relationalUser,type) VALUES (?,?,?)",Relating, Relational,Type)
+        self.PrintCustomerContents()
 
     def isBlocked(self, Relating, Relational,Type="Blocked"):
         data = self.CommandDB("SELECT * FROM blockedUsers WHERE relatingUser = ? AND relationalUser = ? AND type = ?", Relating, Relational, Type)
@@ -172,7 +186,7 @@ DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick1","bcc014de6fb06f937156515b8f
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Admin")
 DataBase.EditBlockedDatabase("Nick","Nick1","Blocked")
 DataBase.PrintBlockedContents()
-DataBase.EditBlockedDatabase("Nick","Nick1","Unblocked")
+DataBase.EditBlockedDatabase("Nick","Nick","Unblocked")
 print(DataBase.currentlyBlockedUsers("Nick"))
 DataBase.PrintCustomerContents()
 DataBase.PrintBlockedContents()
@@ -384,13 +398,20 @@ class Members:
 
     def BlockUser(self, *args):
         usernames = args[0][0].split(" ")
+        self.database.PrintBlockedContents()
         print(usernames)
         for x in usernames:
-            self.database.EditBlockedDatabase(self.credentials.username,x,"Blocked")
+            if not self.database.EditBlockedDatabase(self.credentials.username,x,"Blocked"):
+                self.send("MSG|Server|Admin|There is no such user {}".format(x))
+        self.database.PrintBlockedContents()
 
 
     def UnblockUser(self, *args):
-        pass
+        usernames = args[0][0].split(" ")
+        self.database.PrintBlockedContents()
+        for x in usernames:
+            self.database.EditBlockedDatabase(self.credentials.username,x,"Unblocked")
+        self.database.PrintBlockedContents()
 
     def MessengerInterface(self):
         self.switcher = { # Key - [FunctionReference, Description, Example]
