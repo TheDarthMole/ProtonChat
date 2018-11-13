@@ -1,4 +1,4 @@
-import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time, traceback
+import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time, traceback, select
 from random import randint
 from Crypto import Random
 from Crypto.Cipher import AES
@@ -127,6 +127,7 @@ class ProtonClient(tk.Tk):
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
         self.frames = {}
+        self.killThread = False
 
         for f in (StartConnect, MessagePage): # Add more pages in here to make them switchable
             frame = f(self.container, self)
@@ -153,6 +154,7 @@ class StartConnect(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.parent = parent
+        self.controller = controller
         self.connected = False
         self.loggedIn=False
         tk.Frame.config(self,width=200, height=300) # Can edit background colour here
@@ -214,6 +216,8 @@ class StartConnect(tk.Frame):
         self.button_disconnect.config(state="disabled")
         self.button_connect.config(state="normal")
         self.button_nextpage.config(state="disabled")
+        self.button_login.config(state="disabled")
+        self.controller.killThread = True
 
     def ConnectButtonPress(self):
         global sock
@@ -266,6 +270,10 @@ class StartConnect(tk.Frame):
     def configInterface(self, value):
         for x in (self.entry_username, self.entry_password,self.checkbox_createAccount,self.button_login, self.button_disconnect, self.button_nextpage):
             x.config(state=value)
+        if value == "disabled":
+            self.button_login.config(state="active")
+        else:
+            self.button_login.config(state="disabled")
 
     def LoginButtonPress(self, controller):
         username = self.entry_username.get()
@@ -318,7 +326,7 @@ class MessagePage(tk.Frame):
         self.onScreen = False
         self.threadStarted = False
         self.addMessage("Text","Nick") # Testing stuff
-        self.addAdminMessage("AdminText","Admin") # Tesging Stuff
+        self.addAdminMessage("AdminText","Admin") # Testing Stuff
         controller.bind("<Return>",self.eventReturn)
 
     def StartThreaddedMessages(self, *char):
@@ -345,7 +353,6 @@ class MessagePage(tk.Frame):
         self.addAdminMessage("{} is not a valid command".format(" ".join(data[1:])), "Server")
 
     def FetchMessages(self):
-        import select
         self.unbind("<Enter>")
         self.switcher = {
         "Msg": self.SwitcherMSG,
@@ -354,11 +361,18 @@ class MessagePage(tk.Frame):
         "Keyerror": self.KeyError,
         "Logout": self.logout}
         ready = select.select([sock], [], [], 5)
+        print("FetchMessages running")
+        import time
         while 1:
+            if self.controller.killThread:
+                self.controller.killThread = False
+                self.threadStarted = False
+                return
             if not self.sendingFiles:
                 if ready[0]:
                     data = recvMessage(initialAES)
                     if type(data) == type(False) and data == False:
+                        self.controller.killThread = False
                         self.threadStarted = False
                         return # If the data couldn't be collected because the socket is closed
                     data1 = data.split("|")

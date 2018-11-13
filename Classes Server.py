@@ -244,6 +244,7 @@ class Members:
         self.loggedIn = False
         self.sendingFiles = False
         self.loginAttempts = 0
+        self.BlockedUsers = []
 
     def send(self, toSendToClient, cipher):
         toSendToClient = cipher.encrypt(toSendToClient)
@@ -342,7 +343,7 @@ class Members:
         itteration = len(InstanceList)
         delInstanceList = []
         for connecitons in reversed(InstanceList):
-            if connecitons.loggedIn == True and not connecitons.sendingFiles:
+            if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers:
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
                 except:
@@ -407,6 +408,7 @@ class Members:
             else:
                 print("CLient {} in database".format(x))
                 self.send("MSG|Server|Admin|User {} has been blocked".format(x),self.initialAES)
+        self.BlockedUsers = self.database.currentlyBlockedUsers()
 
     def UnblockUser(self, *args):
         usernames = args[0][0].split(" ")
@@ -414,9 +416,11 @@ class Members:
         for x in usernames:
             if not self.database.EditBlockedDatabase(self.credentials.username,x,"Unblocked"):
                 if self.credentials.username == x:
-                    self.send("MSG|Server|Admin|There is no reason to unblock youself")
+                    self.send("MSG|Server|Admin|There is no reason to unblock youself",self.initialAES)
                 else:
-                    self.send("MSG|Server|Admin|User {} has been unblocked".format(x),self.initialAES)
+                    self.send("MSG|Server|Admin|There is no user {}".format(x),self.initialAES)
+            else:
+                self.send("MSG|Server|Admin|User {} has been unblocked".format(x), self.initialAES)
 
     def MessengerInterface(self):
         self.switcher = { # Key - [FunctionReference, Description, Example]
@@ -428,8 +432,8 @@ class Members:
             "Uploading": [self.download,"Actually downloads the file form the client, once the file is specified","You don't use this command as a client"],
             "/Upload": [self.sendUpload,"Upload a file to the server, use button or this command + filename","/Upload [FilePath]"], # The users upload is the servers download
             "/Download": [self.upload,"Download a file from the server","/Download [FileName]"], # The users download is the servers upload
-            "/Block": [self.BlockUser,"Blocks a user from sending you messages","/Block [Username]"],
-            "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username]"]}
+            "/Block": [self.BlockUser,"Blocks a user from sending you messages","/Block [Username] [Optional aditional usernames]"],
+            "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username] [Optional aditional usernames]"]}
 
         if self.__class__ == Admins: # This allows admins to manipulate their extended privs inherited from Admins class
             self.switcher = { # Key - [FunctionReference, Description, Example]
@@ -445,8 +449,8 @@ class Members:
                 "/Ban": [self.BanUser,"Bans a user from the server","/Ban [Username]"],
                 "/Removeaccount": [self.RemoveAccount,"Deletes a users account","/RemoveAccount [Username]"],
                 "/Editaccount": [self.EditMember,"Edit an account","/EditAccount [Username] [AccountType]/[Password]=[Value]"],
-                "/Block": [self.BlockUser,"Blocks a user from sending you messages","/Block [Username]"],
-                "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username]"]}
+                "/Block": [self.BlockUser,"Blocks a user from sending you messages","/Block [Username] [Optional  aditional usernames]"],
+                "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username] [Optional aditional usernames]"]}
         while not self.connectionlost and MainThreadClose == False: # While the client is connected run
             try:
                 data = self.recv(self.initialAES)
@@ -461,6 +465,7 @@ class Members:
                         self.send("Keyerror|{}".format(edited[0]),self.initialAES) # Make an error message here to be displayed on the users screen.
             except TypeError:
                 self.connectionlost = True
+
     def ChangeStandardPassword(self,*args):
         pass
     def ChangeUsername(self,*args):
