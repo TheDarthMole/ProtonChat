@@ -152,11 +152,11 @@ class SQLDatabase:
 
     def EditBlockedDatabase(self, Relating, Relational, Type):
         if Relating == Relational:
-            print("Two identical values")
+            print("[!] {} tried blocking themself".format(Relating))
             return False
         for x in (Relating, Relational):
             if not self.CommandDB("SELECT nickname FROM clients WHERE nickname = ?",x):
-                print("Value: {} is not in the clients database".format(x))
+                print("[=] {} tried blocking {} who is not in the database".format(Relating,x))
                 return False # Returns false becasue the client is not in the table
 
         self.CommandDB("INSERT OR REPLACE INTO blockedUsers (relatingUser, relationalUser,type) VALUES (?,?,?)",Relating, Relational,Type)
@@ -174,19 +174,44 @@ class SQLDatabase:
             sterilizedOutput.append(x[0])
         return sterilizedOutput
 
+    def CreateMessageTable(self):
+        try:
+            self.CommandDB("CREATE TABLE messages (username text NOT NULL,\
+                            message text NOT NULL,\
+                            timedate text NOT NULL,\
+                            FOREIGN KEY (username) REFERENCES clients(nickname))")
+            print("[+] Messages Database successfully created")
+        except  sqlite3.OperationalError:
+            print("[=] Messages Database already created")
+
+    def AddMessage(self, user, message):
+        if self.CommandDB("SELECT nickname FROM clients WHERE nickname = ?",user):
+            self.CommandDB("INSERT INTO messages (username, message, timedate) VALUES (?,?,?)",user,message,time.asctime(time.localtime(time.time())))
+        else:
+            print("[!] User {}'s record cant be added to messages database, user not in clients database")
+
+    def PrintMessagesContents(self):
+        data = self.CommandDB("SELECT * FROM messages")
+        print("\n{:^26} | {:^16} | {:^10}\n".format("Date and Time","Username","Message")+"-"*59)
+        for row in data:
+            print("{:^26} | {:^16} | {:^10}".format(row[2],row[0],row[1]))
+        print()
+
     def dump(self, *args): # Made for Debugging, however mey be useful elsewhere
         for x in args:
             self.CommandDB("DELETE FROM {}".format(x))
 
 DataBase = SQLDatabase("LoginCredentials.db")
-os.remove("LoginCredentials.db")
+#os.remove("LoginCredentials.db")
 DataBase.CreateClientsTable()
 DataBase.CreateBlockedTable()
+DataBase.CreateMessageTable()
 DataBase.dump("clients","blockedUsers") # Purely for testing (Stops duplicates)
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick1","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Standard")
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Admin")
 DataBase.PrintCustomerContents()
 DataBase.PrintBlockedContents()
+DataBase.PrintMessagesContents()
 
 class UserCredentials:
     def __init__(self, username, password, createaccount):
@@ -256,9 +281,9 @@ class Members:
             receaved = self.socket.recv(2048)
         except ConnectionResetError:
             try:
-                print("[-] {} {} disconnected from the server - [{}:{}]".format("Admin" if self.database.isAdmin(self.credentials.username) else "Standard", self.credentials.username,self.ip, self.port))
+                print("[=] {} {} disconnected from the server - [{}:{}]".format("Admin" if self.database.isAdmin(self.credentials.username) else "Standard", self.credentials.username,self.ip, self.port))
             except:
-                print("[-] Connection has been lost with {}:{}".format(self.ip,self.port))
+                print("[=] Connection has been lost with {}:{}".format(self.ip,self.port))
             self.RemoveInstance(self)
             self.connectionlost = True
             return True
@@ -277,7 +302,7 @@ class Members:
             decrypted = cipher.decrypt(receaved)
             return decrypted
         except ConnectionResetError:
-            print("[-] Connection has been lost with {}:{}".format(self.ip,self.port))
+            print("[=] Connection has been lost with {}:{}".format(self.ip,self.port))
             self.socket.close()
             counter = 0
             self.RemoveInstance(self)
@@ -303,7 +328,7 @@ class Members:
             return False
         if self.instance == True or self.instance == False or self.instance == None or self.instance == 0:
             self.connectionlost = True
-            print("[-] Connection has been lost with 'Not logged in' [{}:{}]".format(self.ip, self.port))
+            print("[=] Connection has been lost with 'Not logged in' [{}:{}]".format(self.ip, self.port))
             self.RemoveInstance(self)
             return
         self.instance = bytes.fromhex(self.instance)
@@ -346,9 +371,10 @@ class Members:
             if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers:
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
+                    self.database.AddMessage(sentfrom, message)
                 except:
                     print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
-                    print("[-]      - Removing {} from connected clients".format(connecitons.credentials.username))
+                    print("[=]      - Removing {} from connected clients".format(connecitons.credentials.username))
                     self.RemoveInstance(connecitons) # Removes the instance from the list, therefore removing the connection
             itteration-=1
 
@@ -397,7 +423,6 @@ class Members:
     def BlockUser(self, *args):
         usernames = args[0][0].split(" ")
         self.database.PrintBlockedContents()
-        print(usernames)
         for x in usernames:
             if not self.database.EditBlockedDatabase(self.credentials.username,x,"Blocked"):
                 print("CLient {} not in database".format(x))
@@ -408,7 +433,7 @@ class Members:
             else:
                 print("CLient {} in database".format(x))
                 self.send("MSG|Server|Admin|User {} has been blocked".format(x),self.initialAES)
-        self.BlockedUsers = self.database.currentlyBlockedUsers()
+        self.BlockedUsers = self.database.currentlyBlockedUsers(self.credentials.username)
 
     def UnblockUser(self, *args):
         usernames = args[0][0].split(" ")
@@ -421,6 +446,7 @@ class Members:
                     self.send("MSG|Server|Admin|There is no user {}".format(x),self.initialAES)
             else:
                 self.send("MSG|Server|Admin|User {} has been unblocked".format(x), self.initialAES)
+        self.BlockedUsers = self.database.currentlyBlockedUsers(self.credentials.username)
 
     def MessengerInterface(self):
         self.switcher = { # Key - [FunctionReference, Description, Example]
