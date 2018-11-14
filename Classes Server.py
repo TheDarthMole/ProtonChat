@@ -16,7 +16,7 @@ except ImportError:
 
 # Declare public variables and initialize
 
-HOST = "127.0.0.1"
+HOST = "192.168.1.133"
 ClientMax = 10
 PORT = 65528
 
@@ -47,6 +47,16 @@ def getLocalIP():
     localip=s.getsockname()[0]
     s.close()
     return localip
+
+def Logger(orig_func): # For debugging the program, and also monitoring
+    import logging
+    from functools import wraps
+    logging.basicConfig(filename = "{}.log".format(orig_func.__name__), level = logging.INFO)
+    @wraps(orig_func)
+    def wrapper(*args, **kwargs):
+        logging.info("Ran with args: {}, and kwargs: {}".format(args, kwargs))
+        return orig_func(*args, *kwargs)
+    return wrapper
 
 # Initialization of sockets
 banner()
@@ -268,6 +278,7 @@ class Members:
         self.loginAttempts = 0
         self.BlockedUsers = []
 
+    @Logger
     def send(self, toSendToClient, cipher):
         toSendToClient = cipher.encrypt(toSendToClient)
         self.socket.send(toSendToClient)
@@ -360,6 +371,7 @@ class Members:
                 return
             counter+=1
 
+    @Logger
     def DistributeMessage(self, message, sentfrom, accountType):
         print("[+] ["+sentfrom+"-"+accountType+"] "+message)
         itteration = len(InstanceList)

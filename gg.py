@@ -11,4 +11,6 @@ class Admin(Member):
         print("Admin class func")
 gg=Member()
 gg.__class__=Admin
+print(gg.__class__)
+print(gg.__class__.__name__.format_map.__dict__)
 gg.func()
