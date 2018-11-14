@@ -104,9 +104,6 @@ class SQLDatabase:
 
     def AppendClientsDatabase(self, ip, port, nickname, password, accountType): # Complete
         self.CommandDB("INSERT INTO clients VALUES (?,?,?,?,?)",ip, port, nickname, password, accountType)
-        # with sqlite3.connect(self.dbfile) as conn:
-        #     db=conn.cursor()
-        #     db.execute("INSERT INTO clients VALUES (?,?,?,?,?)",(ip, port, nickname, password, accountType))
 
     def updateUser(self,User,**kwargs):
         for x in ("password","ip","port","accountType","nickname"):
@@ -181,7 +178,7 @@ class SQLDatabase:
                             timedate text NOT NULL,\
                             FOREIGN KEY (username) REFERENCES clients(nickname))")
             print("[+] Messages Database successfully created")
-        except  sqlite3.OperationalError:
+        except sqlite3.OperationalError:
             print("[=] Messages Database already created")
 
     def AddMessage(self, user, message):
@@ -371,7 +368,7 @@ class Members:
             if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers:
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
-                    self.database.AddMessage(sentfrom, message)
+                    # self.database.AddMessage(sentfrom, message)
                 except:
                     print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
                     print("[=]      - Removing {} from connected clients".format(connecitons.credentials.username))
@@ -480,6 +477,8 @@ class Members:
         while not self.connectionlost and MainThreadClose == False: # While the client is connected run
             try:
                 data = self.recv(self.initialAES)
+                self.database.AddMessage(self.credentials.username,data)
+                # self.database.PrintMessagesContents()
                 if data[:3] == "MSG":
                     self.DistributeMessage(data[4:], self.credentials.username, "Standard" if not self.database.isAdmin(self.credentials.username) else "Admin")
                 else:
@@ -526,14 +525,21 @@ class Members:
 class Admins(Members):
     def __init__(self, ip, port, nickname, password):
         super().__init__(ip, port, nickname, password)
-    def adminHandler(self):
-        pass
     def BanUser(self): # Possibly ban users from an ip address / Range
         pass
     def RemoveAccount(self, username):
         pass
-    def CreateAdminAccount(self, nickname, password):
-        pass
+    def CreateAdminAccount(self,*args):
+        print(args)
+        split = args[0][0].split(" ")
+        print(split)
+        if self.database.allowedCreateAccount:
+            self.database.AppendClientsDatabase("N/A",0,split[0],self.initialAES.hasher(split[1]),"Admin")
+            print("[+] Admin account {} has been created by {}".format(split[0],self.credentials.username))
+            self.send("MSG|Server|Admin|Admin Account {} has been successfully created",self.initialAES)
+        else:
+            print("[!] Admin account {} couldn't be made by {}".format(split[0],self.credentials.username))
+            self.send("MSG|Server|Admin|Admin account {} could not be created, try a different username".format(split[0]),self.initialAES)
     def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
         pass
 
