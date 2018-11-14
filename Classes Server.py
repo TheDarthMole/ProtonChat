@@ -199,11 +199,11 @@ class SQLDatabase:
             self.CommandDB("DELETE FROM {}".format(x))
 
 DataBase = SQLDatabase("LoginCredentials.db")
-#os.remove("LoginCredentials.db")
+os.remove("LoginCredentials.db")
 DataBase.CreateClientsTable()
 DataBase.CreateBlockedTable()
 DataBase.CreateMessageTable()
-DataBase.dump("clients","blockedUsers") # Purely for testing (Stops duplicates)
+DataBase.dump("clients","blockedUsers","messages") # Purely for testing (Stops duplicates)
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick1","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Standard")
 DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f36fb2a995c037f441862411160f4b48f1ad602","Admin")
 DataBase.PrintCustomerContents()
@@ -368,7 +368,6 @@ class Members:
             if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers:
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
-                    # self.database.AddMessage(sentfrom, message)
                 except:
                     print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
                     print("[=]      - Removing {} from connected clients".format(connecitons.credentials.username))
