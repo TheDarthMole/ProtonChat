@@ -130,7 +130,6 @@ class ProtonClient(tk.Tk):
         self.container.pack(side="top", fill="both", expand= False)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
-
         self.frames = {}
         self.killThread = False
 
@@ -252,8 +251,8 @@ class StartConnect(tk.Frame):
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             global DiffieHellman
-            DiffieHellman = DH() # We have created a diffie-hellman key exchange here, used for initialAES encryption
             global initialAES
+            DiffieHellman = DH() # We have created a diffie-hellman key exchange here, used for initialAES encryption
             initialAES = AESCipher(hex(int(DiffieHellman))) # Setting the diffie-hellman key as the key for AES
             print(recvMessage(initialAES))
             self.label_connIndicator.config(text="Current Status: Connected!\n            Please Log in")
