@@ -123,11 +123,9 @@ class SQLDatabase:
                 self.CommandDB("UPDATE clients SET {} = ? WHERE nickname = ?".format(x),kwargs[x],User)
 
     def allowedCreateAccount(self, ip, port, username): # Checks to see if the users ip and port are already in the database
-        data = self.CommandDB("SELECT * FROM clients WHERE ip = ? AND port = ?",ip, port)
-        if data:
+        if self.CommandDB("SELECT * FROM clients WHERE ip = ? AND port = ?",ip, port):
             return False
-        data = self.CommandDB("SELECT * FROM clients WHERE nickname = ?",username)
-        if data:
+        if self.CommandDB("SELECT * FROM clients WHERE nickname = ?",username):
             return False
         return True
 
@@ -550,7 +548,7 @@ class Admins(Members):
             if self.database.allowedCreateAccount:
                 self.database.AppendClientsDatabase("N/A",0,split[0],self.initialAES.hasher(split[1]),"Admin")
                 print("[+] Admin account {} has been created by {}".format(split[0],self.credentials.username))
-                self.send("MSG|Server|Admin|Admin Account {} has been successfully created",self.initialAES)
+                self.send("MSG|Server|Admin|Admin Account {} has been successfully created".format(split[0]),self.initialAES)
             else:
                 print("[!] Admin account {} couldn't be made by {}".format(split[0],self.credentials.username))
                 self.send("MSG|Server|Admin|Admin account {} could not be created, try a different username".format(split[0]),self.initialAES)
