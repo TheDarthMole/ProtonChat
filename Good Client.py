@@ -1,7 +1,11 @@
-import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time, traceback, select
+# Imports
+
+import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time, traceback, select, contextlib
 from random import randint
 from Crypto import Random
 from Crypto.Cipher import AES
+with contextlib.redirect_stdout(None): # Imports pygame without printing version to terminal
+    from pygame import mixer
 
 # Notes:
 
@@ -126,6 +130,7 @@ class ProtonClient(tk.Tk):
         self.container.pack(side="top", fill="both", expand= False)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
+
         self.frames = {}
         self.killThread = False
 
@@ -221,6 +226,7 @@ class StartConnect(tk.Frame):
 
     def ConnectButtonPress(self):
         global sock
+        print(self.controller.focus_displayof())
         address = self.entry_address.get()
         port = self.entry_port.get()
         try:
@@ -452,6 +458,10 @@ class MessagePage(tk.Frame):
     def logout(self,*args):
         self.controller.showFrame(StartConnect,Disconnect=True)
 
+    def NotificationSound(self):
+        mixer.init()
+        mixer.music.load("Notification.mp3")
+        mixer.music.play()
     def returnButton(self):
         self.onScreen = False
         self.controller.showFrame(StartConnect)
@@ -460,6 +470,7 @@ class MessagePage(tk.Frame):
         self.uiMessages.insert("end",chars=str(text)+"\n")
         self.uiMessages.config(state="disabled")
     def addMessage(self, text, recipient):
+        self.NotificationSound()
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str("["+recipient+"] ")+str(text)+"\n")
         lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
@@ -468,6 +479,7 @@ class MessagePage(tk.Frame):
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")
     def addAdminMessage(self, text, recipient):
+        self.NotificationSound()
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str("["+recipient+"] ")+str(text)+"\n")
         if len(text.splitlines())>1:
