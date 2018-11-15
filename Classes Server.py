@@ -16,7 +16,7 @@ except ImportError:
 
 # Declare public variables and initialize
 
-HOST = "192.168.1.133"
+HOST = "0.0.0.0"
 ClientMax = 10
 PORT = 65528
 
@@ -543,14 +543,18 @@ class Admins(Members):
     def CreateAdminAccount(self,*args):
         print(args)
         split = args[0][0].split(" ")
-        print(split)
-        if self.database.allowedCreateAccount:
-            self.database.AppendClientsDatabase("N/A",0,split[0],self.initialAES.hasher(split[1]),"Admin")
-            print("[+] Admin account {} has been created by {}".format(split[0],self.credentials.username))
-            self.send("MSG|Server|Admin|Admin Account {} has been successfully created",self.initialAES)
+        if len(split) < 2:
+            self.send("MSG|Server|Admin|Another argument is needed in the format '/Createadmin [Username] [Password]'",self.initialAES)
         else:
-            print("[!] Admin account {} couldn't be made by {}".format(split[0],self.credentials.username))
-            self.send("MSG|Server|Admin|Admin account {} could not be created, try a different username".format(split[0]),self.initialAES)
+            print(split)
+            if self.database.allowedCreateAccount:
+                self.database.AppendClientsDatabase("N/A",0,split[0],self.initialAES.hasher(split[1]),"Admin")
+                print("[+] Admin account {} has been created by {}".format(split[0],self.credentials.username))
+                self.send("MSG|Server|Admin|Admin Account {} has been successfully created",self.initialAES)
+            else:
+                print("[!] Admin account {} couldn't be made by {}".format(split[0],self.credentials.username))
+                self.send("MSG|Server|Admin|Admin account {} could not be created, try a different username".format(split[0]),self.initialAES)
+
     def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
         pass
 
