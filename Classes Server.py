@@ -468,21 +468,12 @@ class Members:
             "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username] [Optional aditional usernames]"]}
 
         if self.__class__ == Admins: # This allows admins to manipulate their extended privs inherited from Admins class
-            self.switcher = { # Key - [FunctionReference, Description, Example]
-                "/Logout": [self.Logout,"Logs the user out of their account","/Logout"],
-                "/Changepassword": [self.ChangeStandardPassword,"Changed the password of any user account","/ChangePassword [New Password]"],
-                "/Changeusername": [self.ChangeUsername,"Change the username of current account","/Changeusername [NewUsername]"],
-                "/Help": [self.ShowHelp,"Shows this admin help menu","/Help"],
-                "Msg": [self.DistributeMessage,"Redistribute a message to other clients","No implimentation"],
-                "/Upload": [self.download,"Upload a file to the server, use button or this command + filename","/Upload [FilePath]"],
-                "Uploading": [self.download,"Actually downloads the file form the client, once the file is specified","You don't use this command as a client"],
-                "/Download": [self.upload,"Download a file from the server","/Download [FileName]"],
-                "/Createadmin": [self.CreateAdminAccount,"Creates an admin account","/CreateAdmin [Username] [Password]"],
-                "/Ban": [self.BanUser,"Bans a user from the server","/Ban [Username]"],
-                "/Removeaccount": [self.RemoveAccount,"Deletes a users account","/RemoveAccount [Username]"],
-                "/Editaccount": [self.EditMember,"Edit an account","/EditAccount [Username] [AccountType]/[Password]=[Value]"],
-                "/Block": [self.BlockUser,"Blocks a user from sending you messages","/Block [Username] [Optional  aditional usernames]"],
-                "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username] [Optional aditional usernames]"]}
+            # Key - [FunctionReference, Description, Example
+            self.switcher["/Createadmin"] = [self.CreateAdminAccount,"Creates an admin account","/CreateAdmin [Username] [Password]"]
+            self.switcher["/Ban"] = [self.BanUser,"Bans a user from the server","/Ban [Username]"]
+            self.switcher["/Removeaccount"] = [self.RemoveAccount,"Deletes a users account","/RemoveAccount [Username]"]
+            self.switcher["/Editaccount"] = [self.EditMember,"Edit an account","/EditAccount [Username] [AccountType]/[Password]=[Value]"]
+
         while not self.connectionlost and MainThreadClose == False: # While the client is connected run
             try:
                 data = self.recv(self.initialAES)
