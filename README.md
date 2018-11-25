@@ -10,10 +10,9 @@ This application is has been made for my CS Coursework, Made by Nicholas made in
     * Change Password
     * Help menu
     * Logout
-    * Blocking
+    * User Blocking
 * Admin Commands   
     * Create admin accounts
     * Ban Users
     * Remove accounts
     * Edit accounts
-    
