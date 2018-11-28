@@ -207,7 +207,7 @@ class SQLDatabase:
             self.CommandDB("DELETE FROM {}".format(x))
 
 DataBase = SQLDatabase("LoginCredentials.db")
-# os.remove("LoginCredentials.db")
+os.remove("LoginCredentials.db")
 DataBase.CreateClientsTable()
 DataBase.CreateBlockedTable()
 DataBase.CreateMessageTable()
