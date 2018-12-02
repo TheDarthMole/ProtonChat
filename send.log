@@ -326,3 +326,11 @@ INFO:root:Ran with args: (<__main__.Admins object at 0x034DA5F0>, 'MSG|Nick|Admi
 INFO:root:Ran with args: (<__main__.Admins object at 0x034DA5F0>, 'there', 'Nick', 'Admin'), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x034DA5F0>, 'MSG|Nick|Admin|there', <__main__.AESCipher object at 0x034DA950>), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x034DA5F0>, 'STS', <__main__.AESCipher object at 0x034DA950>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036A9630>, 'Encryption cipher working', <__main__.AESCipher object at 0x036A9990>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C05D70>, 'Encryption cipher working', <__main__.AESCipher object at 0x02C19A30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036B1A10>, 'Encryption cipher working', <__main__.AESCipher object at 0x036B1A70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036B1A10>, 'SLI', <__main__.AESCipher object at 0x036B1A70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036B1DF0>, 'Encryption cipher working', <__main__.AESCipher object at 0x036D3730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036B1DF0>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x036D3730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036D36F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x036D3970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036D36F0>, 'SLI', <__main__.AESCipher object at 0x036D3970>), and kwargs: {}
