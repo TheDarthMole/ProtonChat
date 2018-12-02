@@ -195,10 +195,8 @@ class StartConnect(tk.Frame):
         self.checkbox_createAccount.grid(row=5, columnspan=2)
         self.label_username = ttk.Label(self, text="Username")
         self.label_password = ttk.Label(self, text="Password")
-        self.default_username = tk.StringVar(self, "Nick") # Testing
-        self.entry_username = ttk.Entry(self, state="disabled",textvariable=self.default_username) # Disabled because you can't login before connecting
-        self.default_password = tk.StringVar(self, "Nick") # Testing
-        self.entry_password = ttk.Entry(self, state="disabled", show="*",textvariable=self.default_password)
+        self.entry_username = ttk.Entry(self, state="disabled") # Disabled because you can't login before connecting
+        self.entry_password = ttk.Entry(self, state="disabled", show="*")
         self.label_username.grid(row=6)
         self.label_password.grid(row=7)
         self.entry_username.grid(row=6, column=1, pady=3)
@@ -225,7 +223,6 @@ class StartConnect(tk.Frame):
 
     def ConnectButtonPress(self):
         global sock
-        print(self.controller.focus_displayof())
         address = self.entry_address.get()
         port = self.entry_port.get()
         try:
@@ -330,8 +327,7 @@ class MessagePage(tk.Frame):
         self.sendingFiles = False
         self.onScreen = False
         self.threadStarted = False
-        self.addMessage("Text","Nick") # Testing stuff
-        self.addAdminMessage("AdminText","Admin") # Testing Stuff
+        self.addAdminMessage("Welcome to Proton Messenger, use '/Help' for commands","Server") # Welcome message
         controller.bind("<Return>",self.eventReturn)
 
     def StartThreaddedMessages(self, *char):
