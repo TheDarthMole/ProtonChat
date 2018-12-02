@@ -319,10 +319,12 @@ class MessagePage(tk.Frame):
         self.uiMessages = tkst.ScrolledText(self, state="disabled", height=128)
         self.enterText = tk.Text(self, width=32, height=2)
         self.backButton = ttk.Button(self, text="Back", command=self.returnButton)
+        self.sendButton = ttk.Button(self, text="Send", command=self.eventReturn)
         self.uploadButton = ttk.Button(self, text="Upload", command = lambda: self.upload())
-        self.uiMessages.grid(row=0, sticky="NESW")
+        self.uiMessages.grid(row=0, sticky="NESW", columnspan=2)
         self.enterText.grid(row=1, column=0,sticky="NESW")
         self.backButton.grid(row=2, column=0, sticky="WS")
+        self.sendButton.grid(row=1, column=1,sticky="E")
         self.uploadButton.grid(row=2, column=0, sticky="ES")
         self.sendingFiles = False
         self.onScreen = False
@@ -433,7 +435,7 @@ class MessagePage(tk.Frame):
         self.addAdminMessage("Downloaded '{}' as 'new_{}'".format(filename, filename),"Server")
         self.sendingFiles = False
 
-    def eventReturn(self, event):
+    def eventReturn(self, *event):
         #print("Return pressed", repr(event.char))
         if app.frames[StartConnect].loggedIn:
             text = self.enterText.get("1.0","end")
