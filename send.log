@@ -326,3 +326,5 @@ INFO:root:Ran with args: (<__main__.Admins object at 0x034DA5F0>, 'MSG|Nick|Admi
 INFO:root:Ran with args: (<__main__.Admins object at 0x034DA5F0>, 'there', 'Nick', 'Admin'), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x034DA5F0>, 'MSG|Nick|Admin|there', <__main__.AESCipher object at 0x034DA950>), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x034DA5F0>, 'STS', <__main__.AESCipher object at 0x034DA950>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x0000020986BB3F60>, 'Encryption cipher working', <__main__.AESCipher object at 0x00000209879D36D8>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x0000020986BB3F60>, 'SLI', <__main__.AESCipher object at 0x00000209879D36D8>), and kwargs: {}
