@@ -86,12 +86,12 @@ class SQLDatabase:
     def CommandDB(self, code, *args): # Semi-universal SQL command executor, however allows SQL injection when variable entered
         with sqlite3.connect(self.dbfile) as conn:
             db=conn.cursor()
-            if not args:
-                db.execute(code) # Tries to stop SQL injection by giving the option for args to be passed in
+            if not args: # args are positional arguments for the sql statement
+                db.execute(code) # Stop SQL injection by giving the option for args to be passed in
             else:
-                db.execute(code, args)
-            data = db.fetchall()
-            return data
+                db.execute(code, args) # Stops SQL injection with arguments
+            data = db.fetchall() # Fetches the result of the query
+            return data # Returns the data, if there is no data then the data will be an empty 2d array
 
     def isAdmin(self, username):
         data = self.CommandDB("SELECT accountType FROM clients WHERE nickname = ?",username)
@@ -130,22 +130,29 @@ class SQLDatabase:
         return True
 
     def CreateClientsTable(self):
-        try:
+        try: # Used because the database may already exist
             self.CommandDB("CREATE TABLE clients (ip text, port integer, nickname text, password text, accountType text, PRIMARY KEY (nickname))")
+            # Primary key is username so the name is unique
+            # Ip is text, not number, as it includes "."
+            # Password is text as it will contain hex hashed password
+            # AccountType will be "Admin" or "Standard"
             print("[+] Clients Database successfully created")
-        except sqlite3.OperationalError:
+        except sqlite3.OperationalError: # Catches an exact error
             print("[=] Clients Database already created")
 
     def CreateBlockedTable(self):
-        try:
+        try: # Used because the database may already exist
             self.CommandDB("CREATE TABLE blockedUsers (relatingUser text NOT NULL,\
                             relationalUser text NOT NULL,\
                             type text NOT NULL,\
                             PRIMARY KEY (relatingUser, relationalUser),\
                             FOREIGN KEY (relatingUser) REFERENCES clients(nickname),\
                             FOREIGN KEY (relationalUser) REFERENCES clients(nickname))")
+            # Sets up database with primary key as a composite of relatingUser and relationalUser so that there are no more than 1 Value
+            # Foreign keys are used to link to the users to their respective accounts
+            # type is either "Blocked" or "Unblocked"
             print("[+] Blocked Users Database successfully created")
-        except  sqlite3.OperationalError:
+        except  sqlite3.OperationalError: # Catches an exact error
             print("[=] Blocked Users Database already created")
 
     def PrintBlockedContents(self): # Prints all of blockedUsers table with headders
