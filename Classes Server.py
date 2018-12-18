@@ -9,7 +9,7 @@ def installModule(package):
         subprocess.call([sys.executable, "-m", "pip", "install", package])
     except:
         print("[!] Failed to install {}".format(package))
-        
+
 installModule("pycryptodome")
 installModule("requests")
 
@@ -94,6 +94,8 @@ InstanceList = []
 class SQLDatabase:
     def __init__(self, DBFileName):
         self.dbfile = DBFileName
+        if not os.path.isfile(DBFileName):
+            pass
 
     def CommandDB(self, code, *args): # Semi-universal SQL command executor, however allows SQL injection when variable entered
         with sqlite3.connect(self.dbfile) as conn:
