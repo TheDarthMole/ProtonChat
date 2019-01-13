@@ -122,6 +122,13 @@ def DH():
     key = pow(int(data[2]),int(secret),int(data[1]))
     return key
 
+def DependancyDownloader(file, url):
+    from urllib.request import urlopen
+    data=urlopen(url).read()
+    with open(file,"wb") as f:
+        f.write(data)
+    data="" # Stores a large amount of unnececary data in ram so it is cleared by this
+
 class ProtonClient(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
