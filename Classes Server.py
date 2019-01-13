@@ -25,7 +25,6 @@ except ImportError:
     print("[!] requests module not installed, installing it now")
     installModule()
 
-
 # Declare public variables and initialize
 
 HOST = "0.0.0.0"
@@ -94,8 +93,8 @@ InstanceList = []
 class SQLDatabase:
     def __init__(self, DBFileName):
         self.dbfile = DBFileName
-        if not os.path.isfile(DBFileName):
-            pass
+        open(DBFileName,"a")
+        # Creates the file if not already made
 
     def CommandDB(self, code, *args): # Semi-universal SQL command executor, however allows SQL injection when variable entered
         with sqlite3.connect(self.dbfile) as conn:
@@ -186,7 +185,8 @@ class SQLDatabase:
                             PRIMARY KEY (relatingUser, relationalUser),\
                             FOREIGN KEY (relatingUser) REFERENCES clients(nickname),\
                             FOREIGN KEY (relationalUser) REFERENCES clients(nickname))")
-            # Sets up database with primary key as a composite of relatingUser and relationalUser so that there are no more than 1 Value
+            # Sets up database with primary key as a composite of relatingUser
+            # and relationalUser so that there are no more than 1 Value
             # Foreign keys are used to link to the users to their respective accounts
             # type is either "Blocked" or "Unblocked"
             print("[+] Blocked Users Database successfully created")
@@ -229,11 +229,12 @@ class SQLDatabase:
 
     def currentlyBlockedUsers(self, Relating, Type="Blocked"):
         data = self.CommandDB("SELECT relationalUser FROM blockedUsers WHERE relatingUser = ? AND type = ?",Relating, Type)
-        #
+        # Retrieves data from database
         sterilizedOutput = []
         for x in data:
             sterilizedOutput.append(x[0])
         return sterilizedOutput
+        # Returns the entire amount of people a user has blocked in array form
 
     def CreateMessageTable(self):
         try: # Used because the database may already exist
@@ -251,9 +252,12 @@ class SQLDatabase:
 
     def AddMessage(self, user, message):
         if self.CommandDB("SELECT nickname FROM clients WHERE nickname = ?",user):
+            # If the user is in the database
             self.CommandDB("INSERT INTO messages (username, message, timedate) VALUES (?,?,?)",user,message,time.asctime(time.localtime(time.time())))
+            # Insert a message into the table, adding the username and the time of the message being sent (including seconds)
         else:
             print("[!] User {}'s record cant be added to messages database, user not in clients database")
+            # A message to display that the user isn't in the database
 
     def PrintMessagesContents(self):
         data = self.CommandDB("SELECT * FROM messages")
@@ -265,6 +269,7 @@ class SQLDatabase:
     def dump(self, *args): # Made for Debugging, however mey be useful elsewhere
         for x in args:
             self.CommandDB("DELETE FROM {}".format(x))
+        # Simply deletes all the tables that are passed in as args
 
 DataBase = SQLDatabase("LoginCredentials.db")
 os.remove("LoginCredentials.db")
