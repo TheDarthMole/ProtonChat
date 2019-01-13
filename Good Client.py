@@ -135,12 +135,9 @@ class ProtonClient(tk.Tk):
         self.container = tk.Frame(self)
         # Used to download the icon from a server if it doesn't already exist
         if not os.path.isfile("ProtonDark.ico"):
-            from urllib.request import urlopen
-            url="https://raw.githubusercontent.com/TheDarthMole/ProtonChat/master/ProtonDark.ico"
-            data=urlopen(url).read()
-            with open("ProtonDark.ico","wb") as f:
-                f.write(data)
-            data="" # Stores a large amount of unnececary data in ram so it is cleared by this
+            DependancyDownloader("ProtonDark.ico","https://raw.githubusercontent.com/TheDarthMole/ProtonChat/master/ProtonDark.ico")
+        if not os.path.isfile("Notification.mp3"):
+            DependancyDownloader("Notification.mp3","https://raw.githubusercontent.com/TheDarthMole/ProtonChat/master/Notification.mp3")
         tk.Tk.iconbitmap(self, default="ProtonDark.ico")
         self.container.pack(side="top", fill="both", expand= False)
         self.container.grid_rowconfigure(0, weight=1)
