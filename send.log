@@ -28,3 +28,92 @@ INFO:root:Ran with args: (<__main__.Admins object at 0x0000010EB6523F60>, 'MSG|L
 INFO:root:Ran with args: (<__main__.Admins object at 0x0000010EB6523F60>, 'Hello Luke!', 'Nick', 'Admin'), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Members object at 0x0000010EB7330390>, 'MSG|Nick|Admin|Hello Luke!', <__main__.AESCipher object at 0x0000010EB7330358>), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x0000010EB6523F60>, 'MSG|Nick|Admin|Hello Luke!', <__main__.AESCipher object at 0x0000010EB7314780>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x0377B610>, 'Encryption cipher working', <__main__.AESCipher object at 0x0377B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037856D0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03785D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x0377B610>, 'SLI', <__main__.AESCipher object at 0x0377B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037856D0>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x03785D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037856D0>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x03785D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037856D0>, 'ASC', <__main__.AESCipher object at 0x03785D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377B610>, 'Hey Luke!', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037856D0>, 'MSG|Nick|Admin|Hey Luke!', <__main__.AESCipher object at 0x03785D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377B610>, 'MSG|Nick|Admin|Hey Luke!', <__main__.AESCipher object at 0x0377B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037856D0>, 'Hey Nick!', 'Luke', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037856D0>, 'MSG|Luke|Standard|Hey Nick!', <__main__.AESCipher object at 0x03785D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377B610>, 'MSG|Luke|Standard|Hey Nick!', <__main__.AESCipher object at 0x0377B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037858F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037858F0>, 'SLI', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'hey', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'MSG|Nick|Admin|hey', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'SLI', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'Hey there', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'MSG|Nick1|Standard|Hey there', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'MSG|Nick1|Standard|Hey there', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'Whoo', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'MSG|Nick|Admin|Whoo', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'MSG|Nick|Admin|Whoo', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, '?', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'MSG|Nick1|Standard|?', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'MSG|Nick1|Standard|?', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, '??', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'MSG|Nick1|Standard|??', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'MSG|Nick1|Standard|??', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, '?', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'MSG|Nick1|Standard|?', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'MSG|Nick1|Standard|?', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'gg', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'MSG|Nick1|Standard|gg', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'MSG|Nick1|Standard|gg', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'gggg', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77D0>, 'MSG|Nick1|Standard|gggg', <__main__.AESCipher object at 0x037A7770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037858F0>, 'MSG|Nick1|Standard|gggg', <__main__.AESCipher object at 0x03785610>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x0377C610>, 'Encryption cipher working', <__main__.AESCipher object at 0x0377C970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x0377C610>, 'SLI', <__main__.AESCipher object at 0x0377C970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'Hey there', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'MSG|Nick|Admin|Hey there', <__main__.AESCipher object at 0x0377C970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0377C970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0377C970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0377C970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0377C970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0377C610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0377C970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037859B0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03785D70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037859B0>, 'SLI', <__main__.AESCipher object at 0x03785D70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037859B0>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037859B0>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x03785D70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037859B0>, 'GoodBye Luke!', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037859B0>, 'MSG|Nick|Admin|GoodBye Luke!', <__main__.AESCipher object at 0x03785D70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037859B0>, 'MSG|Server|Admin|There is no such user Luke', <__main__.AESCipher object at 0x03785D70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A7830>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A77F0>, 'ASC', <__main__.AESCipher object at 0x037A7830>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037859B0>, 'MSG|Server|Admin|User Luke has been blocked', <__main__.AESCipher object at 0x03785D70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x046BB610>, 'Encryption cipher working', <__main__.AESCipher object at 0x046BB970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x046C56D0>, 'Encryption cipher working', <__main__.AESCipher object at 0x046C5D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x046BB610>, 'SLI', <__main__.AESCipher object at 0x046BB970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x046C56D0>, 'ASC', <__main__.AESCipher object at 0x046C5D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x046BB610>, 'Hey Luke!', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x046C56D0>, 'MSG|Nick|Admin|Hey Luke!', <__main__.AESCipher object at 0x046C5D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x046BB610>, 'MSG|Nick|Admin|Hey Luke!', <__main__.AESCipher object at 0x046BB970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x046C56D0>, 'Hey Nick!', 'Luke', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x046C56D0>, 'MSG|Luke|Standard|Hey Nick!', <__main__.AESCipher object at 0x046C5D90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x046BB610>, 'MSG|Luke|Standard|Hey Nick!', <__main__.AESCipher object at 0x046BB970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03C26070>, 'Encryption cipher working', <__main__.AESCipher object at 0x046C5F50>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03C26070>, 'SLI', <__main__.AESCipher object at 0x046C5F50>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03C26070>, 'Hey Luke!', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03C26070>, 'MSG|Nick|Admin|Hey Luke!', <__main__.AESCipher object at 0x046C5F50>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03C26070>, 'Bye Luke!', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03C26070>, 'MSG|Nick|Admin|Bye Luke!', <__main__.AESCipher object at 0x046C5F50>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03C26070>, 'MSG|Server|Admin|User Luke has been blocked', <__main__.AESCipher object at 0x046C5F50>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036AC610>, 'Encryption cipher working', <__main__.AESCipher object at 0x036AC970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036AC610>, 'SLI', <__main__.AESCipher object at 0x036AC970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x036AC610>, 'Hey there Luke!', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x036AC610>, 'MSG|Nick|Admin|Hey there Luke!', <__main__.AESCipher object at 0x036AC970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'Encryption cipher working', <__main__.AESCipher object at 0x02C27A70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'ASC', <__main__.AESCipher object at 0x02C27A70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'Hey there Nick!', 'Luke', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'MSG|Luke|Standard|Hey there Nick!', <__main__.AESCipher object at 0x02C27A70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'MSG|Server|Admin|User Nick has been blocked', <__main__.AESCipher object at 0x02C27A70>), and kwargs: {}

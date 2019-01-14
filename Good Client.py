@@ -396,6 +396,8 @@ class MessagePage(tk.Frame):
                         self.switcher[command](data)
                     else:
                         self.addAdminMessage("'{}' is not a valid command".format(command), "Server")
+                else:
+                    print("Not ready")
 
     def upload(self, *args):
         self.sendingFiles = True

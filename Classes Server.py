@@ -272,7 +272,7 @@ class SQLDatabase:
         # Simply deletes all the tables that are passed in as args
 
 DataBase = SQLDatabase("LoginCredentials.db")
-os.remove("LoginCredentials.db")
+# os.remove("LoginCredentials.db")
 DataBase.CreateClientsTable()
 DataBase.CreateBlockedTable()
 DataBase.CreateMessageTable()
@@ -493,22 +493,22 @@ class Members:
 
     def BlockUser(self, *args):
         usernames = args[0][0].split(" ")
-        self.database.PrintBlockedContents()
         for x in usernames:
             if not self.database.EditBlockedDatabase(self.credentials.username,x,"Blocked"):
-                print("CLient {} not in database".format(x))
+                print("[!] Client {} tried blocking {} but they are not in database".format(self.credentials.username,x))
                 if self.credentials.username == x:
+                    print("[-] {} tried blocking themself".format(self.credentials.username))
                     self.send("MSG|Server|Admin|You cannot block youself.",self.initialAES)
                 else:
+                    print("[!] {} tried blocking {} but they are not in the database".format(self.credentials.username, x))
                     self.send("MSG|Server|Admin|There is no such user {}".format(x),self.initialAES)
             else:
-                print("CLient {} in database".format(x))
+                print("[+] {} blocked {}".format(self.credentials.username, x))
                 self.send("MSG|Server|Admin|User {} has been blocked".format(x),self.initialAES)
         self.BlockedUsers = self.database.currentlyBlockedUsers(self.credentials.username)
 
     def UnblockUser(self, *args):
         usernames = args[0][0].split(" ")
-        self.database.PrintBlockedContents()
         for x in usernames:
             if not self.database.EditBlockedDatabase(self.credentials.username,x,"Unblocked"):
                 if self.credentials.username == x:
