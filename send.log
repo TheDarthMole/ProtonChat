@@ -117,3 +117,29 @@ INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'ASC', <__mai
 INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'Hey there Nick!', 'Luke', 'Standard'), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'MSG|Luke|Standard|Hey there Nick!', <__main__.AESCipher object at 0x02C27A70>), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Members object at 0x02C27030>, 'MSG|Server|Admin|User Nick has been blocked', <__main__.AESCipher object at 0x02C27A70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x0366B610>, 'Encryption cipher working', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x0366B610>, 'SLI', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'Hey', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Nick|Admin|Hey', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Server|Admin|Commands for Admins', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Server|Admin|/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'e', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x0366B610>, 'MSG|Nick|Admin|e', <__main__.AESCipher object at 0x0366B970>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C18210>, 'Encryption cipher working', <__main__.AESCipher object at 0x03675DD0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C18210>, 'SLI', <__main__.AESCipher object at 0x03675DD0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02C18210>, 'Hey', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02C18210>, 'MSG|Nick|Admin|Hey', <__main__.AESCipher object at 0x03675DD0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02C18210>, 'MSG|Server|Admin|Commands for Admins', <__main__.AESCipher object at 0x03675DD0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02C18210>, 'MSG|Server|Admin|/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n', <__main__.AESCipher object at 0x03675DD0>), and kwargs: {}
