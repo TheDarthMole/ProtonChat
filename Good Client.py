@@ -45,37 +45,51 @@ class UserCredentials:
 class AESCipher(object):
     def __init__(self, key):
         self.key = self.hasher(key)
+        # Hashes a value and uses it as the cipher
 
     def hasher(self, password):
-        salt = b'\xdfU\xc1\xdf\xf9\xb30\x96' # This is the default salt i am using for client and server side
+        salt = b'\xdfU\xc1\xdf\xf9\xb30\x96'
+        # This is the default salt i am using for client and server side
+        # Theoretically this should be random for each user and stored in the database
         return (  hashlib.pbkdf2_hmac("sha256",password.encode("utf-8"), salt, 1000000)  )
+        # Returns the hashed password using PBKDF2 HMAC
 
     def encrypt(self, raw):
         b64 = base64.b64encode(raw.encode("utf-8")).decode("utf-8")
+        # Base 64 encoding using "UTF-8" encoding
         raw = self.pad(b64)
+        # Padded so that it is a multiple of 16 (Block cipher length)
         rawbytes = bytes(raw,"utf-8")
         iv = Random.new().read(AES.block_size)
+        # Random IV to make the ciphertext random
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        # New cipher instance using the random IV and the encryption key
         return base64.b64encode(iv + cipher.encrypt(rawbytes))
+        # Returns the data encrypted and in base4 format
 
     def decrypt(self, enc):
         enc = base64.b64decode(enc)
         iv = enc[:AES.block_size]
+        # Splits up the IV and the data
         try:
             cipher = AES.new(self.key, AES.MODE_CBC, iv)
         except ValueError:
             print("[!] ValueError Occured")
+        # Try except because not all data going into the fucntion is decryptable
         Decrypted = cipher.decrypt(enc[AES.block_size:])
         unpadded = self.unpad(Decrypted).decode("utf-8")
+        # Decrypts and unpads the data
         Decoded = base64.b64decode(unpadded).decode("utf-8")
         return Decoded
-        #return base64.b64decode(self.unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')).decode("utf-8")
+        # Returns the decrypted data as a plaintext string
 
     def pad(self,s): # Pads the string so that it complys with the AES 16 byte block size
         return s + (AES.block_size - len(s) % AES.block_size) * chr(AES.block_size - len(s) % AES.block_size)
+        # Pads the data to a size of multiple 16
 
     def unpad(self, s): # Turns the 16 byte complyant string to a normal string
         return s[:-ord(s[len(s)-1:])]
+        # Removes the padding from a string
 
 # Functions
 
@@ -132,65 +146,68 @@ def DependancyDownloader(file, url):
 class ProtonClient(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+        # Inheritence from Tkinter's Tk class
         self.container = tk.Frame(self)
-        # Used to download the icon from a server if it doesn't already exist
+        # Makes a frame to store entries in
         if not os.path.isfile("ProtonDark.ico"):
             DependancyDownloader("ProtonDark.ico","https://raw.githubusercontent.com/TheDarthMole/ProtonChat/master/ProtonDark.ico")
         if not os.path.isfile("Notification.mp3"):
             DependancyDownloader("Notification.mp3","https://raw.githubusercontent.com/TheDarthMole/ProtonChat/master/Notification.mp3")
+        # Used to download the icon from a server if it doesn't already exist (Required in order to run the code)
         tk.Tk.iconbitmap(self, default="ProtonDark.ico")
         self.container.pack(side="top", fill="both", expand= False)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
+        # Packing all the data onto the screen and resizing it
         self.frames = {}
         self.killThread = False
 
         for f in (StartConnect, MessagePage): # Add more pages in here to make them switchable
             frame = f(self.container, self)
             self.frames[f] = frame
+            # Sets each custom class as a frame and stores in an array for later use
             frame.grid(row=0, column=0, sticky="nesw")
+            # Sets the geometry of the class frames inside the container frame.
 
         self.showFrame(StartConnect)
+        # Shows the first frame
 
     def showFrame(self, cont, **kwargs):
         frame = self.frames[cont]
         frame.tkraise()
+        # Shows the frame defined in the parameter
         if cont == StartConnect:
             if "Disconnect" in kwargs and kwargs["Disconnect"]: # If the first statement is false,
                 frame.DisconnectButtonPress()                    # the 2nd statement wont get run, therefore it wont thorw an error
                 frame.configInterface("disabled")
+        # Disables buttons to disconnect if the user has decided to logout
             self.geometry("235x300")
         elif cont == MessagePage:
             frame.StartThreaddedMessages() # Starts the threadding messaging manager
             frame.enterText.focus_set()
             frame.eventReturn("Enter")
             self.geometry("900x550")
+        # Sets up the frame for display (size and the focus field)
 
 class StartConnect(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.controller = controller
+        # So the class can reference the frame it is stored in
         self.connected = False
         self.loggedIn=False
+        # Variables used when the client disconnects
         tk.Frame.config(self,width=200, height=300) # Can edit background colour here
         self.label_title = ttk.Label(self, text = "Enter the Address and Port")
         self.label_title.grid(row=0, columnspan=2, pady=10)
         self.label_title.config(font="Helvetica 10")
-
-        self.style = ttk.Style()
-        self.style.configure("ProtonStyle.TEntry", background = "#36393F")
-        self.style.map("ProtonStyle.TEntry",
-                            foreground=[("disabled","grey"),
-                                        ("active","#484B51")],
-                            background=[("disabled","grey"),
-                                        ("active","#36393F")])
-
         self.label_address = ttk.Label(self, text="Address")
         self.label_port = ttk.Label(self, text="Port")
         self.default_address = tk.StringVar(self, "127.0.0.1") # Completely for time efficiency, delete after testing
         self.default_port = tk.StringVar(self, "65528")        # however could be used for a default Server
-        self.entry_address = tk.Entry(self, textvariable = self.default_address) # textvariable = self.default_address used for testing, time effective
+        self.entry_address = tk.Entry(self, textvariable = self.default_address)
+        # textvariable = self.default_address used for testing, time effective
         self.entry_port = tk.Entry(self, textvariable = self.default_port)
         self.label_address.grid(row=1, pady=3)
         self.label_port.grid(row=2, pady=3)
@@ -217,7 +234,9 @@ class StartConnect(tk.Frame):
         self.button_login.grid(columnspan=2, padx=5, pady=5)
         self.button_nextpage = ttk.Button(self, text="Next Page", state="disabled", command=lambda: controller.showFrame(MessagePage))
         self.button_nextpage.grid(columnspan=2, padx=5, pady=5)
+        # A lot of code that is very repetative and creates a fucntional interface (Just trust me)
         self.place(relx=0.5, rely=0.5, anchor="center")
+        # Smacks all of the contents of this custom frame into the "container" frame
 
     def DisconnectButtonPress(self):
         global sock
@@ -232,6 +251,12 @@ class StartConnect(tk.Frame):
         self.button_nextpage.config(state="disabled")
         self.button_login.config(state="disabled")
         self.controller.killThread = True
+
+    def tryWrapper(self, func, arg1, arg2, arg3):
+        try:
+            func()
+        except arg1 if arg1 else Exception:
+            messagebox.showerror(arg2, arg3)
 
     def ConnectButtonPress(self):
         global sock
