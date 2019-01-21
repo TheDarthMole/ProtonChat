@@ -354,72 +354,110 @@ class StartConnect(tk.Frame):
         # Saves "tosend" as an instance of "UserCredentials"
         # UserCredentials litterally just stores the parameters as instance variables
         self.UserCredentials = tosend
-        tosend = pickle.dumps(tosend).hex() # Turns the class into bytes, therefore sendable over Sockets
-        sendMessage(initialAES,tosend) # Sends the UserCredentials class pickled, hexified then encrypted to server
+        # Saves the data as an instance variable
+        tosend = pickle.dumps(tosend).hex()
+        # Turns the class into bytes, therefore sendable over Sockets
+        sendMessage(initialAES,tosend)
+        # Sends the UserCredentials class pickled, hexified then encrypted to server
         self.loggedIn=False
 
         message = recvMessage(initialAES)
         if message[:3] == "ASC":
+            # "ASC" is Account Successfully Created
             self.loggedIn = True
             messagebox.showinfo("Account Created","You have successfully created an account!")
+            # Displays a info box saying the account has been created
             self.button_login.config(state="disabled")
             self.button_nextpage.config(state="active")
+            # Sets the login button to enables and disables the next page button to disabled
             controller.showFrame(MessagePage)
+            # Shows the "MessagePage" frame
         elif message[:3] == "SLI":
+            # "SLI" is Successfully Logged In
             self.loggedIn = True
             messagebox.showinfo("Login Successful","You have successfully logged in!")
+            # Displays a message saying the user logged in successfully
             self.button_login.config(state="disabled")
             self.button_nextpage.config(state="active")
+            # Disables and enables the respective Login and nextpage button
             controller.showFrame(MessagePage)
+            # Shows the "MessagePage" frame
         elif message[:3] == "ERR":
+            # "ERR" stands for Error
             messagebox.showerror("An error occured", message[4:])
+            # An unknown error has occured, the error is then displayed to the user
         elif message[:3] == "LAE":
+            # "LAE" stands for Login Attempts Exceeded
             self.configInterface("disabled")
             self.DisconnectButtonPress()
+            # Disables a load of buttons, forces the user to disconnect from the server
             messagebox.showerror("Login credentials rejected","You have entered incorrect credentials too many times.")
+            # Displays an error message saying the user has logged in too many times
 
 class MessagePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        # Inherits from Tk.Frame, Tkinter module
         parent.focus_set()
+        # Sets the focus on the parent frame; Detection for hitting "Enter" is detected
         self.parent = parent
         self.controller=controller
+        # Sets the parent frame as an instance variable
         self.grid_columnconfigure(0,weight=1)
         self.grid_rowconfigure(0,weight=1)
+        # "MessagePage" is essentially a frame, so it sets its own "Weight" to 1
+        # This means that the message page can be resized, and the frame will stick to the outside of the container
         self.uiMessages = tkst.ScrolledText(self, state="disabled", height=128)
+        # Scrollable text field means the data from the server can be displayed to the user
+        # It is disabled so the user cannot enter their own data, but data can be entered by the program
         self.enterText = tk.Text(self, width=32, height=2)
         self.backButton = ttk.Button(self, text="Back", command=self.returnButton)
         self.sendButton = ttk.Button(self, text="Send", command=self.eventReturn)
         self.uploadButton = ttk.Button(self, text="Upload", command = lambda: self.upload())
+        # Text field for message entry and buttons to call functions are created
         self.uiMessages.grid(row=0, sticky="NESW", columnspan=2)
         self.enterText.grid(row=1, column=0,sticky="NESW")
         self.backButton.grid(row=2, column=0, sticky="WS")
         self.sendButton.grid(row=1, column=1,sticky="E")
         self.uploadButton.grid(row=2, column=0, sticky="ES")
+        # Places the buttons and text fields onto the screen, sticking them to different sides of the container
         self.sendingFiles = False
         self.onScreen = False
         self.threadStarted = False
         self.addAdminMessage("Welcome to Proton Messenger, use '/Help' for commands","Server") # Welcome message
         controller.bind("<Return>",self.eventReturn)
+        # Binds "Enter" to run the eventReturn function (Sends a text message to the server)
 
     def StartThreaddedMessages(self, *char):
         if not self.threadStarted:
+            # Starts a thread to listen for messages from the server
             self.onScreen=True
             self.threadStarted = True
             self.MessageThread = threading.Thread(target=self.FetchMessages)
+            # Creates a thread instance
             self.MessageThread.daemon=True
+            # Sets the thread to close when the main program closes
             self.MessageThread.start()
+            # Starts the thread
             print("Another thread started!")
 
     def SwitcherMSG(self,*args):
         todisplay = args[0].split("|")
+        # Splits the data entered into the function by the symbol "|"
         if todisplay[2] == "Standard":
             self.addMessage("|".join(todisplay[3:]),todisplay[1])
+            # Displays the message from the user using a blue message headder
+            # Indicates the message was sent by a standard user
         else:
             self.addAdminMessage("|".join(todisplay[3:]),todisplay[1])
+            # Displays the message from the user using a read message headder
+            # Indicates the message was sent by an admin
 
     def SwitcherFileNotFound(self, *args):
+        # Args is used because data is passed into all fucntions of the Switcher
+        # As it is easier to call different functions that way
         self.addAdminMessage("The file was not found","Server")
+        # Displays a message from the server saying the file was not found
 
     def KeyError(self, *args):
         data = args[0].split("|")
