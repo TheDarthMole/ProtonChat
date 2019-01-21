@@ -1,38 +1,43 @@
-# Imports
-
-import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time, traceback, select, contextlib
-from random import randint
-from Crypto import Random
-from Crypto.Cipher import AES
-with contextlib.redirect_stdout(None): # Imports pygame without printing version to terminal
-    from pygame import mixer
-
 # Notes:
 
 # Background = #36393F
 # Foreground = #484B51
 
-try:
-    import tkinter as tk
-    from tkinter import ttk
-    from tkinter import messagebox
-    from tkinter import filedialog
-    import tkinter.scrolledtext as tkst
-except:
-    print("[!] tkinter module is not installed, install using cmd 'py -m pip install tkinter'")
-    exit(0)
+# Imports
+
+import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, time, traceback, select, contextlib
+from random import randint
+with contextlib.redirect_stdout(None): # Imports pygame without printing version to terminal
+    from pygame import mixer
+
+def installModule(package):
+    import subprocess
+    import sys
+    try:
+        subprocess.call([sys.executable, "-m", "pip", "install", package])
+    except:
+        print("[!] Failed to install {}".format(package))
+
+while 1:
+    try:
+        import tkinter as tk
+        from tkinter import ttk
+        from tkinter import messagebox
+        from tkinter import filedialog
+        import tkinter.scrolledtext as tkst
+        from Crypto import Random
+        from Crypto.Cipher import AES
+        break # Breaks here so that there is an end
+        # This makes sure if the import fails, the module is installed
+    except:
+        print("[!] module is not installed, installing currently")
+        installModule("tkinter")
+        installModule("pycryptodome")
+
+# Global Variable declerations
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-BreakConnection = False
-
-# Diffie-hellman key declerations
-publicPrime = None
-publicBase = None
-privateKey = None
-cipherKey = None
-# Encryption declerations
 initialAES = None
-finalAES = None
 
 # Class declerations
 
