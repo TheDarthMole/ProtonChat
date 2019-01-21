@@ -460,153 +460,218 @@ class MessagePage(tk.Frame):
         # Displays a message from the server saying the file was not found
 
     def KeyError(self, *args):
+        # This function is run when an incorrect command is called
+        # *args is the whole command
         data = args[0].split("|")
+        # Splts up the string into an array with "|" being the splitter
         self.addAdminMessage("{} is not a valid command".format(" ".join(data[1:])), "Server")
+        # Displays a message from the server saying the command entered is not valid
 
     def FetchMessages(self):
         self.unbind("<Enter>")
+        # Stops the FetchMessages fucntion from being called when the mouse enteres the screen
+        # This was setup previously in another function
         self.switcher = {
         "Msg": self.SwitcherMSG,
         "Filedownload": self.download,
         "Fnf": self.SwitcherFileNotFound,
         "Keyerror": self.KeyError,
         "Logout": self.logout}
+        # These are the server side commands that can be sent to the client
         ready = select.select([sock], [], [], 5)
+        # "ready" is used to see when there is data to accept from the server
         print("FetchMessages running")
-        import time
-        while 1:
+        while 1: # This fucntion does have exit perameters, however they are checked throughout the loop
             if self.controller.killThread:
                 self.controller.killThread = False
                 self.threadStarted = False
+                # Tells other functions to stop running the thread
                 return
             if not self.sendingFiles:
                 if ready[0]:
+                    # If there is data to recieve:
                     data = recvMessage(initialAES)
                     if type(data) == type(False) and data == False:
+                        # Checks to make sure the data sent is not invalid
                         self.controller.killThread = False
                         self.threadStarted = False
                         return # If the data couldn't be collected because the socket is closed
                     data1 = data.split("|")
                     command = data1[0].title()
+                    # Turns the data back into an array, e.g. ["MSG","Nick","Hey there!"]
                     if command in self.switcher:
                         self.switcher[command](data)
+                        # If the command is in the list of correct commands, then the command will be run
                     else:
                         self.addAdminMessage("'{}' is not a valid command".format(command), "Server")
-                else:
-                    print("Not ready")
+                        # If the comand is not in the avaliable commands then an error is displayed
 
     def upload(self, *args):
         self.sendingFiles = True
+        # Set to true so that other data recieved by the thread is not written to the file
         print("Uploading data!")
         filepath = filedialog.askopenfilename(title = "Select a file to upload",filetypes = (("All Files","*.*"),))
+        # Opens a dialog box to select a file from storage
         if not filepath:
             self.addAdminMessage("No file was selected","Server")
+            # If no file path is selected:
             self.sendingFiles = False
-            return
+            return # Return means there is no need for an "else" statement, as fucntion closes anyway
         filename = filepath.split("/")
         filename = filename[-1]
+        # Grabs the filename from the whole path, e.g. "C:/Proton/Image.png", "Image.png" will be the filename
         if os.path.isfile(filepath):
+            # If the file exists:
             print("Sending '{}' to Server".format(filename))
             with open(filepath,"rb") as f:
+                # Opens the file and reads the raw bytes
                 encDataToSend = binascii.hexlify(f.read(os.path.getsize(filepath))).decode("utf-8")
                 encDataToSend = initialAES.encrypt(encDataToSend)
+                # Reads the whole contents of the file and stores it in memory
+                # The file is then turned into hex so that it can be encrypted using the cipher
             sendMessage(initialAES,"Uploading|{}|{}".format(filename,str(len(encDataToSend))))
+            # A message is then sent to the server displaying that the client wants to upload a file
+            # The message also includes how big the file is and its name, so the data can be read exactly
+            # and saved to a file on the server
             fileOnServer = recvMessage(initialAES)
+            # Gets a response from the server, either accepting the file or rejecting it
             if fileOnServer == "FAE":
+                # "FAE" stands for "File Already Exists"
                 print("File is already on the server")
                 self.addAdminMessage("A file by that name already exists on the server!","Server")
                 self.sendingFiles=False
                 return
+                # The file cannot be sent, therefore the function quits.
+                # As this function is event based, it can elegantly quit and be called again on another event call
 
             time.sleep(1)
+            # Sleeps for 1ms, this is due to an error that I was seeing
             sock.send(encDataToSend)
+            # Sends the encrypted file to the server
             print("Sent file!")
             self.addAdminMessage("File uploaded to server","Server")
+            # Display a message stating the file has been sent
         else:
             print("File is not there!")
             self.addAdminMessage("You did not select a valid file!","Server")
+            # If the file was not found, then the client will display a message to the user
             sendMessage(initialAES,"FNF")
+            # "FNF" stands for "File Not Found"
         self.sendingFiles = False
+        # Sets to false so that other messages can be recieved from the server
 
     def download(self, data):
         self.sendingFiles = True
+        # Stops other messages from being sent to the client
         print("Downloading data!")
         split = data.split("|")
         filename = split[1]
+        # Gets the filename from an array passed into the function
         print("Started download of {}".format(filename))
         self.addAdminMessage("Downloading '{}''".format(filename),"Server")
+        # Notifies the user of the file being downloaded
         filesize = int(split[2])
         f = open("new_"+filename,"wb")
+        # Creates a file for the data to be written to (Writing the data in raw bytes)
         data = recvMessage(initialAES)
+        # Recieve the filesize
         encrypted = recvMessage(initialAES,int(data))
+        # Recieve the encrypted file
         decoded = binascii.unhexlify(encrypted)
+        # Turns the hex string into bytes
         f.write(decoded)
+        # Writes the data to the file
         print("Done downloading!")
         self.addAdminMessage("Downloaded '{}' as 'new_{}'".format(filename, filename),"Server")
+        # Notifies the user of the successful download
         self.sendingFiles = False
+        # Allows other commands to be recieved
 
     def eventReturn(self, *event):
-        #print("Return pressed", repr(event.char))
         if app.frames[StartConnect].loggedIn:
+            # If the user is logged in
             text = self.enterText.get("1.0","end")
             text = text.rstrip("\n")
             self.enterText.delete("1.0", "end")
             if not text:
                 return
+                # Returns if there is nothing in the text field
             if text and text[0] == "/": # 'If text' is a quick check to see if there is data to manipulate
                 tosend = text.split(" ")
                 last = text.lstrip(tosend[0])
                 last = last.lstrip(" ")
                 sendMessage(initialAES, tosend[0]+"|"+last)
+                # If it is a command, then the structure is different than if it was a message
             else:
                 sendMessage(initialAES, "MSG|"+text)
+                # If the data is a message, then send it in the structure of a message
         else:
             app.frames[StartConnect].LoginButtonPress(self.controller)
+            # The user is not logged in in this stage, so it tries to log them in
+
     def logout(self,*args):
         self.controller.showFrame(StartConnect,Disconnect=True)
+        # Logs out the user, and then disconnects them from the server
 
     def NotificationSound(self):
         mixer.init()
         mixer.music.load("Notification.mp3")
         mixer.music.play()
+        # Plays a notification sound using the "Notification.mp3" dependancy
     def returnButton(self):
         self.onScreen = False
         self.controller.showFrame(StartConnect)
+        # Shows the "StartConnect" frame
     def addText(self, text): # Adds text to the end of the scrollable text
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str(text)+"\n")
         self.uiMessages.config(state="disabled")
+        # Adds text to the messenger interface
     def addMessage(self, text, recipient):
         self.NotificationSound()
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str("["+recipient+"] ")+str(text)+"\n")
         lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
+        # Adds some text to the messenger interface
         self.uiMessages.tag_add("red", str(lastLine - len(text.splitlines())+1)+".0",str(lastLine - len(text.splitlines())+1)+"."+str(len(recipient)+2))
         self.uiMessages.tag_config("red", foreground = "red")
+        # Turns the name of the user to red
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")
+        # Disables the text field so users cant enter data
+
     def addAdminMessage(self, text, recipient):
         self.NotificationSound()
+        # Plays a notification sound
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str("["+recipient+"] ")+str(text)+"\n")
+        # Adds a message to the messenger interface
         if len(text.splitlines())>1:
             lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 2
         else:
             lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
         self.uiMessages.tag_add("blue", str(lastLine - len(text.splitlines())+1)+".0",str(lastLine - len(text.splitlines())+1)+"."+str(len(recipient)+2))
         self.uiMessages.tag_config("blue", foreground = "blue")
+        # Some very ugly code that turns the name of the user to blue; indicating the user is an admin
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")
+        # Disables the text field so users cant enter data
     def addOwnMessage(self, text, recipient):
         pass
+        # A function I didn't finish
 
 if __name__ == "__main__":
     try:
+        # Try and except so the program can be closed with CTRL-C
         app = ProtonClient()
+        # Starts the tkinter interface
         app.title("Proton Client")
-    #    app.config(bg="#36393E")
+        # Sets the title for the windows window
         app.mainloop()
+        # Shows where the tkinter code should loop through
     except KeyboardInterrupt:
         print("KeyboardInterrupt occured, quitting")
+        # Notifies the user why the program closed
     finally:
         sock.close()
+        # Elegantly closes the socket so that it doesn't stay open
