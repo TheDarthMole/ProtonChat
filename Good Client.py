@@ -202,39 +202,49 @@ class StartConnect(tk.Frame):
         self.label_title = ttk.Label(self, text = "Enter the Address and Port")
         self.label_title.grid(row=0, columnspan=2, pady=10)
         self.label_title.config(font="Helvetica 10")
+        # Changes the font of the title
         self.label_address = ttk.Label(self, text="Address")
         self.label_port = ttk.Label(self, text="Port")
         self.default_address = tk.StringVar(self, "127.0.0.1") # Completely for time efficiency, delete after testing
         self.default_port = tk.StringVar(self, "65528")        # however could be used for a default Server
         self.entry_address = tk.Entry(self, textvariable = self.default_address)
         # textvariable = self.default_address used for testing, time effective
+        # Sets up the address and port of the login fields
         self.entry_port = tk.Entry(self, textvariable = self.default_port)
         self.label_address.grid(row=1, pady=3)
         self.label_port.grid(row=2, pady=3)
         self.entry_address.grid(row=1, column=1, pady=3, padx=11)
         self.entry_port.grid(row=2, column=1, pady=3, padx=11)
+        # Places the entry fields onto the screen
         self.button_connect = ttk.Button(self, text="Connect", command=self.ConnectButtonPress)
         self.button_connect.grid(row=3, padx=7, pady=5)
+        # Creates the connect button and places it on the screen
         self.button_disconnect = ttk.Button(self, text="Disconnect", command=self.DisconnectButtonPress, state="disabled")
         self.button_disconnect.grid(row=3, column=1, columnspan=1)
+        # Creates the disconnect button and places it on the screen
         self.label_connIndicator = ttk.Label(self, text="Current Status: Disconnected\n")
         self.label_connIndicator.grid(row=4, columnspan=2)
+        # Creates a indicator label to update the user on the connection status, then places it on the screen
         self.CheckVar = tk.IntVar(value=0)
         self.checkbox_createAccount = ttk.Checkbutton(self, text="Create new account", variable = self.CheckVar, state = "disabled")
         self.checkbox_createAccount.grid(row=5, columnspan=2)
+        # Creates the checkbox to create the account and places it on the screen
         self.label_username = ttk.Label(self, text="Username")
         self.label_password = ttk.Label(self, text="Password")
         self.entry_username = ttk.Entry(self, state="disabled") # Disabled because you can't login before connecting
         self.entry_password = ttk.Entry(self, state="disabled", show="*")
+        # Creates username and password entry fields, with corresponding labels
         self.label_username.grid(row=6)
         self.label_password.grid(row=7)
         self.entry_username.grid(row=6, column=1, pady=3)
         self.entry_password.grid(row=7, column=1, pady=3)
+        # Places the entry fields and labels on the screen
         self.button_login = ttk.Button(self, text="Login", command= lambda: self.LoginButtonPress(controller), state="disabled")
         self.button_login.grid(columnspan=2, padx=5, pady=5)
+        # Creates the login button and places it on the screen, it calls the login function
         self.button_nextpage = ttk.Button(self, text="Next Page", state="disabled", command=lambda: controller.showFrame(MessagePage))
         self.button_nextpage.grid(columnspan=2, padx=5, pady=5)
-        # A lot of code that is very repetative and creates a fucntional interface (Just trust me)
+        # Creates a button to switch to the next page then places it on the screen
         self.place(relx=0.5, rely=0.5, anchor="center")
         # Smacks all of the contents of this custom frame into the "container" frame
 
@@ -242,6 +252,7 @@ class StartConnect(tk.Frame):
         global sock
         sock.close()
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Closes the socket and resets it
         self.label_connIndicator.config(text="Current Status: Disconnected\n")
         self.entry_username.config(state="disabled")
         self.entry_password.config(state="disabled")
@@ -250,45 +261,53 @@ class StartConnect(tk.Frame):
         self.button_connect.config(state="normal")
         self.button_nextpage.config(state="disabled")
         self.button_login.config(state="disabled")
+        # Disables buttons that should not be pressed once the user is disconnected
         self.controller.killThread = True
-
-    def tryWrapper(self, func, arg1, arg2, arg3):
-        try:
-            func()
-        except arg1 if arg1 else Exception:
-            messagebox.showerror(arg2, arg3)
+        # Tells the threadded function to stop running
 
     def ConnectButtonPress(self):
         global sock
         address = self.entry_address.get()
         port = self.entry_port.get()
-        try:
+        # Grabs the data from the entry fields and stores in variables
+        try: # In this try because the connection may fail
             continueconnect = False
             sock.connect((address, int(port))) # Connect to the server
             print("Connected!")
             continueconnect = True
+            # If the connection fails, "continueconnect" wont be set to True
         except socket.gaierror:
             messagebox.showerror("Failed to connect!","The ip or port is not valid")
             return
+            # Returns if the ip or port of the server is invalid
         except TimeoutError:
             messagebox.showerror("Failed to connect!","The connection was refused or the host did not respond")
             return
+            # Shows and error and returns out of the funciton if the host doenst respond
         except OSError as e:
             messagebox.showerror("Failed to connect!",e)
             return
+            # Shows and error and returns out of the function if an error that is not known occurs
         except ValueError:
             messagebox.showerror("Failed to connect!","You entered an incorrect port number (It has to be a number)")
             return
+            # Shos and error and returns out of the function if a letter is entered in as ip or port
         finally:
             if not continueconnect:
                 sock.close()
+                # Closes the connection if ordered to close the connection
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
+                # Resets the socket
+        try: # In a try loop because the connection may close
             global DiffieHellman
             global initialAES
-            DiffieHellman = DH() # We have created a diffie-hellman key exchange here, used for initialAES encryption
-            initialAES = AESCipher(hex(int(DiffieHellman))) # Setting the diffie-hellman key as the key for AES
+            DiffieHellman = DH()
+            # We have created a diffie-hellman key exchange here, used for initialAES encryption
+            initialAES = AESCipher(hex(int(DiffieHellman)))
+            # Setting the diffie-hellman key as the key for AES
             print(recvMessage(initialAES))
+            # Prints a message saying the cipher works (Is sent by the server then Decrypted
+            # meaning if the cipher doesnt work then the text will look like ciphertext)
             self.label_connIndicator.config(text="Current Status: Connected!\n            Please Log in")
             self.entry_username.config(state="normal")
             self.entry_password.config(state="normal")
@@ -296,30 +315,44 @@ class StartConnect(tk.Frame):
             self.button_login.config(state="normal")
             self.button_disconnect.config(state="normal")
             self.button_connect.config(state="disabled")
+            # Enables and disables buttons and text fields once the user has connected
         except ConnectionResetError:
+            # ConnecionResetError is if the user closes the connection mid way through the connection
             print("[x] Connection with",address+":"+str(port),"was actively closed")
             messagebox.showerror("Connection lost!",("Connection with "+address+":"+str(port)+" was actively closed."))
+            # Displays a popup saying the connection was lost
             sock.close()
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # Disconnects from the server then resets the socket
         except ValueError:
             messagebox.showerror("Connected to wrong server!","You have connected to a server that is not running Proton Server.")
+            # Displays a message saying the user has connected to a server, but it doesn't run the correct backend code
             sock.close()
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # Disconnects the socket and then resets it
 
     def configInterface(self, value):
         for x in (self.entry_username, self.entry_password,self.checkbox_createAccount,self.button_login, self.button_disconnect, self.button_nextpage):
             x.config(state=value)
+            # Disables/Enables a set of buttons and entries dependant on the "value" parameter
         if value == "disabled":
             self.button_login.config(state="active")
+            # Inverts the login button based on the "value" parameter
         else:
             self.button_login.config(state="disabled")
+            # Else it is set to disabled
 
     def LoginButtonPress(self, controller):
         username = self.entry_username.get()
         password = self.entry_password.get()
+        # Retrieves the username and password data from the entry fields
         password = initialAES.hasher(password).hex()
+        # Hashes the password and turns it into hex
         createaccount = self.CheckVar.get()
+        # Gets the value of the checkbox and saves it as a "1" or "0"
         tosend = UserCredentials(username,password,True if createaccount else False)
+        # Saves "tosend" as an instance of "UserCredentials"
+        # UserCredentials litterally just stores the parameters as instance variables
         self.UserCredentials = tosend
         tosend = pickle.dumps(tosend).hex() # Turns the class into bytes, therefore sendable over Sockets
         sendMessage(initialAES,tosend) # Sends the UserCredentials class pickled, hexified then encrypted to server
