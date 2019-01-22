@@ -548,7 +548,6 @@ class MessagePage(tk.Frame):
                 return
                 # The file cannot be sent, therefore the function quits.
                 # As this function is event based, it can elegantly quit and be called again on another event call
-
             time.sleep(1)
             # Sleeps for 1ms, this is due to an error that I was seeing
             sock.send(encDataToSend)
@@ -623,15 +622,18 @@ class MessagePage(tk.Frame):
         mixer.music.load("Notification.mp3")
         mixer.music.play()
         # Plays a notification sound using the "Notification.mp3" dependancy
+
     def returnButton(self):
         self.onScreen = False
         self.controller.showFrame(StartConnect)
         # Shows the "StartConnect" frame
+
     def addText(self, text): # Adds text to the end of the scrollable text
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str(text)+"\n")
         self.uiMessages.config(state="disabled")
         # Adds text to the messenger interface
+
     def addMessage(self, text, recipient):
         self.NotificationSound()
         self.uiMessages.config(state="normal")
@@ -661,6 +663,7 @@ class MessagePage(tk.Frame):
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")
         # Disables the text field so users cant enter data
+        
     def addOwnMessage(self, text, recipient):
         pass
         # A function I didn't finish
