@@ -288,34 +288,49 @@ class UserCredentials:
         self.username = username
         self.password = password
         self.createaccount = createaccount
+        # Sets up the parameters as instance variables
 
 class AESCipher(object):
     def __init__(self, key):
         self.key = self.hasher(key)
+        # Hashes a value and uses it as the cipher
 
     def hasher(self, password):
         salt = b'\xdfU\xc1\xdf\xf9\xb30\x96' # This is the default salt i am using for client and server side
+        # This is the default salt i am using for client and server side
+        # Theoretically this should be random for each user and stored in the database
         return (  hashlib.pbkdf2_hmac("sha256",password.encode("utf-8"), salt, 1000000)  )
+        # Returns the hashed password using PBKDF2 HMAC
 
     def encrypt(self, raw):
         b64 = base64.b64encode(raw.encode("utf-8")).decode("utf-8") # Turned to base64 because it stops a weird padding error in the module
+        # Base 64 encoding using "UTF-8" encoding
         raw = self.pad(b64)                                         # That stops the £ symbol being sent
+        # Padded so that it is a multiple of 16 (Block cipher length)
         rawbytes = bytes(raw,"utf-8")
         iv = Random.new().read(AES.block_size)
+        # Random IV to make the ciphertext random
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        # New cipher instance using the random IV and the encryption key
         return base64.b64encode(iv + cipher.encrypt(rawbytes))
+        # Returns the data encrypted and in base4 format
 
     def decrypt(self, enc):
         enc = base64.b64decode(enc)
         iv = enc[:AES.block_size]
+        # Splits up the IV and the data
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        # Creats the cipher to decrypt the data
         return base64.b64decode(self.unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')).decode("utf-8")
+        # Returns the decrypted data as a plaintext string
 
     def pad(self,s): # Pads the string so that it complys with the AES 16 byte block size
         return s + (AES.block_size - len(s) % AES.block_size) * chr(AES.block_size - len(s) % AES.block_size)
+        # Pads the data to a size of multiple 16
 
     def unpad(self, s): # Turns the 16 byte complyant string to a normal string
         return s[:-ord(s[len(s)-1:])]
+        # Removes the padding from a string
 
 class Members:
     def __init__(self, connection, ip, port):
@@ -329,6 +344,7 @@ class Members:
 464831218031464077205916042049447783375725379654966060134\
 402111426034716246754987996475613641992085506553374675640\
 6145751654070887955334806643930700832559492186669690829"""
+        # Large prime number to use for the diffie-hellman
         self.Prime = int(self.Prime)
         self.Base = randint(2,3)
         self.Secret = randint(2**100, 2**150)
@@ -340,21 +356,28 @@ class Members:
         self.sendingFiles = False
         self.loginAttempts = 0
         self.BlockedUsers = []
+        # Setting  up instance variables
 
-    @Logger
+    @Logger # Logger is used to make sure data is stored in the case of a crash
     def send(self, toSendToClient, cipher):
         toSendToClient = cipher.encrypt(toSendToClient)
+        # Encrypts the data using the cipher passed into the subroutine
         self.socket.send(toSendToClient)
+        # Sends the data to the client
 
 
     def recv(self, cipher):
         try:
             receaved = self.socket.recv(2048)
+            # Recieves data from the client
         except ConnectionResetError:
+            # Catches an error if the client has disconnected
             try:
+                # Embedded try becuse the user may not be logged in yet
                 print("[=] {} {} disconnected from the server - [{}:{}]".format("Admin" if self.database.isAdmin(self.credentials.username) else "Standard", self.credentials.username,self.ip, self.port))
             except:
                 print("[=] Connection has been lost with {}:{}".format(self.ip,self.port))
+                # Logs the user has lost connection and they where not logged in
             self.RemoveInstance(self)
             self.connectionlost = True
             return True
