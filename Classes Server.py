@@ -217,7 +217,7 @@ class SQLDatabase:
         # Inserts or updates the existing record to contain the correct data
         self.PrintCustomerContents()
         # Displays the contents of the blocked table
-        # (This is not necessary however the server cant call this command from the command line)
+        # (This is not necessary however there is no other easier way to show the contents)
         return True
         # If checks succeed then return True
 
@@ -348,9 +348,11 @@ class Members:
         self.Prime = int(self.Prime)
         self.Base = randint(2,3)
         self.Secret = randint(2**100, 2**150)
+        # Random numbers for diffie-hellman key exchange
         self.initialAES = None
         self.finalAES = None
         self.database = SQLDatabase("LoginCredentials.db")
+        # Assigns a database instance per connected user
         self.connectionlost = False
         self.loggedIn = False
         self.sendingFiles = False
@@ -367,7 +369,7 @@ class Members:
 
 
     def recv(self, cipher):
-        try:
+        try: # Used because the socket may be disconnected
             receaved = self.socket.recv(2048)
             # Recieves data from the client
         except ConnectionResetError:
@@ -379,118 +381,166 @@ class Members:
                 print("[=] Connection has been lost with {}:{}".format(self.ip,self.port))
                 # Logs the user has lost connection and they where not logged in
             self.RemoveInstance(self)
+            # Removes the connection from the server if the client has disconnected
             self.connectionlost = True
             return True
         receaved = receaved.decode("utf-8")
-        try:
+        # Turns the data into a string, it is still however ciphertext
+        try: # Try because the decryption may fail (e.g. with partial ciphertext)
             decrypted = cipher.decrypt(receaved)
+            # Decrypt the data
         except Exception as e:
             print("[!] Failed to decrypt message from {}:{}".format(self.ip,self.port))
             print("[!]         - {}".format(e))
             return True
+            # There are many different decryption faliure types, so a generic exception is needed
         return (decrypted)
 
     def recvBytes(self, cipher):
         try:
             receaved = self.socket.recv(2048)
             decrypted = cipher.decrypt(receaved)
+            # Recieve and decrypt the data from the client
             return decrypted
         except ConnectionResetError:
+            # Excepts an error if the client has disconnected
             print("[=] Connection has been lost with {}:{}".format(self.ip,self.port))
             self.socket.close()
-            counter = 0
+            # Closing the disconnected socket
             self.RemoveInstance(self)
+            # Completely removes the client form the server as a connected user
             self.connectionlost = True
             return True
 
     def sendDiffieHellman(self):
         self.sendKey = pow(int(self.Base),int(self.Secret),int(self.Prime))
-        self.socket.send(bytes(str(  (str(self.Base)+" "+str(self.Prime)+" "+str(self.sendKey))  ), 'utf-8'))     #
+        # Base ^ Secret Mod Prime
+        self.socket.send(bytes(str(  (str(self.Base)+" "+str(self.Prime)+" "+str(self.sendKey))  ), 'utf-8'))
         # Send Base, Prime and SendKey to client. Structure using something like "Base Prime Key"
         self.recvkey = self.socket.recv(1024)
+        # The client will do a similar equation, and then send their response to the server
         self.recvkey = self.recvkey.decode("utf-8")
+        # Turns the data into plaintext rather than bytes
         self.DiffieHellman = pow(int(self.recvkey),int(self.Secret),int(self.Prime))
+        # Computes the final key to use for the cipher
+        # recvkey ^ Secret Mod Prime
+        # (g^a mod p)^b mod p = g^ab mod p      (This is the number the server has)
+        # (g^b mod p)^a mod p = g^ba mod p      (This is the number the client has)
+        # They are the same number
         return self.DiffieHellman
 
     def login(self):
         self.instance = self.recvBytes(self.initialAES)
-        if self.loginAttempts > 3:
+        # Recieves the pickled instance the user sent to the server (Storing the credentials)
+        if self.loginAttempts > 3: # User cannot exceed 3 login attempts per connection
             print("[!] Max login attempts from {}:{}".format(self.ip,self.port))
             self.send("LAE",self.initialAES) # Login Attempts Exceeded
+            self.socket.close()
             self.RemoveInstance(self)
+            # Removes the instance from the server; Disconnect the user
             self.connectionlost = True
             return False
         if self.instance == True or self.instance == False or self.instance == None or self.instance == 0:
+            # A basic check to make sure the instance is valid
             self.connectionlost = True
             print("[=] Connection has been lost with 'Not logged in' [{}:{}]".format(self.ip, self.port))
+            self.socket.close()
             self.RemoveInstance(self)
+            # If the instance is not valid, remove the connection
             return
         self.instance = bytes.fromhex(self.instance)
         self.credentials = pickle.loads(self.instance)
+        # Turns the pickled instance into a usable instance
         if self.credentials.createaccount == True:
             if self.database.allowedCreateAccount(self.ip, self.port, self.credentials.username):
                 self.database.AppendClientsDatabase(self.ip, self.port, self.credentials.username, self.credentials.password, "Standard")
+                # If the user wants to create an account and is eligable to then create an account
                 print("[+] User added to database:",self.ip, self.port, self.credentials.username, "Standard")
                 self.send("ASC", self.initialAES) # Account successfully Created
+                # Tell the user the account was created
                 self.loggedIn = True
                 return True
             else:
                 print("[=] Sending Error")
                 self.send("ERR-You have already made an account!", self.initialAES)
+                # If the user is not allowed to create the account, notify them
         elif self.database.checkPassword(self.credentials.username, self.credentials.password):
+                # If the user has the same password as the one in the database then they are logged in
                 self.loggedIn = True
                 self.database.updateUser(self.credentials.username,ip=self.ip, port=self.port)
-                self.send("SLI", self.initialAES)
+                # Update the ip and port in the database (Shows last connection)
+                self.send("SLI", self.initialAES) # Successfully Logged In
+                # Notify the user of the successful login
                 return True
         else:
             self.loggedIn = False
             self.send("ERR-You have entered an incorrect username or password!", self.initialAES)
+            # Tell the user the username or password is incorrect if they are not valid
             self.loginAttempts+=1
+            # Incriments the login attempt counter, if it is greater than 3 the user is disconnected
             return False
 
     def RemoveInstance(self, instance):
         counter=0
         for i in InstanceList:
+            # Loops through the connected users
             if instance == i:
                 instance.socket.close()
                 InstanceList.pop(counter)
+                # If the user passed in as the perameter is connected, disconnect
+                # Them and then remove them from the connected users array
                 return
             counter+=1
 
     @Logger
+    # The user, account type and message is all logged using this wrapper function
     def DistributeMessage(self, message, sentfrom, accountType):
         print("[+] ["+sentfrom+"-"+accountType+"] "+message)
+        # A message to the console to show messages sent from users
         itteration = len(InstanceList)
         delInstanceList = []
         for connecitons in reversed(InstanceList):
+            # Reversed the array because later on elements are going to be "popped" from the array, this would displace other elements
             if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers:
+                # If the user is able to accept messages
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
+                    # Try and send the message to the user, along with account name and account type
                 except:
                     print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
                     print("[=]      - Removing {} from connected clients".format(connecitons.credentials.username))
                     self.RemoveInstance(connecitons) # Removes the instance from the list, therefore removing the connection
+                    # Catches errors from sending the message, logs to console and then disconnects the conflicting user
             itteration-=1
 
     def download(self, *args):
         self.sendingFiles = True
         size = int(args[0][1])
         filename = args[0][0]
+        # Grab the file name and size from the arguments (They are passed in as an array within args; [ [,] , ] )
         print("[+] File upload request from {}, filename: '{}' with size {} - [{}:{}]".format(self.credentials.username, filename, size, self.ip, self.port))
+        # Log that a user is attempting a file upload
         if os.path.isfile("UserFiles\\"+filename):
             print("[!] File '{}' already exists  - {} [{}:{}]".format("UserFiles\\"+filename,self.credentials.username, self.ip, self.port))
+            # Checks if a file of that name already exists on the server
             self.send("FAE",self.initialAES) # File Already Exists
             self.sendingFiles=False
             return
+            # Notifies the user that the file exists, then quits function
         else:
             print("Downloading file '{}' from {} [{}:{}]".format(filename, self.credentials.username, self.ip, self.port))
             self.send("STS",self.initialAES) # Safe to Send
+            # Allow the user to send the file to the server
 
         with open("UserFiles\\"+filename,"wb") as f:
             encFile=self.socket.recv(size)
+            # Download the file
             encFile = self.initialAES.decrypt(encFile)
+            # Decrypt it
             encFile = binascii.unhexlify(encFile)
+            # Turn it to usable bytes
             f.write(encFile)
+            # Write to a file
         print("[+] Done downloading '{}' from {} [{}:{}]".format(filename,self.credentials.username,self.ip, self.port))
         self.sendingFiles = False
 
@@ -498,49 +548,73 @@ class Members:
         self.sendingFiles = True
         filename=args[0][0]
         pathfile = "UserFiles/"+str(filename)
+        # Gets the filename that the user has requested
         if os.path.isfile(pathfile):
+            # Checks to see if it is a valid file
             print("[^] Sending '{}' to {} [{}:{}]".format(pathfile,self.credentials.username,self.ip, self.port))
             self.send("FileDownload|"+str(filename)+"|"+str(os.path.getsize(pathfile)),self.initialAES)
+            # Prepare the user to download a file
             with open(pathfile,"rb") as f:
                 toencrypt = binascii.hexlify(f.read(os.path.getsize(pathfile))).decode("utf-8")
+                # Read the whole file and turn it into hex
             encrypted = self.initialAES.encrypt(toencrypt)
+            # Encrypt the file
             time.sleep(1)
             self.send(str(len(encrypted)),self.initialAES)
+            # Send the length of the encrypted file to the user
+            # This is so the user knows how much to download
             print("Sent length:",os.path.getsize(pathfile))
             self.socket.send(encrypted)
+            # Send the actual file
             print("[=] Done uploading '{}' to {} [{}:{}]".format(pathfile, self.credentials.username, self.ip, self.port))
+            # Log that the file has been uploaded to the user
         else:
             self.send("FNF", self.initialAES)
+            # The file was not found on the server, so notifying the user
             print("[!] File '{}' not found [{} {}:{}]".format(pathfile, self.credentials.username, self.ip, self.port))
         self.sendingFiles = False
 
     def BlockUser(self, *args):
         usernames = args[0][0].split(" ")
-        for x in usernames:
+        # A list of the names a user wants to block
+        for x in usernames: # Loop through the users to block
             if not self.database.EditBlockedDatabase(self.credentials.username,x,"Blocked"):
+                # If the user tries blocking someone who is not a valid user
                 print("[!] Client {} tried blocking {} but they are not in database".format(self.credentials.username,x))
                 if self.credentials.username == x:
                     print("[-] {} tried blocking themself".format(self.credentials.username))
                     self.send("MSG|Server|Admin|You cannot block youself.",self.initialAES)
+                    # Logs that a user tried blocking themself and then tells the user
                 else:
                     print("[!] {} tried blocking {} but they are not in the database".format(self.credentials.username, x))
                     self.send("MSG|Server|Admin|There is no such user {}".format(x),self.initialAES)
+                    # Notifies the user that they tried blocking someone that doesnt exist
             else:
                 print("[+] {} blocked {}".format(self.credentials.username, x))
                 self.send("MSG|Server|Admin|User {} has been blocked".format(x),self.initialAES)
+                # Notify the user that they have successfully blocked the user
         self.BlockedUsers = self.database.currentlyBlockedUsers(self.credentials.username)
+        # Update the currently blocked users for this instance's user
 
     def UnblockUser(self, *args):
         usernames = args[0][0].split(" ")
+        # Unblock many users
         for x in usernames:
+            # Loop through each user to unblock
             if not self.database.EditBlockedDatabase(self.credentials.username,x,"Unblocked"):
+                # Unblock the user if the user exists
+                # If EditBlockedDatabase returns True then the user has been unblocked
                 if self.credentials.username == x:
                     self.send("MSG|Server|Admin|There is no reason to unblock youself",self.initialAES)
+                    # Notifies the user that they cannot unblock themself
                 else:
                     self.send("MSG|Server|Admin|There is no user {}".format(x),self.initialAES)
+                    # Notifies the user that they cannot unblock a non-existent user
             else:
                 self.send("MSG|Server|Admin|User {} has been unblocked".format(x), self.initialAES)
+                # Notifies the user that they unblocked the user
         self.BlockedUsers = self.database.currentlyBlockedUsers(self.credentials.username)
+        # Updates the user's blocked users
 
     def MessengerInterface(self):
         self.switcher = { # Key - [FunctionReference, Description, Example]
@@ -554,25 +628,34 @@ class Members:
             "/Download": [self.upload,"Download a file from the server","/Download [FileName]"], # The users download is the servers upload
             "/Block": [self.BlockUser,"Blocks a user from sending you messages","/Block [Username] [Optional aditional usernames]"],
             "/Unblock": [self.UnblockUser,"Allows a previously blocked user to send you messages","/Unblock [Username] [Optional aditional usernames]"]}
+            # A large list of commands avaliable to the client
 
         if self.__class__ == Admins: # This allows admins to manipulate their extended privs inherited from Admins class
-            # Key - [FunctionReference, Description, Example
+            # Key - [FunctionReference, Description, Example]
             self.switcher["/Createadmin"] = [self.CreateAdminAccount,"Creates an admin account","/CreateAdmin [Username] [Password]"]
             self.switcher["/Ban"] = [self.BanUser,"Bans a user from the server","/Ban [Username]"]
             self.switcher["/Removeaccount"] = [self.RemoveAccount,"Deletes a users account","/RemoveAccount [Username]"]
             self.switcher["/Editaccount"] = [self.EditMember,"Edit an account","/EditAccount [Username] [AccountType]/[Password]=[Value]"]
+            # This is only for the admins class
 
         while not self.connectionlost and MainThreadClose == False: # While the client is connected run
             try:
                 data = self.recv(self.initialAES)
+                # Recieve the data from the user
                 self.database.AddMessage(self.credentials.username,data)
-                # self.database.PrintMessagesContents()
+                # Adds the message the user sent to the database to log it
                 if data[:3] == "MSG":
                     self.DistributeMessage(data[4:], self.credentials.username, "Standard" if not self.database.isAdmin(self.credentials.username) else "Admin")
+                    # If the message was intended for other users, distribute it to other users
                 else:
                     edited = data.split("|")
+                    # If it is a command, then split up the data into an array
                     try:
                         self.switcher[edited[0].title()][0](edited[1:])
+                        # This part is incredibly important for the server, any message/command that is sent to the server will end up here
+                        # Once the user has logged in. The command will be checked to see if it is in the avaliable commands dictionary (Turned
+                        # into a title so that it doesn't have to be capitalised) If it is in the dictionary then the function correlating will
+                        # be run and the data is passed into the fucntion
                     except KeyError:
                         print("[!] Key error occured with data: '{}' from {} [{}:{}]".format(edited[0], self.credentials.username, self.ip, self.port))
                         self.send("Keyerror|{}".format(edited[0]),self.initialAES) # Make an error message here to be displayed on the users screen.

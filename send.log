@@ -1,0 +1,6 @@
+INFO:root:Ran with args: (<__main__.Members object at 0x03ECB5F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03ECB950>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03ECB5F0>, 'SLI', <__main__.AESCipher object at 0x03ECB950>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03ECB5F0>, 'gey', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03ECB5F0>, 'MSG|Nick|Admin|gey', <__main__.AESCipher object at 0x03ECB950>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03ECB5F0>, ':P', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03ECB5F0>, 'MSG|Nick|Admin|:P', <__main__.AESCipher object at 0x03ECB950>), and kwargs: {}
