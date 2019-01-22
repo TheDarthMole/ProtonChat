@@ -684,55 +684,69 @@ class Members:
         self.send("Encryption cipher working", self.initialAES) # Sends a test message to the client so the client can do a checkPassword
         self.loggedIn=False
         self.contunue = self.login()
+        # Runs the login function, if it returns true then the user has successfully logged in
         while not self.contunue and self.connectionlost == False:
+            # While the user is not logged in and the connection has not been lost
             self.contunue = self.login() # Makes sure the user is logged in to an account
         if self.database.isAdmin(self.credentials.username):
             self.__class__ = Admins
+            # Elevates the privelages to admin if they login to an admin account
             print("[+] {} logged in as an Admin from {}:{}".format(self.credentials.username, self.ip, self.port))
         else:
             print("[+] {} logged in as a Member from {}:{}".format(self.credentials.username, self.ip, self.port))
+            # Displays who has logged in and from what ip / account type
         self.MessengerInterface()
+        # Starts listening for messages and responding to commands
 
 class Admins(Members):
     def __init__(self, ip, port, nickname, password):
         super().__init__(ip, port, nickname, password)
     def BanUser(self): # Possibly ban users from an ip address / Range
         pass
-    def RemoveAccount(self, username):
+    def RemoveAccount(self, username): # A function to remove user accounts
         pass
-    def CreateAdminAccount(self,*args):
+    def CreateAdminAccount(self,*args): # Creates admin accounts
         print(args)
         split = args[0][0].split(" ")
         if len(split) < 2:
             self.send("MSG|Server|Admin|Another argument is needed in the format '/Createadmin [Username] [Password]'",self.initialAES)
+            # The user has to enter a username as well as a password, so an error message is displayed if the arguments are less than 2
         else:
-            print(split)
             if self.database.allowedCreateAccount:
                 self.database.AppendClientsDatabase("N/A",0,split[0],self.initialAES.hasher(split[1]),"Admin")
+                # Creates an admin account if there is no pre-existing account with that name
                 print("[+] Admin account {} has been created by {}".format(split[0],self.credentials.username))
                 self.send("MSG|Server|Admin|Admin Account {} has been successfully created".format(split[0]),self.initialAES)
+                # Notifies the user of the account creation
             else:
                 print("[!] Admin account {} couldn't be made by {}".format(split[0],self.credentials.username))
                 self.send("MSG|Server|Admin|Admin account {} could not be created, try a different username".format(split[0]),self.initialAES)
+                # The account couldn't be created because an existing account with that name is present
 
     def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
         pass
 
 distributeThreads = []
+# Used to store threads, many connections may be needed with one thread per connection
 MainThreadClose = False
 print("[*] Searching for connections")
 while 1: # Stuff here for accepting connections # Leading to create a seperate thread for connected clients
     try: # Nesting "try" so that the output looks cleaner when KeyboardInterrupt occurs (Stops multiple errors displaying)
         try:
             connection, ip = sock.accept()
+            # Accept incoming connection
             InstanceList.append(Members(connection,ip[0], ip[1]))
+            # Create the instance for the client, and then add it to the connected clients list
             print("[+] "+str(ip[0])+":"+str(ip[1])+" Connected!")
             distributeThreads.append(threading.Thread(target=InstanceList[len(InstanceList)-1].handler))
+            # Create the thread to handle the connection
             distributeThreads[len(distributeThreads)-1].deamon = True
             distributeThreads[len(distributeThreads)-1].start()
+            # Start the thread
         except socket.timeout: # Occurs every second, therefore no code to be run
             pass
     except KeyboardInterrupt:
+        # Catch the CTRL-C to stop the program
         banner()
         print("[!] KeyboardInterrupt occured, quitting when all connecitons have dropped")
         MainThreadClose = True
