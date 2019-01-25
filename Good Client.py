@@ -416,9 +416,9 @@ class MessagePage(tk.Frame):
         # Scrollable text field means the data from the server can be displayed to the user
         # It is disabled so the user cannot enter their own data, but data can be entered by the program
         self.enterText = tk.Text(self, width=32, height=2)
-        self.backButton = ttk.Button(self, text="Back", command=self.returnButton)
-        self.sendButton = ttk.Button(self, text="Send", command=self.eventReturn)
-        self.uploadButton = ttk.Button(self, text="Upload", command = lambda: self.upload())
+        self.backButton = ttk.Button(self, text="Back", command = self.returnButton)
+        self.sendButton = ttk.Button(self, text="Send", command = self.eventReturn)
+        self.uploadButton = ttk.Button(self, text="Upload", command = self.upload)
         # Text field for message entry and buttons to call functions are created
         self.uiMessages.grid(row=0, sticky="NESW", columnspan=2)
         self.enterText.grid(row=1, column=0,sticky="NESW")
@@ -663,7 +663,7 @@ class MessagePage(tk.Frame):
         self.uiMessages.see("end")
         self.uiMessages.config(state="disabled")
         # Disables the text field so users cant enter data
-        
+
     def addOwnMessage(self, text, recipient):
         pass
         # A function I didn't finish
