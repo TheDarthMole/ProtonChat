@@ -337,8 +337,6 @@ class Members:
         self.ip = ip
         self.port = port
         self.socket = connection
-        self.nickname = None
-        self.code = None
         self.DiffieHellman = None
         self.Prime = """529204664323527979712946862439191145311982207310489934007\
 464831218031464077205916042049447783375725379654966060134\
@@ -350,7 +348,6 @@ class Members:
         self.Secret = randint(2**100, 2**150)
         # Random numbers for diffie-hellman key exchange
         self.initialAES = None
-        self.finalAES = None
         self.database = SQLDatabase("LoginCredentials.db")
         # Assigns a database instance per connected user
         self.connectionlost = False
