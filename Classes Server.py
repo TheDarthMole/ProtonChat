@@ -672,8 +672,10 @@ class Members:
             if not x in ["Msg","Uploading"]: # Because the "MSG" is not a command, and shows backend structure too easily
                 string+="{} {} {}\n".format(x, self.switcher[x][1],self.switcher[x][2])
         self.send("MSG|Server|Admin|{}".format(string),self.initialAES)
+
     def Logout(self,*args):
-        self.send("Logout",self.initialAES) # Sends the disconnect message to the client so the client knows to change screen
+        self.send("Logout",self.initialAES)
+        # Sends the disconnect message to the client so the client knows to change screen
 
     def handler(self): # This is run in a thread, one for each client
         self.sendDiffieHellman() # sets AES Key variable
@@ -698,10 +700,14 @@ class Members:
 class Admins(Members):
     def __init__(self, ip, port, nickname, password):
         super().__init__(ip, port, nickname, password)
+
     def BanUser(self): # Possibly ban users from an ip address / Range
         pass
     def RemoveAccount(self, username): # A function to remove user accounts
         pass
+    def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
+        pass
+
     def CreateAdminAccount(self,*args): # Creates admin accounts
         print(args)
         split = args[0][0].split(" ")
@@ -719,9 +725,6 @@ class Admins(Members):
                 print("[!] Admin account {} couldn't be made by {}".format(split[0],self.credentials.username))
                 self.send("MSG|Server|Admin|Admin account {} could not be created, try a different username".format(split[0]),self.initialAES)
                 # The account couldn't be created because an existing account with that name is present
-
-    def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
-        pass
 
 distributeThreads = []
 # Used to store threads, many connections may be needed with one thread per connection
