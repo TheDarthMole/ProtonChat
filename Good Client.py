@@ -9,16 +9,21 @@ import socket, threading, base64, hashlib, pickle, os, sys, binascii, select, ti
 from random import randint
 with contextlib.redirect_stdout(None): # Imports pygame without printing version to terminal
     from pygame import mixer
+# This imports a load of modules that are needed for the code to be run
 
 def installModule(package):
     import subprocess
     import sys
     try:
         subprocess.call([sys.executable, "-m", "pip", "install", package])
+        # Installs modules that are not default to python
     except:
         print("[!] Failed to install {}".format(package))
 
 while 1:
+    # The while loop makes sure the modules are installed, the first run will
+    # see if the modules can be imported, if this fails then the module will
+    # be installed, the loop will go around and then the modules are imported again
     try:
         import tkinter as tk
         from tkinter import ttk
@@ -33,15 +38,18 @@ while 1:
         print("[!] module is not installed, installing currently")
         installModule("tkinter")
         installModule("pycryptodome")
+        # Installs modules if the import fails
 
 # Global Variable declerations
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# Sets up the socket for the connection to the server
 initialAES = None
+# Declares the encryption cipher
 
 # Class declerations
 
-class UserCredentials:
+class UserCredentials: # Class for storing credentials
     def __init__(self, username, password, createaccount):
         self.username = username
         self.password = password
@@ -98,14 +106,6 @@ class AESCipher(object):
 
 # Functions
 
-def getLocalIP():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(("8.8.8.8", 80)) # 8.8.8.8 is Googles DNS server; its an ip not going to change anytime
-    except:
-        s.connect(("1.1.1.1",80)) # Cloudflare DNS Resolver project IP, another host that won't change soon
-    return s.getsockname()[0] # Returns the local ip of the internet facing NIC adapter (This makes sure the local ip of a virtual adapter is not taken)
-
 def sendMessage(cipher, message):
     encMessage = cipher.encrypt(message)
     try:
@@ -132,16 +132,19 @@ def recvMessage(cipher, *args):
     return (decrypted)
 
 def DH():
+    # Exchanges a key with the server the client is connected to
     data = sock.recv(1024)
-    data=data.decode("utf-8")
+    data = data.decode("utf-8")
     data = data.split(" ")
     secret = randint(2**100, 2**150)
+    # Creates a random private key
     sendkey = pow(int(data[0]), secret, int(data[1]))
     sock.send(bytes(str(sendkey),"utf-8"))
     key = pow(int(data[2]),int(secret),int(data[1]))
     return key
 
 def DependancyDownloader(file, url):
+    # Downloads the contents of a url to a file
     from urllib.request import urlopen
     data=urlopen(url).read()
     with open(file,"wb") as f:
