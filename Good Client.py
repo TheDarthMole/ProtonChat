@@ -203,8 +203,7 @@ class StartConnect(tk.Frame):
         self.parent = parent
         self.controller = controller
         # So the class can reference the frame it is stored in
-        self.connected = False
-        self.loggedIn=False
+        self.connected = self.loggedIn = False
         # Variables used when the client disconnects
         tk.Frame.config(self,width=200, height=300) # Can edit background colour here
         self.label_title = ttk.Label(self, text = "Enter the Address and Port")
