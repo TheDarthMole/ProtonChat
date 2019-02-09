@@ -701,10 +701,16 @@ class Admins(Members):
     def __init__(self, ip, port, nickname, password):
         super().__init__(ip, port, nickname, password)
 
-    def BanUser(self): # Possibly ban users from an ip address / Range
-        pass
+    def BanUser(self, data): # Possibly ban users from an ip address / Range
+        try:
+            self.database.updateUser(data[0], password="Banned")
+        except:
+            self.send("MSG|Server|Failed to ban account {}".format(data[0]),self.initialAES)
     def RemoveAccount(self, username): # A function to remove user accounts
-        pass
+        try:
+            self.database.CommandDB("DELETE FROM clients WHERE username = ?", username[0])
+        except:
+            self.send("MSG|Server|Failed to remove account {}".format(username[0]),self.initialAES)
     def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
         pass
 
