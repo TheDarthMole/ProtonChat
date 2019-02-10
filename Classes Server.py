@@ -705,12 +705,14 @@ class Admins(Members):
         try:
             self.database.updateUser(data[0], password="Banned")
         except:
-            self.send("MSG|Server|Failed to ban account {}".format(data[0]),self.initialAES)
+            self.send("MSG|Server|Admin|Failed to ban account {}".format(data[0]),self.initialAES)
+
     def RemoveAccount(self, username): # A function to remove user accounts
         try:
             self.database.CommandDB("DELETE FROM clients WHERE username = ?", username[0])
         except:
-            self.send("MSG|Server|Failed to remove account {}".format(username[0]),self.initialAES)
+            self.send("MSG|Server|Admin|Failed to remove account {}".format(username[0]),self.initialAES)
+
     def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
         pass
 
