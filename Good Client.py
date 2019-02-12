@@ -655,10 +655,7 @@ class MessagePage(tk.Frame):
         self.uiMessages.config(state="normal")
         self.uiMessages.insert("end",chars=str("["+recipient+"] ")+str(text)+"\n")
         # Adds a message to the messenger interface
-        if len(text.splitlines())>1:
-            lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 2
-        else:
-            lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - 1
+        lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - (2 if len(text.splitlines())>1 else 1)
         self.uiMessages.tag_add("blue", str(lastLine - len(text.splitlines())+1)+".0",str(lastLine - len(text.splitlines())+1)+"."+str(len(recipient)+2))
         self.uiMessages.tag_config("blue", foreground = "blue")
         # Some very ugly code that turns the name of the user to blue; indicating the user is an admin
