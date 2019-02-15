@@ -282,7 +282,10 @@ DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f3
 DataBase.PrintCustomerContents()
 DataBase.PrintBlockedContents()
 DataBase.PrintMessagesContents()
-
+DataBase.AddMessage("Nick","Hey there!")
+username="Nick"
+databaseData = DataBase.CommandDB("SELECT message FROM messages WHERE username = ?",username)
+print(databaseData)
 class UserCredentials:
     def __init__(self, username, password, createaccount):
         self.username = username
@@ -408,6 +411,12 @@ class Members:
             # Completely removes the client form the server as a connected user
             self.connectionlost = True
             return True
+        except ValueError:
+            print("[=] Connection has been lost with {}:{}".format(self.ip,self.port))
+            self.socket.close()
+            self.RemoveInstance()
+            self.connectionlost = True
+            return True
 
     def sendDiffieHellman(self):
         self.sendKey = pow(int(self.Base),int(self.Secret),int(self.Prime))
@@ -465,6 +474,7 @@ class Members:
                 # If the user has the same password as the one in the database then they are logged in
                 self.loggedIn = True
                 self.database.updateUser(self.credentials.username,ip=self.ip, port=self.port)
+                self.database.PrintCustomerContents()
                 # Update the ip and port in the database (Shows last connection)
                 self.send("SLI", self.initialAES) # Successfully Logged In
                 # Notify the user of the successful login
@@ -633,6 +643,7 @@ class Members:
             self.switcher["/Ban"] = [self.BanUser,"Bans a user from the server","/Ban [Username]"]
             self.switcher["/Removeaccount"] = [self.RemoveAccount,"Deletes a users account","/RemoveAccount [Username]"]
             self.switcher["/Editaccount"] = [self.EditMember,"Edit an account","/EditAccount [Username] [AccountType]/[Password]=[Value]"]
+            self.switcher["/Search"] = [self.SearchMessages,"Search for messages","/Search [Username or * for all] [Search string]"]
             # This is only for the admins class
 
         while not self.connectionlost and MainThreadClose == False: # While the client is connected run
@@ -687,6 +698,8 @@ class Members:
         while not self.contunue and self.connectionlost == False:
             # While the user is not logged in and the connection has not been lost
             self.contunue = self.login() # Makes sure the user is logged in to an account
+        if self.connectionlost:
+            return
         if self.database.isAdmin(self.credentials.username):
             self.__class__ = Admins
             # Elevates the privelages to admin if they login to an admin account
@@ -715,6 +728,22 @@ class Admins(Members):
 
     def EditMember(self, username, **kwargs): # self.EditMember("Nick",ip="127.0.0.1") - This format using kwargs
         pass
+
+    def SearchMessages(self, data):
+        split = data[0].split(" ")
+        searchTerm = " ".join(split[1:])
+        username = split[0]
+        if username == "*":
+            databaseData = self.database.CommandDB("SELECT message FROM messages")
+        else:
+            databaseData = self.database.CommandDB("SELECT message FROM messages WHERE username = ?",username)
+        print(databaseData)
+        returnString=""
+        for x in databaseData:
+            returnString+=x[0]+"\n"
+        print(returnString)
+        # self.send("MSG|Server|Admin|")
+
 
     def CreateAdminAccount(self,*args): # Creates admin accounts
         print(args)
