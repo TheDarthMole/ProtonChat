@@ -664,7 +664,7 @@ class MessagePage(tk.Frame):
         # Disables the text field so users cant enter data
 
     def addOwnMessage(self, text, recipient):
-        pass
+        passs
         # A function I didn't finish
 
 if __name__ == "__main__":
