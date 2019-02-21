@@ -128,3 +128,9 @@ INFO:root:Ran with args: (<__main__.Members object at 0x036796B0>, 'Encryption c
 INFO:root:Ran with args: (<__main__.Members object at 0x036796B0>, 'SLI', <__main__.AESCipher object at 0x03679A10>), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x036796B0>, 'Wee!', 'Nick', 'Admin'), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x036796B0>, 'MSG|Nick|Admin|Wee!', <__main__.AESCipher object at 0x03679A10>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C0D110>, 'Encryption cipher working', <__main__.AESCipher object at 0x02C0DB10>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C0D110>, 'SLI', <__main__.AESCipher object at 0x02C0DB10>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02C0D110>, 'Hey!!', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02C0D110>, 'MSG|Nick|Admin|Hey!!', <__main__.AESCipher object at 0x02C0DB10>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02C0D110>, 'What?', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02C0D110>, 'MSG|Nick|Admin|What?', <__main__.AESCipher object at 0x02C0DB10>), and kwargs: {}

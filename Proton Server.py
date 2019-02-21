@@ -514,6 +514,7 @@ class Members:
                 # If the user is able to accept messages
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
+                    print("Sent the message to the client")
                     # Try and send the message to the user, along with account name and account type
                 except:
                     print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
