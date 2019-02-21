@@ -282,7 +282,6 @@ DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f3
 DataBase.PrintCustomerContents()
 DataBase.PrintBlockedContents()
 DataBase.PrintMessagesContents()
-DataBase.AddMessage("Nick","Hey there!")
 username="Nick"
 databaseData = DataBase.CommandDB("SELECT message FROM messages WHERE username = ?",username)
 print(databaseData)
@@ -506,8 +505,11 @@ class Members:
         # A message to the console to show messages sent from users
         itteration = len(InstanceList)
         delInstanceList = []
+        print("Instance List:")
+        print(InstanceList)
         for connecitons in reversed(InstanceList):
             # Reversed the array because later on elements are going to be "popped" from the array, this would displace other elements
+            print(connecitons.loggedIn, not connecitons.sendingFiles, self.credentials.username not in connecitons.BlockedUsers)
             if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers:
                 # If the user is able to accept messages
                 try:
@@ -746,7 +748,6 @@ class Admins(Members):
 
 
     def CreateAdminAccount(self,*args): # Creates admin accounts
-        print(args)
         split = args[0][0].split(" ")
         if len(split) < 2:
             self.send("MSG|Server|Admin|Another argument is needed in the format '/Createadmin [Username] [Password]'",self.initialAES)
