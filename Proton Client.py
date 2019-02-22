@@ -123,13 +123,14 @@ def recvMessage(cipher, *args):
     except OSError:
         print("[!] {}".format(str(sys.exc_info()[1])))
         return False
+    print("DATA Receaved!")
     receaved = receaved.decode("utf-8")
     decrypted = cipher.decrypt(receaved)
     if len(decrypted) > 128:
         print("Receaved encrypted:",decrypted[:128],"of length {}".format(len(decrypted))) # For Debugging
     else:
         print("Receaved encrypted:",decrypted) # For Debugging
-    return (decrypted)
+    return decrypted
 
 def DH():
     # Exchanges a key with the server the client is connected to
@@ -483,9 +484,9 @@ class MessagePage(tk.Frame):
         "Filedownload": self.download,
         "Fnf": self.SwitcherFileNotFound,
         "Keyerror": self.KeyError,
-        "Logout": self.logout}
+        "Logout": self.logout,
+        "1": lambda a: time.sleep(1)}
         # These are the server side commands that can be sent to the client
-        ready = select.select([sock], [], [], 5)
         # "ready" is used to see when there is data to accept from the server
         print("FetchMessages running")
         while 1: # This fucntion does have exit perameters, however they are checked throughout the loop
@@ -493,7 +494,9 @@ class MessagePage(tk.Frame):
                 self.controller.killThread = False
                 self.threadStarted = False
                 # Tells other functions to stop running the thread
+                print("killThread was True, quitting FetchMessages")
                 return
+            ready = select.select([sock], [], [], 5)
             if not self.sendingFiles:
                 if ready[0]:
                     # If there is data to recieve:

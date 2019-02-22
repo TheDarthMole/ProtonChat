@@ -10,20 +10,17 @@ def installModule(package):
     except:
         print("[!] Failed to install {}".format(package))
 
-installModule("pycryptodome")
-installModule("requests")
 
-try:
-    from Crypto import Random
-    from Crypto.Cipher import AES
-except ImportError:
-    print("[!] pyCrypto module not installed! Install using in cmd 'py -m pip install pyCrypto' ")
-    exit(1)
-try:
-    from requests import get # Non-standard library
-except ImportError:
-    print("[!] requests module not installed, installing it now")
-    installModule()
+while 1:
+    try:
+        from Crypto import Random
+        from Crypto.Cipher import AES
+        from requests import get # Non-standard library
+        break
+    except ImportError:
+        installModule("pycryptodome")
+        installModule("requests")
+
 
 # Declare public variables and initialize
 
@@ -505,7 +502,6 @@ class Members:
         delInstanceList = []
         for connecitons in reversed(InstanceList):
             # Reversed the array because later on elements are going to be "popped" from the array, this would displace other elements
-            print(connecitons.loggedIn, not connecitons.sendingFiles, self.credentials.username not in connecitons.BlockedUsers)
             if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers and not (self.credentials.username == connecitons.credentials.username):
                 # If the user is able to accept messages
                 try:
@@ -529,13 +525,15 @@ class Members:
         if os.path.isfile("UserFiles\\"+filename):
             print("[!] File '{}' already exists  - {} [{}:{}]".format("UserFiles\\"+filename,self.credentials.username, self.ip, self.port))
             # Checks if a file of that name already exists on the server
+            # self.send("1",self.initialAES) # sends a pause to the clients message listner
             self.send("FAE",self.initialAES) # File Already Exists
             self.sendingFiles=False
             return
             # Notifies the user that the file exists, then quits function
         else:
             print("Downloading file '{}' from {} [{}:{}]".format(filename, self.credentials.username, self.ip, self.port))
-            self.send("STS",self.initialAES) # Safe to Send
+            self.send("STS",self.initialAES) # sends a pause to the clients message listner
+            # self.send("STSs",self.initialAES) # Safe to Send
             # Allow the user to send the file to the server
 
         with open("UserFiles\\"+filename,"wb") as f:
@@ -733,15 +731,14 @@ class Admins(Members):
         searchTerm = " ".join(split[1:])
         username = split[0]
         if username == "*":
-            databaseData = self.database.CommandDB("SELECT message FROM messages")
+            databaseData = self.database.CommandDB("SELECT username, message FROM messages")
         else:
-            databaseData = self.database.CommandDB("SELECT message FROM messages WHERE username = ?",username)
+            databaseData = self.database.CommandDB("SELECT username, message FROM messages WHERE username = ?",username)
         print(databaseData)
         returnString=""
         for x in databaseData:
-            returnString+=x[0]+"\n"
-        print(returnString)
-        # self.send("MSG|Server|Admin|")
+            returnString+="[{}]: {}\n".format(x[0],x[1])
+        self.send("MSG|Server|Admin|Messages from other users:\n"+returnString,self.initialAES)
 
 
     def CreateAdminAccount(self,*args): # Creates admin accounts
