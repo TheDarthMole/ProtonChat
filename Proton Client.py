@@ -610,6 +610,7 @@ class MessagePage(tk.Frame):
                 sendMessage(initialAES, tosend[0]+"|"+last)
                 # If it is a command, then the structure is different than if it was a message
             else:
+                self.addOwnMessage(text)
                 sendMessage(initialAES, "MSG|"+text)
                 # If the data is a message, then send it in the structure of a message
         else:
@@ -664,9 +665,19 @@ class MessagePage(tk.Frame):
         self.uiMessages.config(state="disabled")
         # Disables the text field so users cant enter data
 
-    def addOwnMessage(self, text, recipient):
-        passs
-        # A function I didn't finish
+    def addOwnMessage(self, text):
+        self.NotificationSound()
+        # Plays a notification sound
+        self.uiMessages.config(state="normal")
+        self.uiMessages.insert("end",chars=str("[Me] ")+str(text)+"\n")
+        # Adds a message to the messenger interface
+        lastLine = int(self.uiMessages.index('end-1c').split('.')[0]) - (2 if len(text.splitlines())>1 else 1)
+        self.uiMessages.tag_add("green", str(lastLine - len(text.splitlines())+1)+".0",str(lastLine - len(text.splitlines())+1)+"."+str(4))
+        self.uiMessages.tag_config("green", foreground = "green")
+        # Some very ugly code that turns the name of the user to blue; indicating the user is an admin
+        self.uiMessages.see("end")
+        self.uiMessages.config(state="disabled")
+        # Disables the text field so users cant enter data
 
 if __name__ == "__main__":
     try:

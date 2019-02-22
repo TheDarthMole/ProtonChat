@@ -506,7 +506,7 @@ class Members:
         for connecitons in reversed(InstanceList):
             # Reversed the array because later on elements are going to be "popped" from the array, this would displace other elements
             print(connecitons.loggedIn, not connecitons.sendingFiles, self.credentials.username not in connecitons.BlockedUsers)
-            if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers:
+            if connecitons.loggedIn and not connecitons.sendingFiles and self.credentials.username not in connecitons.BlockedUsers and not (self.credentials.username == connecitons.credentials.username):
                 # If the user is able to accept messages
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
