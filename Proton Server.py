@@ -282,9 +282,7 @@ DataBase.AppendClientsDatabase("1.3.3.7",666,"Nick","bcc014de6fb06f937156515b8f3
 DataBase.PrintCustomerContents()
 DataBase.PrintBlockedContents()
 DataBase.PrintMessagesContents()
-username="Nick"
-databaseData = DataBase.CommandDB("SELECT message FROM messages WHERE username = ?",username)
-print(databaseData)
+
 class UserCredentials:
     def __init__(self, username, password, createaccount):
         self.username = username
@@ -413,7 +411,7 @@ class Members:
         except ValueError:
             print("[=] Connection has been lost with {}:{}".format(self.ip,self.port))
             self.socket.close()
-            self.RemoveInstance()
+            self.RemoveInstance(self)
             self.connectionlost = True
             return True
 
@@ -505,8 +503,6 @@ class Members:
         # A message to the console to show messages sent from users
         itteration = len(InstanceList)
         delInstanceList = []
-        print("Instance List:")
-        print(InstanceList)
         for connecitons in reversed(InstanceList):
             # Reversed the array because later on elements are going to be "popped" from the array, this would displace other elements
             print(connecitons.loggedIn, not connecitons.sendingFiles, self.credentials.username not in connecitons.BlockedUsers)

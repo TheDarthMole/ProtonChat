@@ -134,3 +134,14 @@ INFO:root:Ran with args: (<__main__.Admins object at 0x02C0D110>, 'Hey!!', 'Nick
 INFO:root:Ran with args: (<__main__.Admins object at 0x02C0D110>, 'MSG|Nick|Admin|Hey!!', <__main__.AESCipher object at 0x02C0DB10>), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x02C0D110>, 'What?', 'Nick', 'Admin'), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Admins object at 0x02C0D110>, 'MSG|Nick|Admin|What?', <__main__.AESCipher object at 0x02C0DB10>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03683A50>, 'Encryption cipher working', <__main__.AESCipher object at 0x03683A30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036836B0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03683A90>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036796B0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03679A10>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036796B0>, 'SLI', <__main__.AESCipher object at 0x03679A10>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BF9230>, 'Encryption cipher working', <__main__.AESCipher object at 0x02C0D190>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BF9230>, 'SLI', <__main__.AESCipher object at 0x02C0D190>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x042596B0>, 'Encryption cipher working', <__main__.AESCipher object at 0x04259A10>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037D9DD0>, 'Encryption cipher working', <__main__.AESCipher object at 0x037ED130>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037D9DD0>, 'SLI', <__main__.AESCipher object at 0x037ED130>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037D9DD0>, 'Hey', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037D9DD0>, 'MSG|Nick|Admin|Hey', <__main__.AESCipher object at 0x037ED130>), and kwargs: {}

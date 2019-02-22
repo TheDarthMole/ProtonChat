@@ -512,6 +512,7 @@ class MessagePage(tk.Frame):
                     else:
                         self.addAdminMessage("'{}' is not a valid command".format(command), "Server")
                         # If the comand is not in the avaliable commands then an error is displayed
+        print("BROKE OUT OF THE LOOP!!!")
 
     def upload(self, *args):
         self.sendingFiles = True
