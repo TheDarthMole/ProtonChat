@@ -132,8 +132,12 @@ class SQLDatabase:
         return False
 
     def AppendClientsDatabase(self, ip, port, nickname, password, accountType): # Complete
-        self.CommandDB("INSERT INTO clients VALUES (?,?,?,?,?)",ip, port, nickname, password, accountType)
-        # Adds a client to the database with passed in data
+        try:
+            self.CommandDB("INSERT INTO clients VALUES (?,?,?,?,?)",ip, port, nickname, password, accountType)
+            # Adds a client to the database with passed in data
+        except sqlite3.IntegrityError:
+            return False
+        return True
 
     def updateUser(self,User,**kwargs):
         # kwargs can be used to update the users table
@@ -145,7 +149,7 @@ class SQLDatabase:
         for x in ("password","ip","port","accountType","nickname"):
             if x in kwargs:
                 if x == "password":
-                    kwargs["password"] = self.initialAES.hasher(kwargs["password"]) # Turns the plaintext password into a database usable password
+                    kwargs["password"] = AESCipher.hasher(kwargs["password"]).hex() # Turns the plaintext password into a database usable password
                 self.CommandDB("UPDATE clients SET {} = ? WHERE nickname = ?".format(x),kwargs[x],User)
 
     def allowedCreateAccount(self, ip, port, username): # Checks to see if the users ip and port are already in the database
@@ -263,6 +267,17 @@ class SQLDatabase:
             print("{:^26} | {:^16} | {:^10}".format(row[2],row[0],row[1]))
         print()
 
+    def SearchMessages(self, username, SearchTerm=""):
+        SearchTerm = "%"+SearchTerm+"%"
+        if username == "*":
+            databaseData = self.CommandDB("SELECT username, message FROM messages WHERE message LIKE ?",SearchTerm)
+        else:
+            databaseData = self.CommandDB("SELECT username, message FROM messages WHERE username = ? AND message LIKE ?",username, "%"+SearchTerm+"%")
+        returnString=""
+        for x in databaseData:
+            returnString+="[{}]: {}\n".format(x[0],x[1])
+        return returnString
+
     def dump(self, *args): # Made for Debugging, however mey be useful elsewhere
         for x in args:
             self.CommandDB("DELETE FROM {}".format(x))
@@ -292,7 +307,8 @@ class AESCipher(object):
         self.key = self.hasher(key)
         # Hashes a value and uses it as the cipher
 
-    def hasher(self, password):
+    @staticmethod
+    def hasher(password):
         salt = b'\xdfU\xc1\xdf\xf9\xb30\x96' # This is the default salt i am using for client and server side
         # This is the default salt i am using for client and server side
         # Theoretically this should be random for each user and stored in the database
@@ -468,7 +484,6 @@ class Members:
                 # If the user has the same password as the one in the database then they are logged in
                 self.loggedIn = True
                 self.database.updateUser(self.credentials.username,ip=self.ip, port=self.port)
-                self.database.PrintCustomerContents()
                 # Update the ip and port in the database (Shows last connection)
                 self.send("SLI", self.initialAES) # Successfully Logged In
                 # Notify the user of the successful login
@@ -506,7 +521,6 @@ class Members:
                 # If the user is able to accept messages
                 try:
                     connecitons.send("MSG|"+str(sentfrom)+"|"+str(accountType)+"|"+str(message), connecitons.initialAES)
-                    print("Sent the message to the client")
                     # Try and send the message to the user, along with account name and account type
                 except:
                     print("[!] Couldn't send a message to "+connecitons.credentials.username +" [{}:{}]".format(connecitons.ip, connecitons.port))
@@ -667,11 +681,17 @@ class Members:
             except TypeError:
                 self.connectionlost = True
 
-    def ChangeStandardPassword(self,*args):
-        pass
-    def ChangeUsername(self,*args):
-        pass
     def sendUpload(self, *args):
+        pass
+
+    def ChangeStandardPassword(self,*args):
+        split=args[0][0].split(" ")
+        print(split[0])
+        if len(split) != 1:
+            self.send("MSG|Server|Admin|You have not used the correct format for this command, seek '/help'")
+            return
+        self.database.updateUser(self.credentials.username, password=split[0])
+    def ChangeUsername(self,*args):
         pass
     def ShowHelp(self,*args):
         string=""
@@ -713,13 +733,13 @@ class Admins(Members):
 
     def BanUser(self, data): # Possibly ban users from an ip address / Range
         try:
-            self.database.updateUser(data[0], password="Banned")
+            self.database.updateUser(data[0], password="Banned■ö►ê"+str(randint(4000,40000000000))) # Random characters to make it harder to guess password
         except:
             self.send("MSG|Server|Admin|Failed to ban account {}".format(data[0]),self.initialAES)
 
     def RemoveAccount(self, username): # A function to remove user accounts
         try:
-            self.database.CommandDB("DELETE FROM clients WHERE username = ?", username[0])
+            self.database.CommandDB("DELETE FROM clients WHERE nickname = ?", username[0])
         except:
             self.send("MSG|Server|Admin|Failed to remove account {}".format(username[0]),self.initialAES)
 
@@ -730,16 +750,8 @@ class Admins(Members):
         split = data[0].split(" ")
         searchTerm = " ".join(split[1:])
         username = split[0]
-        if username == "*":
-            databaseData = self.database.CommandDB("SELECT username, message FROM messages")
-        else:
-            databaseData = self.database.CommandDB("SELECT username, message FROM messages WHERE username = ?",username)
-        print(databaseData)
-        returnString=""
-        for x in databaseData:
-            returnString+="[{}]: {}\n".format(x[0],x[1])
+        returnString=self.database.SearchMessages(username, searchTerm)
         self.send("MSG|Server|Admin|Messages from other users:\n"+returnString,self.initialAES)
-
 
     def CreateAdminAccount(self,*args): # Creates admin accounts
         split = args[0][0].split(" ")
@@ -747,8 +759,10 @@ class Admins(Members):
             self.send("MSG|Server|Admin|Another argument is needed in the format '/Createadmin [Username] [Password]'",self.initialAES)
             # The user has to enter a username as well as a password, so an error message is displayed if the arguments are less than 2
         else:
-            if self.database.allowedCreateAccount:
-                self.database.AppendClientsDatabase("N/A",0,split[0],self.initialAES.hasher(split[1]),"Admin")
+            from random import randint
+            print(split[0])
+            if self.database.allowedCreateAccount(randint(0,999999), randint(0,999999), split[0]):
+                self.database.AppendClientsDatabase("N/A",0,split[0],self.initialAES.hasher(split[1]).hex(),"Admin")
                 # Creates an admin account if there is no pre-existing account with that name
                 print("[+] Admin account {} has been created by {}".format(split[0],self.credentials.username))
                 self.send("MSG|Server|Admin|Admin Account {} has been successfully created".format(split[0]),self.initialAES)

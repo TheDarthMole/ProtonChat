@@ -15,7 +15,7 @@ def installModule(package):
     import subprocess
     import sys
     try:
-        subprocess.call([sys.executable, "-m", "pip", "install", package])
+        subprocess.call([sys.executable, "-m", "pip", "install", package, "--user"])
         # Installs modules that are not default to python
     except:
         print("[!] Failed to install {}".format(package))
@@ -189,6 +189,7 @@ class ProtonClient(tk.Tk):
             if "Disconnect" in kwargs and kwargs["Disconnect"]: # If the first statement is false,
                 frame.DisconnectButtonPress()                    # the 2nd statement wont get run, therefore it wont thorw an error
                 frame.configInterface("disabled")
+                frame.button_login.config(state="disabled")
         # Disables buttons to disconnect if the user has decided to logout
             self.geometry("235x300")
         elif cont == MessagePage:
