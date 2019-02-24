@@ -6,7 +6,7 @@ def installModule(package):
     import subprocess
     import sys
     try:
-        subprocess.call([sys.executable, "-m", "pip", "install", package])
+        subprocess.call([sys.executable, "-m", "pip", "install", package, "--user"])
     except:
         print("[!] Failed to install {}".format(package))
 
@@ -27,6 +27,7 @@ while 1:
 HOST = "0.0.0.0"
 ClientMax = 10
 PORT = 65528
+DataBaseFile = "ProtonDatabase.db"
 
 """
 [+] = Added
@@ -281,8 +282,7 @@ class SQLDatabase:
             self.CommandDB("DELETE FROM {}".format(x))
         # Simply deletes all the tables that are passed in as args
 
-DataBase = SQLDatabase("LoginCredentials.db")
-# os.remove("LoginCredentials.db")
+DataBase = SQLDatabase(DataBaseFile)
 DataBase.CreateClientsTable()
 DataBase.CreateBlockedTable()
 DataBase.CreateMessageTable()
@@ -359,7 +359,7 @@ class Members:
         self.Secret = randint(2**100, 2**150)
         # Random numbers for diffie-hellman key exchange
         self.initialAES = None
-        self.database = SQLDatabase("LoginCredentials.db")
+        self.database = SQLDatabase(DataBaseFile)
         # Assigns a database instance per connected user
         self.connectionlost = False
         self.loggedIn = False
