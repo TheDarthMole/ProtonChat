@@ -206,12 +206,10 @@ class SQLDatabase:
 
     def EditBlockedDatabase(self, Relating, Relational, Type):
         if Relating == Relational:
-            print("[!] {} tried blocking themself".format(Relating))
             return False
         # Checks if the user is trying to block themselves
         for x in (Relating, Relational):
             if not self.CommandDB("SELECT nickname FROM clients WHERE nickname = ?",x):
-                print("[=] {} tried blocking {} who is not in the database".format(Relating,x))
                 return False # Returns false becasue the client is not in the table
         # If either users are not in the database then return false
         self.CommandDB("INSERT OR REPLACE INTO blockedUsers (relatingUser, relationalUser,type) VALUES (?,?,?)",Relating, Relational,Type)
@@ -598,9 +596,8 @@ class Members:
         for x in usernames: # Loop through the users to block
             if not self.database.EditBlockedDatabase(self.credentials.username,x,"Blocked"):
                 # If the user tries blocking someone who is not a valid user
-                print("[!] Client {} tried blocking {} but they are not in database".format(self.credentials.username,x))
                 if self.credentials.username == x:
-                    print("[-] {} tried blocking themself".format(self.credentials.username))
+                    print("[!] {} tried blocking themself".format(self.credentials.username))
                     self.send("MSG|Server|Admin|You cannot block youself.",self.initialAES)
                     # Logs that a user tried blocking themself and then tells the user
                 else:
@@ -670,6 +667,7 @@ class Members:
                     edited = data.split("|")
                     # If it is a command, then split up the data into an array
                     try:
+                        print("[+] [{}-{}] {}".format(self.credentials.username, "Standard" if not self.database.isAdmin(self.credentials.username) else "Admin"," ".join(edited)))
                         self.switcher[edited[0].title()][0](edited[1:])
                         # This part is incredibly important for the server, any message/command that is sent to the server will end up here
                         # Once the user has logged in. The command will be checked to see if it is in the avaliable commands dictionary (Turned
@@ -686,20 +684,35 @@ class Members:
 
     def ChangeStandardPassword(self,*args):
         split=args[0][0].split(" ")
-        print(split[0])
         if len(split) != 1:
-            self.send("MSG|Server|Admin|You have not used the correct format for this command, seek '/help'")
+            self.send("MSG|Server|Admin|You have not used the correct format for this command, seek '/help'",self.initialAES)
             return
-        self.database.updateUser(self.credentials.username, password=split[0])
+        try:
+            self.database.updateUser(self.credentials.username, password=split[0])
+            self.credentials.password = split[0]
+            self.send("MSG|Server|Admin|Password change successful!", self.initialAES)
+        except:
+            self.send("MSG|Server|Admin|An error occured when trying to change your password", self.initialAES)
+
     def ChangeUsername(self,*args):
-        pass
+        split=args[0][0].split(" ")
+        username=split[0]
+        if len(split) != 1:
+            self.send("MSG|Server|Admin|You have not used the correct format for this command, seek '/help'",self.initialAES)
+            return
+        try:
+            self.database.updateUser(self.credentials.username, nickname=username)
+            self.credentials.username = username
+            self.send("MSG|Server|Admin|Username change successful!",self.initialAES)
+        except:
+            self.send("MSG|Server|Admin|An error occured when trying to change your username",self.initialAES)
     def ShowHelp(self,*args):
         string=""
-        self.send("MSG|Server|Admin|Commands for {}".format(self.__class__.__name__), self.initialAES)
         for x in self.switcher:
             if not x in ["Msg","Uploading"]: # Because the "MSG" is not a command, and shows backend structure too easily
                 string+="{} {} {}\n".format(x, self.switcher[x][1],self.switcher[x][2])
-        self.send("MSG|Server|Admin|{}".format(string),self.initialAES)
+        # self.send("MSG|Server|Admin|{}".format(string),self.initialAES)
+        self.send("MSG|Server|Admin|Commands for {}:\n{}".format(self.__class__.__name__,string), self.initialAES)
 
     def Logout(self,*args):
         self.send("Logout",self.initialAES)
@@ -733,7 +746,11 @@ class Admins(Members):
 
     def BanUser(self, data): # Possibly ban users from an ip address / Range
         try:
-            self.database.updateUser(data[0], password="Banned■ö►ê"+str(randint(4000,40000000000))) # Random characters to make it harder to guess password
+            if self.database.CommandDB("SELECT * FROM clients WHERE nickname = ?",data[0]):
+                self.database.updateUser(data[0], password="Banned■ö►ê"+str(randint(4000,40000000000))) # Random characters to make it harder to guess password
+                self.send("MSG|Server|Admin|User {} has been banned!".format(data[0]),self.initialAES)
+            else:
+                self.send("MSG|Server|Admin|User '{}' doesn't exist".format(data[0]),self.initialAES)
         except:
             self.send("MSG|Server|Admin|Failed to ban account {}".format(data[0]),self.initialAES)
 

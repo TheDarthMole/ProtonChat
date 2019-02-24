@@ -175,3 +175,136 @@ INFO:root:Ran with args: (<__main__.Admins object at 0x03799A70>, 'MSG|Server|Ad
 INFO:root:Ran with args: (<__main__.Admins object at 0x03799A70>, 'MSG|Server|Admin|/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n/Search Search for messages /Search [Username or * for all] [Search string]\n', <__main__.AESCipher object at 0x037A2810>), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Members object at 0x02D17230>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A2D30>), and kwargs: {}
 INFO:root:Ran with args: (<__main__.Members object at 0x02D17230>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x037A2D30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037999F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037999F0>, 'SLI', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037999F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037999F0>, 'SLI', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037999F0>, 'MSG|Server|Admin|Password change successful!'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037999F0>, 'MSG|Server|Admin|An error occured when trying to change your password'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02D4B1B0>, 'Encryption cipher working', <__main__.AESCipher object at 0x02D4BAB0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02D4B1B0>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x02D4BAB0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02D4B1B0>, 'SLI', <__main__.AESCipher object at 0x02D4BAB0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02D4B1B0>, 'ee', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02D4B1B0>, 'MSG|Server|Admin|Password change successful!'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02D4B1B0>, 'MSG|Server|Admin|An error occured when trying to change your password'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037999F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037999F0>, 'SLI', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037999F0>, 'MSG|Server|Admin|Password change successful!', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02D17B30>, 'Encryption cipher working', <__main__.AESCipher object at 0x02D17290>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02D17B30>, 'SLI', <__main__.AESCipher object at 0x02D17290>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02D17B30>, 'MSG|Server|Admin|Username change successful!', <__main__.AESCipher object at 0x02D17290>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CB0>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CB0>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CB0>, 'SLI', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'Encryption cipher working', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'SLI', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'ee', 'Nick2', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'MSG|Nick2|Admin|ee', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037999F0>, 'MSG|Nick2|Admin|ee', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'ee', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'MSG|Nick1|Standard|ee', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02D17B30>, 'MSG|Nick1|Standard|ee', <__main__.AESCipher object at 0x02D17290>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037999F0>, 'MSG|Nick1|Standard|ee', <__main__.AESCipher object at 0x037A2790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'hmm', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'MSG|Nick1|Standard|hmm', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x02D17B30>, 'MSG|Nick1|Standard|hmm', <__main__.AESCipher object at 0x02D17290>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'Welp', 'Nick2', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'MSG|Nick2|Admin|Welp', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'Hmm', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'MSG|Nick1|Standard|Hmm', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'MSG|Server|Admin|User Nick1 has been unblocked', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'hmm', 'Nick2', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'MSG|Nick2|Admin|hmm', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, ':/', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'MSG|Nick1|Standard|:/', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'ee', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'MSG|Nick1|Standard|ee', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'MSG|Server|Admin|Username change successful!', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'e', 'Nickger', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'MSG|Nickger|Admin|e', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'e', 'Nickger', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'MSG|Nickger|Admin|e', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'e', 'Nickger', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'MSG|Nickger|Admin|e', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'e', 'Nickger', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2CD0>, 'MSG|Nickger|Admin|e', <__main__.AESCipher object at 0x037C6790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2CB0>, 'MSG|Server|Admin|Username change successful!', <__main__.AESCipher object at 0x037A2E30>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A27D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2750>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A2730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x037A2750>, 'SLI', <__main__.AESCipher object at 0x037A2730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'SLI', <__main__.AESCipher object at 0x037A27D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2750>, 'Hey', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'MSG|Nick|Admin|Hey', <__main__.AESCipher object at 0x037A27D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'Hello', 'Nick1', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2750>, 'MSG|Nick1|Standard|Hello', <__main__.AESCipher object at 0x037A2730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2750>, 'MSG|Server|Admin|Username change successful!', <__main__.AESCipher object at 0x037A2730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2750>, 'Hey', 'Georg', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'MSG|Georg|Admin|Hey', <__main__.AESCipher object at 0x037A27D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'MSG|Server|Admin|Username change successful!', <__main__.AESCipher object at 0x037A27D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'Hey!', 'Kevin', 'Standard'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2750>, 'MSG|Kevin|Standard|Hey!', <__main__.AESCipher object at 0x037A2730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2750>, 'MSG|Server|Admin|Messages from other users:\n[Nick]: MSG|Hey\n[Nick1]: MSG|Hello\n[Nick]: /changeusername|Georg\n[Georg]: MSG|Hey\n[Nick1]: /changeusername|Kevin\n[Kevin]: MSG|Hey!\n[Georg]: /search|*\n', <__main__.AESCipher object at 0x037A2730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2750>, 'MSG|Server|Admin|Commands for Admins', <__main__.AESCipher object at 0x037A2730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x037A2750>, 'MSG|Server|Admin|/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n/Search Search for messages /Search [Username or * for all] [Search string]\n', <__main__.AESCipher object at 0x037A2730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'Encryption cipher working', <__main__.AESCipher object at 0x037A27D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03799A30>, 'SLI', <__main__.AESCipher object at 0x037A27D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03799A30>, 'MSG|Server|Admin|Commands for Admins\n/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n/Search Search for messages /Search [Username or * for all] [Search string]\n', <__main__.AESCipher object at 0x037A27D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03529A30>, 'Encryption cipher working', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03529A30>, 'SLI', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BF2090>, 'Encryption cipher working', <__main__.AESCipher object at 0x02BF61D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BF2090>, 'SLI', <__main__.AESCipher object at 0x02BF61D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03529A30>, 'ee', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BF2090>, 'MSG|Nick|Admin|ee', <__main__.AESCipher object at 0x02BF61D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03529A30>, 'ee', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BF2090>, 'MSG|Nick|Admin|ee', <__main__.AESCipher object at 0x02BF61D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03529A30>, 'ee', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BF2090>, 'MSG|Nick|Admin|ee', <__main__.AESCipher object at 0x02BF61D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03529A30>, 'Encryption cipher working', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03532750>, 'Encryption cipher working', <__main__.AESCipher object at 0x03532730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03529A30>, 'SLI', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03532750>, 'SLI', <__main__.AESCipher object at 0x03532730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03529A30>, 'MSG|Server|Admin|User Nick1 has been banned!', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BE7310>, 'Encryption cipher working', <__main__.AESCipher object at 0x03532EB0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BE7310>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x03532EB0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03529A30>, 'Encryption cipher working', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03532750>, 'Encryption cipher working', <__main__.AESCipher object at 0x03532730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03529A30>, 'SLI', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03532750>, 'SLI', <__main__.AESCipher object at 0x03532730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C07290>, 'Encryption cipher working', <__main__.AESCipher object at 0x02C07070>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C07290>, 'SLI', <__main__.AESCipher object at 0x02C07070>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03529A30>, 'ee', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02C07290>, 'MSG|Nick|Admin|ee', <__main__.AESCipher object at 0x02C07070>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03532750>, 'MSG|Nick|Admin|ee', <__main__.AESCipher object at 0x03532730>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03529A30>, 'MSG|Server|Admin|User Nick1 has been banned!', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03556870>, 'Encryption cipher working', <__main__.AESCipher object at 0x03556810>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03556870>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x03556810>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03529A30>, 'MSG|Server|Admin|User Player has been banned!', <__main__.AESCipher object at 0x035327D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x035299D0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03532770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x035326F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03532CD0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x035299D0>, 'SLI', <__main__.AESCipher object at 0x03532770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x035326F0>, 'SLI', <__main__.AESCipher object at 0x03532CD0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x035299D0>, 'MSG|Server|Admin|User Nick1 has been banned!', <__main__.AESCipher object at 0x03532770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BEBB10>, 'Encryption cipher working', <__main__.AESCipher object at 0x03532E70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x02BEBB10>, 'ERR-You have entered an incorrect username or password!', <__main__.AESCipher object at 0x03532E70>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x035299D0>, "MSG|Server|Admin|User 'Test' doesn't exist", <__main__.AESCipher object at 0x03532770>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036399F0>, 'Encryption cipher working', <__main__.AESCipher object at 0x03642790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x036399F0>, 'SLI', <__main__.AESCipher object at 0x03642790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x036399F0>, 'ee', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x036399F0>, 'MSG|Server|Admin|Commands for Admins:\n/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n/Search Search for messages /Search [Username or * for all] [Search string]\n', <__main__.AESCipher object at 0x03642790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x036399F0>, 'MSG|Server|Admin|Commands for Admins:\n/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n/Search Search for messages /Search [Username or * for all] [Search string]\n', <__main__.AESCipher object at 0x03642790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x036399F0>, 'MSG|Server|Admin|There is no such user nick', <__main__.AESCipher object at 0x03642790>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03609A30>, 'Encryption cipher working', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03609A30>, 'SLI', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'MSG|Server|Admin|There is no such user nick', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03609A30>, 'Encryption cipher working', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Members object at 0x03609A30>, 'SLI', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'ee/', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'MSG|Server|Admin|Commands for Admins:\n/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n/Search Search for messages /Search [Username or * for all] [Search string]\n', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'MSG|Server|Admin|There is no such user nick', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'MSG|Server|Admin|You cannot block youself.', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'MSG|Server|Admin|There is no user nick', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'MSG|Server|Admin|There is no reason to unblock youself', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'MSG|Server|Admin|You cannot block youself.', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'ee', 'Nick', 'Admin'), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'MSG|Server|Admin|Commands for Admins:\n/Changepassword Changed the password of any user account /ChangePassword [New Password]\n/Logout Logs the user out of their account /Logout\n/Changeusername Change the username of current account /Changeusername [NewUsername]\n/Help Shows this help menu /Help\n/Upload Upload a file to the server, use button or this command + filename /Upload [FilePath]\n/Download Download a file from the server /Download [FileName]\n/Block Blocks a user from sending you messages /Block [Username] [Optional aditional usernames]\n/Unblock Allows a previously blocked user to send you messages /Unblock [Username] [Optional aditional usernames]\n/Createadmin Creates an admin account /CreateAdmin [Username] [Password]\n/Ban Bans a user from the server /Ban [Username]\n/Removeaccount Deletes a users account /RemoveAccount [Username]\n/Editaccount Edit an account /EditAccount [Username] [AccountType]/[Password]=[Value]\n/Search Search for messages /Search [Username or * for all] [Search string]\n', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
+INFO:root:Ran with args: (<__main__.Admins object at 0x03609A30>, 'Keyerror|/heee', <__main__.AESCipher object at 0x036127D0>), and kwargs: {}
