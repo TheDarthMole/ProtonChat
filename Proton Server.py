@@ -154,12 +154,14 @@ class SQLDatabase:
                 self.CommandDB("UPDATE clients SET {} = ? WHERE nickname = ?".format(x),kwargs[x],User)
 
     def allowedCreateAccount(self, ip, port, username): # Checks to see if the users ip and port are already in the database
-        if self.CommandDB("SELECT * FROM clients WHERE ip = ? AND port = ?",ip, port):
-            return False
-        # Returns false if there is already a users ip is already in the database
         if self.CommandDB("SELECT * FROM clients WHERE nickname = ?",username):
             return False
-        # Returns false if there is already an existing user with that name in the database
+            # Returns false if there is already an existing user with that name in the database
+        if ip == "127.0.0.1" or ip == getLocalIP():
+            return True
+        if self.CommandDB("SELECT * FROM clients WHERE ip = ?",ip):
+            return False
+        # Returns false if there is already a users ip is already in the database
         return True
         # Returns true if there are no conflictions
 
@@ -563,7 +565,7 @@ class Members:
     def upload(self, *args):
         self.sendingFiles = True
         filename=args[0][0]
-        pathfile = "UserFiles/"+str(filename)
+        pathfile = "UserFiles\\"+str(filename)
         # Gets the filename that the user has requested
         if os.path.isfile(pathfile):
             # Checks to see if it is a valid file
