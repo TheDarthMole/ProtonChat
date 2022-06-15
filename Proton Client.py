@@ -162,8 +162,10 @@ class ProtonClient(tk.Tk):
             DependancyDownloader("ProtonDark.ico","https://raw.githubusercontent.com/TheDarthMole/ProtonChat/master/ProtonDark.ico")
         if not os.path.isfile("Notification.mp3"):
             DependancyDownloader("Notification.mp3","https://raw.githubusercontent.com/TheDarthMole/ProtonChat/master/Notification.mp3")
+
         # Used to download the icon from a server if it doesn't already exist (Required in order to run the code)
-        tk.Tk.iconbitmap(self, default="ProtonDark.ico")
+        # @TODO: Fix this to work with Windows and Linux https://stackoverflow.com/q/20860325
+        #tk.Tk.iconbitmap(self, f"{os.getcwd()}/ProtonDark.ico")
         self.container.pack(side="top", fill="both", expand= False)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
